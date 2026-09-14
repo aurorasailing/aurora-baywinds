@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · index.html · v1.1 · 2026-09-14 -->
+<!-- Aurora Bay Winds · index.html · v1.2 · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -15,11 +15,12 @@
     --green:#50E040; --green-b:#39D455; --navy:#0A1628; --slate:#2E4057;
     --ink:#1C2B3A; --white:#FFFFFF; --harbour:#F5F7F4; --seafoam:#E8EDE6;
     --muted:#7A8A7E; --line:#E1E6E0;
-    --calm-c:#9FB0A4;   --calm-t:#6B7A70;
-    --ideal-c:#39D455;  --ideal-t:#1F8A2E;
-    --fresh-c:#FFBB44;  --fresh-t:#B37400;
-    --strong-c:#F0792E; --strong-t:#C2521A;
-    --heavy-c:#F90D24;  --heavy-t:#C21020;
+    --calm-c:#B7DDB0;   --calm-t:#5A8A54;
+    --ideal-c:#2E9E3D;  --ideal-t:#1B7A29;
+    --fresh-c:#7BD877;  --fresh-t:#3B9743;
+    --breezy-c:#FFBB44; --breezy-t:#B37400;
+    --recon-c:#F0792E;  --recon-t:#C2521A;
+    --strong-c:#F90D24; --strong-t:#C21020;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -112,7 +113,7 @@
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
-  <div class="ver">index.html · v1.1</div>
+  <div class="ver">index.html · v1.2</div>
 </footer>
 
 <script>
@@ -128,11 +129,12 @@ const TREND_WINDOW_MIN = 30;    // building/easing over the last N min (last hal
 const TREND_KT = 2;             // change smaller than this reads as "steady"
 
 const BANDS = [
-  {max:5,   name:"Calm",   c:"#9FB0A4", t:"#6B7A70"},
-  {max:11,  name:"Ideal",  c:"#39D455", t:"#1F8A2E"},
-  {max:16,  name:"Fresh",  c:"#FFBB44", t:"#B37400"},
-  {max:23,  name:"Strong", c:"#F0792E", t:"#C2521A"},
-  {max:999, name:"Heavy",  c:"#F90D24", t:"#C21020"},
+  {max:5,   name:"Calm",       c:"#B7DDB0", t:"#5A8A54"},
+  {max:11,  name:"Ideal",      c:"#2E9E3D", t:"#1B7A29"},
+  {max:16,  name:"Fresh",      c:"#7BD877", t:"#3B9743"},
+  {max:23,  name:"Breezy",     c:"#FFBB44", t:"#B37400"},
+  {max:30,  name:"Reconsider", c:"#F0792E", t:"#C2521A"},
+  {max:999, name:"Strong",     c:"#F90D24", t:"#C21020"},
 ];
 
 // Order: the two that read the southerly change earliest sit up top
@@ -149,7 +151,7 @@ const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
 
 const store={}; let usingSample=false, newestFull=null;
 
-function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
+function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[BANDS.length-1]; }
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
