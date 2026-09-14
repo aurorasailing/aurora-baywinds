@@ -58,6 +58,7 @@
   .bd .gst{font-size:12px; color:var(--muted); margin-top:4px}
   .bd .gst b{font-weight:700}
   .bd .gst .bft{color:var(--muted); font-weight:600}
+  .bd .gst .gval{color:var(--navy); font-weight:600}
   .bd .gst .up{color:#C2521A; font-weight:700}
   .bd .gst .dn{color:#1F8A2E; font-weight:700}
 
@@ -239,7 +240,7 @@ function render(){
       '<div class="bd"><div class="nm">'+s.name+'</div>'+
       '<div class="val"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span>'+
         '<span class="u">kt</span><span class="dir">'+dir+'</span></div>'+
-      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b>'+bft+' · Gust '+(g==null?"–":g)+' kt'+trLbl+'</div></div>';
+      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b>'+bft+' · <span class="gval">Gust '+(g==null?"–":g)+' kt</span>'+trLbl+'</div></div>';
     el.appendChild(box);
   });
   renderLegend(); renderBanner();

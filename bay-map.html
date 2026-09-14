@@ -82,6 +82,7 @@
   .scard .nm{font-family:'Syne',sans-serif; font-weight:700; font-size:15.5px; color:var(--navy)}
   .scard .sub{font-size:12.5px; color:var(--muted); margin-top:2px}
   .scard .sub .bft{color:var(--muted); font-weight:600}
+  .scard .sub .gval{color:var(--navy); font-weight:600}
   .scard .rt{text-align:right; white-space:nowrap; line-height:1}
   .scard .kt{font-family:'Lato',sans-serif; font-weight:300; font-size:34px; letter-spacing:-.01em}
   .scard .u{font-family:'Syne',sans-serif; font-weight:600; font-size:12px; color:var(--muted); margin-left:2px}
@@ -310,7 +311,7 @@ function renderCards(){
     c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}};
     c.innerHTML=
       '<div><div class="nm">'+s.name+'</div>'+
-      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+' · Gust '+(g==null?"–":g)+' kt'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
+      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+' · <span class="gval">Gust '+(g==null?"–":g)+' kt</span>'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
       '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div>';
     el.appendChild(c);
   });
