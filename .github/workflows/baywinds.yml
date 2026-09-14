@@ -1,0 +1,38 @@
+name: Mirror Bay Winds
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"    # every 5 min — GitHub's floor; may run a little late
+  workflow_dispatch:          # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baywinds
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pull the four BOM stations
+        run: python3 fetch_baywinds.py
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name  "baywinds-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No change this run."
+          else
+            git commit -m "wind: refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
