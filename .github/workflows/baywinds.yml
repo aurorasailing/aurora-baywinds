@@ -1,41 +1,46 @@
+# Aurora Bay Winds · workflow (baywinds.yml) · v2.0 (loop) · 2026-09-14
 name: Mirror Bay Winds
 
 on:
   schedule:
-    - cron: "*/5 * * * *"    # every 5 min — GitHub's floor; may run a little late
-  workflow_dispatch:          # lets you run it by hand from the Actions tab
+    - cron: "*/30 * * * *"    # only a restart net — the loop below drives the cadence
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
   group: baywinds
-  cancel-in-progress: false
+  cancel-in-progress: false   # never run two loops at once; a new trigger waits its turn
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v5
 
-      - name: Pull the five bay stations
+      - name: Mirror in a loop for ~48 minutes
         run: |
+          echo "workflow v2.0 (loop)"
           if [ ! -f fetch_baywinds.py ]; then
             echo "::error::fetch_baywinds.py is not at the top level of the repo. Files here:"
             ls -la
             exit 1
           fi
-          python3 fetch_baywinds.py
-
-      - name: Commit if anything changed
-        run: |
           git config user.name  "baywinds-bot"
           git config user.email "actions@github.com"
-          git add -A data/
-          if git diff --cached --quiet; then
-            echo "No change this run."
-          else
-            git commit -m "wind: refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
-            git pull --rebase --autostash || true
-            git push
-          fi
+          END=$(( SECONDS + 2880 ))         # loop for ~48 minutes, then the run ends
+          while [ "$SECONDS" -lt "$END" ]; do
+            python3 fetch_baywinds.py || true
+            git add -A data/
+            if git diff --cached --quiet; then
+              echo "no change"
+            else
+              git commit -m "wind: refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
+              git pull --rebase --autostash || true
+              git push || true
+            fi
+            sleep 420                        # 7 min — keeps site rebuilds under the Pages limit
+          done
+          echo "loop done; a scheduled run will pick it back up"
