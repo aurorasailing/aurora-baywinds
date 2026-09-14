@@ -57,6 +57,7 @@
   .bd .dir{font-family:'Syne',sans-serif; font-weight:700; font-size:16px; color:var(--slate); margin-left:8px}
   .bd .gst{font-size:12px; color:var(--muted); margin-top:4px}
   .bd .gst b{font-weight:700}
+  .bd .gst .bft{color:var(--muted); font-weight:600}
   .bd .gst .up{color:#C2521A; font-weight:700}
   .bd .gst .dn{color:#1F8A2E; font-weight:700}
 
@@ -103,6 +104,8 @@
       recent peak rather than just the latest instant.</li>
     <li><b>Trend</b> — whether the wind has been building or easing over the last
       30 minutes.</li>
+    <li><b>F5 fresh breeze</b> — the Beaufort force and its name, a 0–12 scale for
+      wind strength.</li>
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
@@ -143,6 +146,8 @@ const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
 const store={}; let usingSample=false, newestFull=null;
 
 function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
+function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
+const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
   const ap=h>=12?"pm":"am"; h=((h+11)%12)+1; return h+":"+m+ap; }
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
@@ -225,6 +230,8 @@ function render(){
     const trLbl = tr==null ? "" : (tr>0?' · <span class="up">▲ building</span>'
                                  : tr<0?' · <span class="dn">▼ easing</span>'
                                  :      ' · steady');
+    const bf = kt==null ? null : beaufort(kt);
+    const bft = bf==null ? "" : ' <span class="bft">F'+bf+' '+BEAUFORT_NAME[bf]+'</span>';
     const box=document.createElement("div");
     box.className="box"; box.style.borderLeftColor=band.c;
     box.innerHTML=
@@ -232,7 +239,7 @@ function render(){
       '<div class="bd"><div class="nm">'+s.name+'</div>'+
       '<div class="val"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span>'+
         '<span class="u">kt</span><span class="dir">'+dir+'</span></div>'+
-      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b> · gust '+(g==null?"–":g)+' kt'+trLbl+'</div></div>';
+      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b>'+bft+' · Gust '+(g==null?"–":g)+' kt'+trLbl+'</div></div>';
     el.appendChild(box);
   });
   renderLegend(); renderBanner();

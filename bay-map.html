@@ -81,6 +81,7 @@
   .scard:focus-visible{outline:2px solid var(--green-b); outline-offset:2px}
   .scard .nm{font-family:'Syne',sans-serif; font-weight:700; font-size:15.5px; color:var(--navy)}
   .scard .sub{font-size:12.5px; color:var(--muted); margin-top:2px}
+  .scard .sub .bft{color:var(--muted); font-weight:600}
   .scard .rt{text-align:right; white-space:nowrap; line-height:1}
   .scard .kt{font-family:'Lato',sans-serif; font-weight:300; font-size:34px; letter-spacing:-.01em}
   .scard .u{font-family:'Syne',sans-serif; font-weight:600; font-size:12px; color:var(--muted); margin-left:2px}
@@ -205,6 +206,8 @@ const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
 const store={}; let usingSample=false, selected=STATIONS[0].wmo, newestFull=null;
 
 function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
+function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
+const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
   const ap=h>=12?"pm":"am"; h=((h+11)%12)+1; return h+":"+m+ap; }
@@ -307,7 +310,7 @@ function renderCards(){
     c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}};
     c.innerHTML=
       '<div><div class="nm">'+s.name+'</div>'+
-      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span> · gust '+(g==null?"–":g)+' kt'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
+      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+' · Gust '+(g==null?"–":g)+' kt'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
       '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div>';
     el.appendChild(c);
   });
@@ -320,7 +323,7 @@ function renderLegend(){
   const el=document.getElementById("legend");
   el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
-  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in the last '+GUST_WINDOW_MIN+' min.</span>';
+  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in the last '+GUST_WINDOW_MIN+' min. "F5 fresh breeze" is the Beaufort force and name (0–12).</span>';
 }
 function renderBanner(){ const b=document.getElementById("banner");
   if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet — point <code>DATA_BASE</code> at your mirrored feed to go live."; }
