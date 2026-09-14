@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · joeys-st-kilda.html · v1.4 · 2026-09-14 -->
+<!-- Aurora Bay Winds · joeys-st-kilda.html · v1.7 · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,6 +42,8 @@
   .knots{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(40px,12vw,64px); line-height:1; margin:16px 0 2px; color:var(--navy)}
   .knots b{font-family:'Syne',sans-serif; font-weight:600; font-size:.34em; color:var(--muted); margin-left:6px; vertical-align:middle}
   .bft{font-family:'Syne',sans-serif; font-weight:600; font-size:15px; color:var(--muted); margin-top:4px}
+  .wdir{font-family:'Syne',sans-serif; font-weight:400; font-size:17px; color:var(--slate); margin-top:6px}
+  .wdir b{font-weight:700}
   .hupd{font-size:12.5px; color:var(--muted); margin-top:14px}
   .banner{max-width:440px; margin:14px auto 0; padding:9px 13px; border-radius:10px; font-size:13px;
     background:#FFF8E8; color:#7a5b00; border:1px solid #F0DFA8; display:none; text-align:center}
@@ -87,9 +89,12 @@
     St Kilda is the closest one — just a little way toward the sea, down to the
     south-east. It feels the fresh wind off the bay before it reaches us, so it’s a
     good sneak peek at the wind coming our way — especially a cool one from the south.
+    <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
+    points: North, North-East, East, South-East, South, South-West, West and
+    North-West.</p>
     <p style="margin:12px 0 0">Wind from the <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>
     at St Kilda Harbour. Always ask a grown-up and check the water before you sail.</p>
-    <div class="ver">joeys-st-kilda.html · v1.4</div>
+    <div class="ver">joeys-st-kilda.html · v1.7</div>
   </div>
 </footer>
 
@@ -111,6 +116,12 @@ function levelFor(kt){ for(const l of LEVELS){ if(kt<l.max) return l; } return L
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 
+// collapse the Bureau's 16-point wind direction to the 8-point compass (N, NE, E … NW)
+const DIR_DEG={N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
+const PTS8=["N","NE","E","SE","S","SW","W","NW"];
+const DIR_NAME={N:"North",NE:"North-East",E:"East",SE:"South-East",S:"South",SW:"South-West",W:"West",NW:"North-West"};
+function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.round(DIR_DEG[wd]/45)%8]; }
+
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
 let rows=null, usingSample=false, newestFull=null;
@@ -124,9 +135,9 @@ async function load(){
   render();
 }
 function sample(){
-  const out=[], now=new Date(), p=n=>String(n).padStart(2,"0");
+  const out=[], now=new Date(), p=n=>String(n).padStart(2,"0"), dirs=Object.keys(DIR_DEG);
   for(let i=0;i<12;i++){ const t=new Date(now-i*10*60000);
-    out.push({wind_spd_kt:9+Math.round(Math.sin(i/3)*3),
+    out.push({wind_spd_kt:9+Math.round(Math.sin(i/3)*3), wind_dir:dirs[(9+Math.round(Math.sin(i/6)*2))%16],
       local_date_time_full:""+t.getFullYear()+p(t.getMonth()+1)+p(t.getDate())+p(t.getHours())+p(t.getMinutes())+"00"}); }
   return out;
 }
@@ -136,6 +147,7 @@ function render(){
   const kt = o ? Math.round(o.wind_spd_kt) : null;
   const L  = kt==null ? LEVELS[0] : levelFor(kt);
   const f  = kt==null ? null : beaufort(kt);
+  const dir = o ? dir8(o.wind_dir) : null;
   const hero=document.getElementById("hero");
   hero.style.background   = L.c + "22";     // soft tint of the band colour
   hero.style.borderColor  = L.c;
@@ -143,6 +155,7 @@ function render(){
     '<div class="emoji">'+L.emoji+'</div>'+
     '<div class="word" style="color:'+L.t+'">'+L.word+'</div>'+
     '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
+    '<div class="wdir">'+(dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '')+'</div>'+
     '<div class="bft">'+(f==null?"":"Force "+f+" · "+BEAUFORT_NAME[f])+'</div>'+
     '<div class="hupd" id="hupd"></div>';
   newestFull = o ? o.local_date_time_full : null;
