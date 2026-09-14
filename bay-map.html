@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora · Bay Winds — Port Phillip</title>
+<meta name="description" content="Live Port Phillip Bay wind for Aurora Sailing, read from the Bureau of Meteorology.">
+<meta name="theme-color" content="#0A1628">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;200;300;400&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#50E040; --green-b:#39D455; --navy:#0A1628; --slate:#2E4057;
+    --ink:#1C2B3A; --white:#FFFFFF; --harbour:#F5F7F4; --seafoam:#E8EDE6;
+    --muted:#7A8A7E; --line:#E1E6E0;
+    --calm-c:#9FB0A4;   --calm-t:#6B7A70;
+    --ideal-c:#39D455;  --ideal-t:#1F8A2E;
+    --fresh-c:#FFBB44;  --fresh-t:#B37400;
+    --strong-c:#F0792E; --strong-t:#C2521A;
+    --heavy-c:#F90D24;  --heavy-t:#C21020;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Syne','Helvetica Neue',Arial,sans-serif; color:var(--ink);
+    background:var(--white); -webkit-font-smoothing:antialiased; line-height:1.55;
+  }
+  a{color:inherit}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 28px}
+
+  /* Header */
+  header{position:sticky; top:0; z-index:20; background:var(--white);
+    border-bottom:1px solid var(--line)}
+  .navi{display:flex; align-items:center; justify-content:space-between;
+    max-width:1160px; margin:0 auto; padding:15px 28px}
+  .brand{display:flex; align-items:baseline; gap:12px}
+  .brand .a{font-family:'Syne',sans-serif; font-weight:700; font-size:19px;
+    letter-spacing:.02em; text-transform:uppercase; color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+  .upd{font-size:13px; color:var(--muted); display:flex; align-items:center; gap:8px}
+  .live{width:8px; height:8px; border-radius:50%; background:var(--green-b); flex:none;
+    box-shadow:0 0 0 0 rgba(57,212,85,.6); animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(57,212,85,.5)}70%{box-shadow:0 0 0 9px rgba(57,212,85,0)}100%{box-shadow:0 0 0 0 rgba(57,212,85,0)}}
+  @media (prefers-reduced-motion:reduce){.live{animation:none}}
+
+  /* Title block */
+  .top{padding:34px 0 6px}
+  .eyebrow{display:inline-flex; align-items:center; gap:10px;
+    font-family:'Syne',sans-serif; font-weight:500; font-size:13px;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--slate); margin-bottom:16px}
+  .eyebrow::before{content:''; width:26px; height:2px; background:var(--green); display:inline-block}
+  h1{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(34px,5.2vw,60px);
+    line-height:1.03; letter-spacing:.01em; text-transform:uppercase; color:var(--navy); margin:0}
+  h1 .accent{color:var(--green-b)}
+  @media (min-width:860px){h1{font-weight:200; letter-spacing:.02em}}
+  .lead{font-size:17px; color:var(--slate); max-width:60ch; margin:14px 0 0}
+  .banner{margin:16px 0 0; padding:10px 14px; border-radius:3px; font-size:13.5px;
+    background:#FFF8E8; color:#7a5b00; border:1px solid #F0DFA8; display:none}
+  .banner.show{display:block}
+
+  /* Main grid */
+  .grid{display:flex; flex-wrap:wrap; gap:34px; align-items:flex-start; margin:26px 0 6px}
+  .mapcard{flex:1.05 1 380px; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
+  svg.bay{display:block; width:100%; height:auto}
+  .b-name{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; fill:var(--navy)}
+  .b-val{font-family:'Syne',sans-serif; font-weight:600; font-size:13px; fill:var(--slate)}
+  .b-edge{font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.12em; fill:var(--muted)}
+  .b-hit{cursor:pointer}
+  .b-arrow{transition:transform .5s ease}
+
+  /* Station cards */
+  .stations{flex:0.95 1 320px; display:flex; flex-direction:column; gap:11px}
+  .scard{display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background:var(--white); border:1px solid var(--line); border-left:3px solid var(--line);
+    border-radius:3px; padding:13px 16px; cursor:pointer;
+    transition:box-shadow .15s ease, border-color .15s ease}
+  .scard:hover{box-shadow:0 2px 14px rgba(10,22,40,.06)}
+  .scard.active{box-shadow:0 2px 16px rgba(10,22,40,.08)}
+  .scard:focus-visible{outline:2px solid var(--green-b); outline-offset:2px}
+  .scard .nm{font-family:'Syne',sans-serif; font-weight:700; font-size:15.5px; color:var(--navy)}
+  .scard .sub{font-size:12.5px; color:var(--muted); margin-top:2px}
+  .scard .rt{text-align:right; white-space:nowrap; line-height:1}
+  .scard .kt{font-family:'Lato',sans-serif; font-weight:300; font-size:34px; letter-spacing:-.01em}
+  .scard .u{font-family:'Syne',sans-serif; font-weight:600; font-size:12px; color:var(--muted); margin-left:2px}
+  .scard .dir{font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:var(--slate); margin-left:7px}
+
+  /* Legend */
+  .legend{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center;
+    font-size:13px; color:var(--slate); margin:16px 0 0}
+  .legend .sw{display:inline-flex; align-items:center; gap:7px}
+  .legend .c{width:12px; height:12px; border-radius:2px; display:inline-block}
+  .legend .rng{color:var(--muted)}
+  .legend .note{width:100%; color:var(--muted); font-size:12.5px; margin-top:2px}
+
+  /* Graph */
+  .graphcard{background:var(--white); border:1px solid var(--line); border-radius:4px;
+    padding:20px 20px 10px; margin:26px 0 44px}
+  .ghead{display:flex; align-items:baseline; justify-content:space-between; gap:14px; flex-wrap:wrap}
+  .ghead h2{font-family:'Syne',sans-serif; font-weight:600; font-size:19px; color:var(--slate); margin:0}
+  .ghead .hint{font-size:13px; color:var(--muted)}
+  .key{display:flex; gap:20px; font-size:13px; color:var(--slate); margin:8px 0 2px}
+  .key span{display:inline-flex; align-items:center; gap:8px}
+  .key i{width:20px; height:0; border-top:3px solid; display:inline-block; border-radius:2px}
+  svg.chart{display:block; width:100%; height:auto; margin-top:6px}
+  .axis{stroke:var(--line); stroke-width:1}
+  .axis-t{fill:var(--muted); font-size:11px; font-family:'Syne',sans-serif}
+
+  footer{border-top:1px solid var(--line); padding:22px 0 48px; color:var(--muted); font-size:13px}
+  footer b{font-family:'Syne',sans-serif; font-weight:600; color:var(--slate)}
+  footer a{color:var(--slate)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navi">
+    <div class="brand"><span class="a">Aurora</span><span class="b">Bay Winds</span></div>
+    <div class="upd"><span class="live" id="live"></span><span id="upd">Loading…</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="top">
+    <span class="eyebrow">Live from the bay</span>
+    <h1>Port Phillip, <span class="accent">right now</span></h1>
+    <p class="lead">Wind at the five bay stations, read from the Bureau of Meteorology. Green is a good breeze; red means off the water.</p>
+    <div class="banner" id="banner"></div>
+  </div>
+
+  <div class="grid">
+    <!-- MAP -->
+    <div class="mapcard">
+      <svg class="bay" viewBox="0 0 600 720" role="img" aria-label="Port Phillip Bay with live wind at five stations">
+        <path d="M300,60 C400,60 486,120 500,240 C512,340 486,470 400,588
+                 C360,642 326,672 300,690 C274,672 250,648 224,606
+                 C214,588 208,576 196,570 C150,566 96,506 80,440
+                 C70,398 92,372 122,368 C150,364 150,340 146,306
+                 C138,232 150,140 214,92 C240,72 270,60 300,60 Z"
+              fill="var(--seafoam)" stroke="#C5D0C8" stroke-width="1.5" opacity="0.6"/>
+        <text class="b-edge" x="300" y="44" text-anchor="middle">MELBOURNE</text>
+        <text class="b-edge" x="300" y="712" text-anchor="middle">THE RIP</text>
+        <g id="markers"></g>
+      </svg>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="stations" id="cards"></div>
+  </div>
+
+  <!-- GRAPH -->
+  <div class="graphcard">
+    <div class="ghead">
+      <h2 id="gtitle">Last 24 hours</h2>
+      <span class="hint">Tap a station on the map or a card to change</span>
+    </div>
+    <div class="key">
+      <span><i style="border-color:var(--ink)"></i> Wind</span>
+      <span><i style="border-color:var(--muted)"></i> Gust</span>
+    </div>
+    <svg class="chart" id="chart" viewBox="0 0 900 300" role="img" aria-label="Wind and gust over 24 hours"></svg>
+  </div>
+
+  <footer>
+    <b>Aurora Sailing · Bay Winds.</b>
+    Automatic wind observations from the
+    <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>,
+    refreshed every few minutes. Automatic data isn’t quality-checked and can carry errors —
+    always confirm conditions on the water before you sail.
+  </footer>
+</div>
+
+<script>
+/* ── CONFIG ──────────────────────────────────────────────────────────────
+   Live JSON is mirrored to  ${DATA_BASE}/{wmo}.json  (see fetch_baywinds.py).
+   Default ./data is same-origin. For a GitHub Pages mirror set e.g.
+     const DATA_BASE = "https://YOURUSER.github.io/aurora-baywinds/data";
+──────────────────────────────────────────────────────────────────────── */
+const DATA_BASE = "./data";
+const REFRESH_MS = 2 * 60 * 1000;
+const GUST_WINDOW_MIN = 15;
+
+const BANDS = [
+  {max:5,   name:"Calm",   c:"#9FB0A4", t:"#6B7A70"},
+  {max:11,  name:"Ideal",  c:"#39D455", t:"#1F8A2E"},
+  {max:16,  name:"Fresh",  c:"#FFBB44", t:"#B37400"},
+  {max:23,  name:"Strong", c:"#F0792E", t:"#C2521A"},
+  {max:999, name:"Heavy",  c:"#F90D24", t:"#C21020"},
+];
+
+// mx/my = map coords (viewBox 600x720); anchor = label side (start|end)
+const STATIONS = [
+  {wmo:95864, name:"St Kilda",     mx:392, my:150, anchor:"start"},
+  {wmo:95872, name:"Fawkner",      mx:300, my:215, anchor:"start"},
+  {wmo:94847, name:"Pt Wilson",    mx:150, my:340, anchor:"start"},
+  {wmo:94871, name:"Frankston",    mx:438, my:400, anchor:"end"},
+  {wmo:94853, name:"Sth Channel",  mx:300, my:590, anchor:"start"},
+];
+
+const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
+  S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
+
+const store={}; let usingSample=false, selected=STATIONS[0].wmo;
+
+function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
+function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
+function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
+  const ap=h>=12?"pm":"am"; h=((h+11)%12)+1; return h+":"+m+ap; }
+function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
+function latest(w){ const a=store[w]; return a&&a.length?a[0]:null; }
+function gust15(w){
+  const a=store[w]; if(!a||!a.length) return null;
+  const t0=parseFull(a[0].local_date_time_full).getTime(); let g=null;
+  for(const r of a){ if(!r.local_date_time_full) continue;
+    const dt=(t0-parseFull(r.local_date_time_full).getTime())/60000;
+    if(dt<0||dt>GUST_WINDOW_MIN) break;
+    if(r.gust_kt!=null && (g==null||r.gust_kt>g)) g=r.gust_kt; }
+  return g;
+}
+
+async function loadStation(s){
+  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json",{cache:"no-store"}); if(!r.ok) throw 0;
+    const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
+    if(!rows.length) throw 0; store[s.wmo]=rows; return true;
+  }catch(e){ store[s.wmo]=sampleSeries(s); return false; }
+}
+async function loadAll(){ const oks=await Promise.all(STATIONS.map(loadStation));
+  usingSample=oks.some(v=>!v); render(); }
+
+function sampleSeries(s){
+  const rows=[], now=new Date(), dirs=Object.keys(COMPASS);
+  let base=5+(s.wmo%8); const di=s.wmo%16;
+  for(let i=0;i<48;i++){
+    const t=new Date(now-i*30*60000), hr=t.getHours()+t.getMinutes()/60;
+    const sea=Math.max(0,Math.sin((hr-9)/9*Math.PI))*7;
+    const spd=Math.max(0,Math.round(base+sea+Math.sin(i/3)*1.5+(Math.random()-.5)));
+    const p=n=>String(n).padStart(2,"0");
+    rows.push({wind_spd_kt:spd, gust_kt:spd+Math.round(2+Math.random()*4),
+      wind_dir:dirs[(di+Math.round(Math.sin(i/6)*2)+16)%16],
+      air_temp:Math.round((15+sea*0.4)*10)/10,
+      local_date_time_full:""+t.getFullYear()+p(t.getMonth()+1)+p(t.getDate())+p(t.getHours())+p(t.getMinutes())+"00"});
+  }
+  return rows;
+}
+
+function render(){ renderMarkers(); renderCards(); renderLegend(); renderChart(); renderBanner();
+  const newest=STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0];
+  document.getElementById("upd").textContent = usingSample?"Sample data":(newest?"Updated "+fmtTime(newest):"—");
+  document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
+}
+
+function renderMarkers(){
+  const g=document.getElementById("markers"); g.innerHTML=""; const NS="http://www.w3.org/2000/svg";
+  STATIONS.forEach(s=>{
+    const o=latest(s.wmo), kt=o?Math.round(o.wind_spd_kt):null;
+    const band=kt!=null?bandFor(kt):BANDS[0], brg=o?bearing(o.wind_dir):null;
+    const grp=document.createElementNS(NS,"g"); grp.setAttribute("class","b-hit");
+    grp.setAttribute("tabindex","0"); grp.setAttribute("role","button");
+    grp.setAttribute("aria-label",s.name+": "+(kt??"–")+" knots "+(o?o.wind_dir:""));
+    grp.addEventListener("click",()=>select(s.wmo));
+    grp.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}});
+
+    const arw=document.createElementNS(NS,"g"); arw.setAttribute("class","b-arrow");
+    if(brg!=null) arw.setAttribute("transform","rotate("+(brg+180)+" "+s.mx+" "+s.my+")");
+    const p=document.createElementNS(NS,"path");
+    if(brg!=null){ p.setAttribute("d","M"+s.mx+","+(s.my+18)+" L"+s.mx+","+(s.my-18)+
+      " M"+(s.mx-7)+","+(s.my-9)+" L"+s.mx+","+(s.my-18)+" L"+(s.mx+7)+","+(s.my-9));
+      p.setAttribute("stroke",band.c); p.setAttribute("stroke-width","3.2");
+      p.setAttribute("fill","none"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round"); }
+    arw.appendChild(p);
+
+    const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",s.mx); dot.setAttribute("cy",s.my);
+    dot.setAttribute("r","4"); dot.setAttribute("fill",band.c);
+
+    const off = s.anchor==="end" ? -16 : 16;
+    const t1=document.createElementNS(NS,"text"); t1.setAttribute("class","b-name");
+    t1.setAttribute("x",s.mx+off); t1.setAttribute("y",s.my-3); t1.setAttribute("text-anchor",s.anchor); t1.textContent=s.name;
+    const t2=document.createElementNS(NS,"text"); t2.setAttribute("class","b-val");
+    t2.setAttribute("x",s.mx+off); t2.setAttribute("y",s.my+15); t2.setAttribute("text-anchor",s.anchor);
+    t2.textContent = kt!=null ? kt+" kt "+(o.wind_dir||"") : "– –";
+
+    grp.appendChild(arw); grp.appendChild(dot); grp.appendChild(t1); grp.appendChild(t2);
+    g.appendChild(grp);
+  });
+}
+
+function renderCards(){
+  const el=document.getElementById("cards"); el.innerHTML="";
+  STATIONS.forEach(s=>{
+    const o=latest(s.wmo), kt=o?Math.round(o.wind_spd_kt):null;
+    const band=kt!=null?bandFor(kt):BANDS[0], g=gust15(s.wmo);
+    const dir=o&&o.wind_dir&&(o.wind_dir in COMPASS)?o.wind_dir:"–";
+    const c=document.createElement("div"); c.className="scard"+(s.wmo===selected?" active":"");
+    c.style.borderLeftColor=band.c; c.tabIndex=0; c.setAttribute("role","button");
+    c.onclick=()=>select(s.wmo);
+    c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}};
+    c.innerHTML=
+      '<div><div class="nm">'+s.name+'</div>'+
+      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span> · gust '+(g==null?"–":g)+' kt'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
+      '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div>';
+    el.appendChild(c);
+  });
+}
+
+function select(w){ selected=w; renderCards(); renderChart();
+  document.getElementById("gtitle").textContent=(STATIONS.find(s=>s.wmo===w)||{}).name+" · last 24 hours"; }
+
+function renderLegend(){
+  const el=document.getElementById("legend");
+  el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
+    return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
+  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in the last '+GUST_WINDOW_MIN+' min.</span>';
+}
+function renderBanner(){ const b=document.getElementById("banner");
+  if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet — point <code>DATA_BASE</code> at your mirrored feed to go live."; }
+  else b.classList.remove("show"); }
+
+function renderChart(){
+  const svg=document.getElementById("chart"); const W=900,H=300,padL=40,padR=12,padT=12,padB=26;
+  const rows=(store[selected]||[]).slice(0,48).slice().reverse(); if(!rows.length){svg.innerHTML="";return;}
+  const gw=W-padL-padR, gh=H-padT-padB;
+  const maxKt=Math.max(12,...rows.map(r=>Math.max(r.wind_spd_kt||0,r.gust_kt||0)))*1.1;
+  const x=i=>padL+(i/(rows.length-1))*gw, y=v=>padT+gh-(v/maxKt)*gh;
+  let out="", lo=0;
+  BANDS.forEach(b=>{ const hi=Math.min(b.max,maxKt);
+    if(hi>lo) out+='<rect x="'+padL+'" y="'+y(hi)+'" width="'+gw+'" height="'+(y(lo)-y(hi))+'" fill="'+b.c+'" opacity="0.06"/>'; lo=b.max; });
+  for(let v=0;v<=maxKt;v+=5){ out+='<line class="axis" x1="'+padL+'" y1="'+y(v)+'" x2="'+(W-padR)+'" y2="'+y(v)+'"/>';
+    out+='<text class="axis-t" x="'+(padL-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'; }
+  rows.forEach((r,i)=>{ if(i%12===0||i===rows.length-1) out+='<text class="axis-t" x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+fmtTime(r.local_date_time_full)+'</text>'; });
+  const line=(k,col,w)=>'<path d="'+rows.map((r,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(r[k]||0).toFixed(1)).join(" ")+'" fill="none" stroke="'+col+'" stroke-width="'+w+'" stroke-linejoin="round" stroke-linecap="round"/>';
+  out+=line("gust_kt","#7A8A7E",1.6); out+=line("wind_spd_kt","#1C2B3A",2.4);
+  const li=rows.length-1, last=rows[li];
+  out+='<circle cx="'+x(li)+'" cy="'+y(last.wind_spd_kt||0)+'" r="4" fill="'+bandFor(last.wind_spd_kt||0).c+'"/>';
+  svg.innerHTML=out;
+}
+
+loadAll(); setInterval(loadAll, REFRESH_MS);
+</script>
+</body>
+</html>
