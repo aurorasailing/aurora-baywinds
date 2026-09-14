@@ -139,13 +139,13 @@ function gust15(w){
   return g;
 }
 
-// a small wind vane — points to where the wind is coming FROM
+// a small arrow — points the way the wind is blowing (downwind)
 function vane(brg, col){
   const ticks=[[24,3,24,7.5],[44.5,24,40.5,24],[24,44.5,24,40.5],[3.5,24,7.5,24]]
     .map(t=>'<line x1="'+t[0]+'" y1="'+t[1]+'" x2="'+t[2]+'" y2="'+t[3]+'" stroke="#E1E6E0" stroke-width="1.5"/>').join("");
   const arrow = brg==null
     ? '<circle cx="24" cy="24" r="3.4" fill="'+col+'"/>'
-    : '<g transform="rotate('+brg+' 24 24)">'+
+    : '<g transform="rotate('+(brg+180)+' 24 24)">'+
         '<polygon points="24,7 19.4,17.5 24,14.8 28.6,17.5" fill="'+col+'"/>'+
         '<line x1="24" y1="14.8" x2="24" y2="37.5" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>'+
         '<path d="M24,37.5 L20.8,42.5 M24,37.5 L27.2,42.5" stroke="'+col+'" stroke-width="2" fill="none" stroke-linecap="round"/>'+
@@ -206,7 +206,7 @@ function renderLegend(){
   const el=document.getElementById("legend");
   el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
-  }).join("")+'<span class="note">The vane points to where the wind is coming from · gust is the strongest in the last '+GUST_WINDOW_MIN+' min.</span>';
+  }).join("")+'<span class="note">The arrow shows which way the wind is blowing; the label is the direction it comes from · gust is the strongest in the last '+GUST_WINDOW_MIN+' min.</span>';
 }
 function renderBanner(){ const b=document.getElementById("banner");
   if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet."; }
