@@ -1,8 +1,11 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.2 Cloudflare · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.5 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google tag (gtag.js) — Aurora -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aurora · Bay Winds — Port Phillip</title>
 <meta name="description" content="Live Port Phillip Bay wind for Aurora Sailing, read from the Bureau of Meteorology.">
@@ -171,10 +174,12 @@
   <footer>
     <b>Aurora Sailing · Bay Winds.</b>
     Automatic wind observations from the
-    <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>,
-    refreshed every few minutes. Automatic data isn’t quality-checked and can carry errors —
+    <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>.
+    These stations update about every 30 minutes, so "Updated N min ago" drifts up
+    toward 30 then drops — that range is normal. Automatic data isn’t quality-checked
+    and can carry errors —
     always confirm conditions on the water before you sail.
-    <div class="ver">bay-map.html · v1.1</div>
+    <div class="ver">bay-map.html · v1.5</div>
   </footer>
 </div>
 
@@ -187,7 +192,6 @@
 //const DATA_BASE = "./data";
 const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
 const REFRESH_MS = 2 * 60 * 1000;
-const GUST_WINDOW_MIN = 15;
 
 const BANDS = [
   {max:5,   name:"Calm",       c:"#B7DDB0", t:"#5A8A54"},
@@ -220,15 +224,6 @@ function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,
   const ap=h>=12?"pm":"am"; h=((h+11)%12)+1; return h+":"+m+ap; }
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 function latest(w){ const a=store[w]; return a&&a.length?a[0]:null; }
-function gust15(w){
-  const a=store[w]; if(!a||!a.length) return null;
-  const t0=parseFull(a[0].local_date_time_full).getTime(); let g=null;
-  for(const r of a){ if(!r.local_date_time_full) continue;
-    const dt=(t0-parseFull(r.local_date_time_full).getTime())/60000;
-    if(dt<0||dt>GUST_WINDOW_MIN) break;
-    if(r.gust_kt!=null && (g==null||r.gust_kt>g)) g=r.gust_kt; }
-  return g;
-}
 
 async function loadStation(s){
   try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
@@ -309,7 +304,7 @@ function renderCards(){
   const el=document.getElementById("cards"); el.innerHTML="";
   STATIONS.forEach(s=>{
     const o=latest(s.wmo), kt=o?Math.round(o.wind_spd_kt):null;
-    const band=kt!=null?bandFor(kt):BANDS[0], g=gust15(s.wmo);
+    const band=kt!=null?bandFor(kt):BANDS[0], g=o&&o.gust_kt!=null?Math.round(o.gust_kt):null;
     const dir=o&&o.wind_dir&&(o.wind_dir in COMPASS)?o.wind_dir:"–";
     const c=document.createElement("div"); c.className="scard"+(s.wmo===selected?" active":"");
     c.style.borderLeftColor=band.c; c.tabIndex=0; c.setAttribute("role","button");
@@ -330,7 +325,7 @@ function renderLegend(){
   const el=document.getElementById("legend");
   el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
-  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in the last '+GUST_WINDOW_MIN+' min. "F5 fresh breeze" is the Beaufort force and name (0–12).</span>';
+  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in each reading. "F5 fresh breeze" is the Beaufort force and name (0–12).</span>';
 }
 function renderBanner(){ const b=document.getElementById("banner");
   if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet — point <code>DATA_BASE</code> at your mirrored feed to go live."; }
