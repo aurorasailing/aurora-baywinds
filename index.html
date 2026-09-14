@@ -57,6 +57,8 @@
   .bd .dir{font-family:'Syne',sans-serif; font-weight:700; font-size:16px; color:var(--slate); margin-left:8px}
   .bd .gst{font-size:12px; color:var(--muted); margin-top:4px}
   .bd .gst b{font-weight:700}
+  .bd .gst .up{color:#C2521A; font-weight:700}
+  .bd .gst .dn{color:#1F8A2E; font-weight:700}
 
   .legend{max-width:480px; margin:16px auto 0; padding:12px 16px 0; display:flex; flex-wrap:wrap;
     gap:6px 14px; align-items:center; font-size:12px; color:var(--slate); border-top:1px solid var(--line)}
@@ -68,6 +70,10 @@
   footer{max-width:480px; margin:0 auto; padding:16px; color:var(--muted); font-size:11.5px}
   footer b{font-family:'Syne',sans-serif; font-weight:600; color:var(--slate)}
   footer a{color:var(--slate)}
+  footer .notes{list-style:none; margin:8px 0; padding:0}
+  footer .notes li{margin:5px 0; padding-left:12px; position:relative}
+  footer .notes li::before{content:''; position:absolute; left:0; top:6px; width:5px; height:5px; border-radius:1px; background:var(--green-b)}
+  footer .notes b{color:var(--slate)}
 </style>
 </head>
 <body>
@@ -87,9 +93,19 @@
 
 <footer>
   <b>Aurora Sailing · Bay Winds.</b>
-  Automatic wind observations from the
-  <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>,
-  refreshed every few minutes. Not quality-checked — always confirm on the water before you sail.
+  Live wind for five Port Phillip stations from the
+  <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>.
+  Reading the numbers:
+  <ul class="notes">
+    <li><b>Refresh</b> — the data is pulled every 5 minutes. The Bureau itself posts
+      a new reading about every 10, so an "Updated 8 min ago" is normal.</li>
+    <li><b>Gust</b> — the strongest gust in the last 15 minutes, so you see the
+      recent peak rather than just the latest instant.</li>
+    <li><b>Trend</b> — whether the wind has been building or easing over the last
+      30 minutes.</li>
+  </ul>
+  Observations are automatic and not quality-checked — always confirm conditions
+  on the water before you sail.
 </footer>
 
 <script>
@@ -100,7 +116,9 @@
 ──────────────────────────────────────────────────────────────────────── */
 const DATA_BASE = "./data";
 const REFRESH_MS = 2 * 60 * 1000;
-const GUST_WINDOW_MIN = 15;
+const GUST_WINDOW_MIN = 15;     // "strongest gust in the last N minutes"
+const TREND_WINDOW_MIN = 30;    // building/easing over the last N min (last half vs first half)
+const TREND_KT = 2;             // change smaller than this reads as "steady"
 
 const BANDS = [
   {max:5,   name:"Calm",   c:"#9FB0A4", t:"#6B7A70"},
@@ -122,7 +140,7 @@ const STATIONS = [
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
   S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
 
-const store={}; let usingSample=false;
+const store={}; let usingSample=false, newestFull=null;
 
 function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
@@ -137,6 +155,24 @@ function gust15(w){
     if(dt<0||dt>GUST_WINDOW_MIN) break;
     if(r.gust_kt!=null && (g==null||r.gust_kt>g)) g=r.gust_kt; }
   return g;
+}
+
+// mean wind (kt) over the window [aMin, bMin) minutes before the latest reading
+function meanWind(w, aMin, bMin){
+  const a=store[w]; if(!a||!a.length) return null;
+  const t0=parseFull(a[0].local_date_time_full).getTime(); let s=0,n=0;
+  for(const r of a){ if(!r.local_date_time_full) continue;
+    const dt=(t0-parseFull(r.local_date_time_full).getTime())/60000;
+    if(dt>=aMin && dt<bMin && r.wind_spd_kt!=null){ s+=r.wind_spd_kt; n++; } }
+  return n ? s/n : null;
+}
+// -1 easing / 0 steady / +1 building over TREND_WINDOW_MIN — null if not enough history
+function trend(w){
+  const half=TREND_WINDOW_MIN/2;
+  const recent=meanWind(w,0,half), earlier=meanWind(w,half,TREND_WINDOW_MIN);
+  if(recent==null||earlier==null) return null;
+  const d=recent-earlier;
+  return d>=TREND_KT ? 1 : d<=-TREND_KT ? -1 : 0;
 }
 
 // a small arrow — points the way the wind is blowing (downwind)
@@ -156,7 +192,7 @@ function vane(brg, col){
 }
 
 async function loadStation(s){
-  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json",{cache:"no-store"}); if(!r.ok) throw 0;
+  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
     const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
     if(!rows.length) throw 0; store[s.wmo]=rows; return true;
   }catch(e){ store[s.wmo]=sampleSeries(s); return false; }
@@ -183,9 +219,12 @@ function render(){
   const el=document.getElementById("boxes"); el.innerHTML="";
   STATIONS.forEach(s=>{
     const o=latest(s.wmo), kt=o?Math.round(o.wind_spd_kt):null;
-    const band=kt!=null?bandFor(kt):BANDS[0], g=gust15(s.wmo);
+    const band=kt!=null?bandFor(kt):BANDS[0], g=gust15(s.wmo), tr=trend(s.wmo);
     const brg=o&&(o.wind_dir in COMPASS)?COMPASS[o.wind_dir]:null;
     const dir=o&&(o.wind_dir in COMPASS)?o.wind_dir:(o&&o.wind_dir==="CALM"?"Calm":"–");
+    const trLbl = tr==null ? "" : (tr>0?' · <span class="up">▲ building</span>'
+                                 : tr<0?' · <span class="dn">▼ easing</span>'
+                                 :      ' · steady');
     const box=document.createElement("div");
     box.className="box"; box.style.borderLeftColor=band.c;
     box.innerHTML=
@@ -193,26 +232,35 @@ function render(){
       '<div class="bd"><div class="nm">'+s.name+'</div>'+
       '<div class="val"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span>'+
         '<span class="u">kt</span><span class="dir">'+dir+'</span></div>'+
-      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b> · gust '+(g==null?"–":g)+' kt</div></div>';
+      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b> · gust '+(g==null?"–":g)+' kt'+trLbl+'</div></div>';
     el.appendChild(box);
   });
   renderLegend(); renderBanner();
-  const newest=STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0];
-  document.getElementById("upd").textContent = usingSample?"Sample data":(newest?"Updated "+fmtTime(newest):"—");
+  newestFull = STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
+  stampAge();
   document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
+}
+
+// "Updated N min ago", from the newest reading time — ticks between fetches
+function stampAge(){
+  const el=document.getElementById("upd");
+  if(usingSample){ el.textContent="Sample data"; return; }
+  if(!newestFull){ el.textContent="—"; return; }
+  const mins=Math.round((Date.now()-parseFull(newestFull).getTime())/60000);
+  el.textContent = mins<1 ? "Updated just now" : "Updated "+mins+" min ago";
 }
 
 function renderLegend(){
   const el=document.getElementById("legend");
   el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
-  }).join("")+'<span class="note">The arrow shows which way the wind is blowing; the label is the direction it comes from · gust is the strongest in the last '+GUST_WINDOW_MIN+' min.</span>';
+  }).join("")+'<span class="note">The arrow shows which way the wind is blowing; the label is the direction it comes from.</span>';
 }
 function renderBanner(){ const b=document.getElementById("banner");
   if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet."; }
   else b.classList.remove("show"); }
 
-loadAll(); setInterval(loadAll, REFRESH_MS);
+loadAll(); setInterval(loadAll, REFRESH_MS); setInterval(stampAge, 30*1000);
 </script>
 </body>
 </html>

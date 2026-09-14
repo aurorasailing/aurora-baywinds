@@ -202,7 +202,7 @@ const STATIONS = [
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
   S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
 
-const store={}; let usingSample=false, selected=STATIONS[0].wmo;
+const store={}; let usingSample=false, selected=STATIONS[0].wmo, newestFull=null;
 
 function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[4]; }
 function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
@@ -221,7 +221,7 @@ function gust15(w){
 }
 
 async function loadStation(s){
-  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json",{cache:"no-store"}); if(!r.ok) throw 0;
+  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
     const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
     if(!rows.length) throw 0; store[s.wmo]=rows; return true;
   }catch(e){ store[s.wmo]=sampleSeries(s); return false; }
@@ -246,9 +246,18 @@ function sampleSeries(s){
 }
 
 function render(){ renderMarkers(); renderCards(); renderLegend(); renderChart(); renderBanner();
-  const newest=STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0];
-  document.getElementById("upd").textContent = usingSample?"Sample data":(newest?"Updated "+fmtTime(newest):"—");
+  newestFull = STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
+  stampAge();
   document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
+}
+
+// "Updated N min ago", from the newest reading time — ticks between fetches
+function stampAge(){
+  const el=document.getElementById("upd");
+  if(usingSample){ el.textContent="Sample data"; return; }
+  if(!newestFull){ el.textContent="—"; return; }
+  const mins=Math.round((Date.now()-parseFull(newestFull).getTime())/60000);
+  el.textContent = mins<1 ? "Updated just now" : "Updated "+mins+" min ago";
 }
 
 function renderMarkers(){
@@ -336,7 +345,7 @@ function renderChart(){
   svg.innerHTML=out;
 }
 
-loadAll(); setInterval(loadAll, REFRESH_MS);
+loadAll(); setInterval(loadAll, REFRESH_MS); setInterval(stampAge, 30*1000);
 </script>
 </body>
 </html>
