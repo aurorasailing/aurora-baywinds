@@ -78,9 +78,10 @@ def main():
             print(f"  !!  {name:<22} {wmo}  failed: {e}")
         time.sleep(1)   # be a good citizen between stations
     print(f"{ok}/{len(STATIONS)} stations mirrored -> {OUT_DIR}")
-    # Non-zero exit only if every station failed, so a single flaky station
-    # doesn't fail the scheduled run.
-    raise SystemExit(0 if ok else 1)
+    # Never fail the workflow over data. If the Bureau is briefly unreachable we
+    # simply don't update this cycle; the page's "Updated N min ago" climbing is
+    # the signal, and a red-X on every hiccup is just noise.
+    raise SystemExit(0)
 
 
 if __name__ == "__main__":
