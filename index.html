@@ -1,3 +1,4 @@
+<!-- Aurora Bay Winds · index.html · v1.1 · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -72,6 +73,7 @@
   footer{max-width:480px; margin:0 auto; padding:16px; color:var(--muted); font-size:11.5px}
   footer b{font-family:'Syne',sans-serif; font-weight:600; color:var(--slate)}
   footer a{color:var(--slate)}
+  .ver{margin-top:12px; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
   footer .notes{list-style:none; margin:8px 0; padding:0}
   footer .notes li{margin:5px 0; padding-left:12px; position:relative}
   footer .notes li::before{content:''; position:absolute; left:0; top:6px; width:5px; height:5px; border-radius:1px; background:var(--green-b)}
@@ -110,6 +112,7 @@
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
+  <div class="ver">index.html · v1.1</div>
 </footer>
 
 <script>
@@ -163,20 +166,21 @@ function gust15(w){
   return g;
 }
 
-// mean wind (kt) over the window [aMin, bMin) minutes before the latest reading
-function meanWind(w, aMin, bMin){
+// mean wind (kt) of readings near `targetMin` minutes before the latest (± tolMin)
+function meanNear(w, targetMin, tolMin){
   const a=store[w]; if(!a||!a.length) return null;
   const t0=parseFull(a[0].local_date_time_full).getTime(); let s=0,n=0;
-  for(const r of a){ if(!r.local_date_time_full) continue;
+  for(const r of a){ if(!r.local_date_time_full || r.wind_spd_kt==null) continue;
     const dt=(t0-parseFull(r.local_date_time_full).getTime())/60000;
-    if(dt>=aMin && dt<bMin && r.wind_spd_kt!=null){ s+=r.wind_spd_kt; n++; } }
+    if(dt>=targetMin-tolMin && dt<=targetMin+tolMin){ s+=r.wind_spd_kt; n++; } }
   return n ? s/n : null;
 }
-// -1 easing / 0 steady / +1 building over TREND_WINDOW_MIN — null if not enough history
+// -1 easing / 0 steady / +1 building — now vs ~TREND_WINDOW_MIN ago, tolerant of
+// 10- or 30-minute reporting intervals. null only when there's no earlier reading.
 function trend(w){
-  const half=TREND_WINDOW_MIN/2;
-  const recent=meanWind(w,0,half), earlier=meanWind(w,half,TREND_WINDOW_MIN);
-  if(recent==null||earlier==null) return null;
+  const recent=meanNear(w, 0, 10);
+  const earlier=meanNear(w, TREND_WINDOW_MIN, 12);
+  if(recent==null || earlier==null) return null;
   const d=recent-earlier;
   return d>=TREND_KT ? 1 : d<=-TREND_KT ? -1 : 0;
 }
