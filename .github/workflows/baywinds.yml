@@ -1,17 +1,16 @@
-# Aurora Bay Winds · workflow (baywinds.yml) · v2.0 (loop) · 2026-09-14
+# Aurora Bay Winds · workflow (baywinds.yml) · v2.1 (self-restarting loop) · 2026-09-14
 name: Mirror Bay Winds
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"    # only a restart net — the loop below drives the cadence
-  workflow_dispatch:
+  workflow_dispatch:          # start it once by hand; from then on it restarts itself
 
 permissions:
   contents: write
+  actions: write              # lets a run trigger the next run
 
 concurrency:
   group: baywinds
-  cancel-in-progress: false   # never run two loops at once; a new trigger waits its turn
+  cancel-in-progress: false   # never run two loops at once; the next one waits its turn
 
 jobs:
   mirror:
@@ -20,9 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Mirror in a loop for ~48 minutes
+      - name: Mirror in a loop for ~46 minutes
         run: |
-          echo "workflow v2.0 (loop)"
+          echo "workflow v2.1 (self-restarting loop)"
           if [ ! -f fetch_baywinds.py ]; then
             echo "::error::fetch_baywinds.py is not at the top level of the repo. Files here:"
             ls -la
@@ -30,7 +29,7 @@ jobs:
           fi
           git config user.name  "baywinds-bot"
           git config user.email "actions@github.com"
-          END=$(( SECONDS + 2880 ))         # loop for ~48 minutes, then the run ends
+          END=$(( SECONDS + 2760 ))         # ~46 minutes, then hand off (below)
           while [ "$SECONDS" -lt "$END" ]; do
             python3 fetch_baywinds.py || true
             git add -A data/
@@ -41,6 +40,11 @@ jobs:
               git pull --rebase --autostash || true
               git push || true
             fi
-            sleep 420                        # 7 min — keeps site rebuilds under the Pages limit
+            sleep 420                        # 7 min — keeps rebuilds under the Pages limit
           done
-          echo "loop done; a scheduled run will pick it back up"
+
+      - name: Start the next run
+        if: always()                        # runs even if the loop errored, so the chain never dies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run baywinds.yml -R "$GITHUB_REPOSITORY" || true
