@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.11 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.14 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -137,7 +137,7 @@
   <div class="top">
     <span class="eyebrow">Live from the bay</span>
     <h1>Port Phillip, <span class="accent">right now</span></h1>
-    <p class="lead">Wind at the five bay stations, read from the Bureau of Meteorology. Green is a good breeze; red means off the water.</p>
+    <p class="lead">Live wind at every station on the bay, from Melbourne down to the Heads — five from the Bureau, four from the clubs. Green is a good breeze; red means off the water; tap a Bureau station for its 24-hour graph.</p>
     <div class="banner" id="banner"></div>
   </div>
 
@@ -175,9 +175,12 @@
     <b>Aurora Sailing · Bay Winds.</b>
     Automatic wind observations from the
     <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>,
-    plus <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham Yacht Club</a>’s
-    and <a href="https://rbyc.org.au/club/webcam/" target="_blank" rel="noopener">Royal Brighton Yacht Club</a>’s
-    own stations (live readings, no 24-hour history).
+    plus the clubs’ own stations at
+    <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham</a>,
+    <a href="https://rbyc.org.au/club/webcam/" target="_blank" rel="noopener">Brighton</a>,
+    <a href="https://www.morningtonyc.com.au/weathercam/" target="_blank" rel="noopener">Mornington</a> and
+    <a href="https://bys.asn.au/weather-webcam/" target="_blank" rel="noopener">Blairgowrie</a>
+    (live readings, no 24-hour history).
     The Bureau stations refresh about every 10 minutes, so "Updated N min ago" cycles up
     to roughly 10–15 minutes then drops — that range is normal. Automatic data isn’t
     quality-checked and can carry errors —
@@ -188,7 +191,7 @@
       <a href="1st-vic-sea-scouts-albert-park.html">Albert Park</a>
       <a href="gswac-sandringham.html">Sandringham</a>
     </nav>
-    <div class="ver">bay-map.html · v1.11</div>
+    <div class="ver">bay-map.html · v1.14</div>
   </footer>
 </div>
 
@@ -215,10 +218,12 @@ const BANDS = [
 const STATIONS = [
   {wmo:95864,  name:"St Kilda",     mx:405, my:76,  anchor:"start"},
   {wmo:95872,  name:"Fawkner",      mx:357, my:182, anchor:"end"},
-  {wmo:"rbyc", name:"Brighton",     mx:414, my:129, anchor:"start", realtime:true},
+  {wmo:"rbyc", name:"Brighton",     mx:413, my:129, anchor:"start", realtime:true},
   {wmo:"syc",  name:"Sandringham",  mx:426, my:178, anchor:"start"},
+  {wmo:94871,  name:"Frankston",    mx:548, my:426, anchor:"end"},
+  {wmo:"myc",  name:"Mornington",   mx:467, my:525, anchor:"end", realtime:true},
   {wmo:94853,  name:"Sth Channel",  mx:247, my:615, anchor:"start"},
-  {wmo:94871,  name:"Frankston",    mx:548, my:427, anchor:"end"},
+  {wmo:"bys",  name:"Blairgowrie",  mx:206, my:702, anchor:"start", realtime:true},
   {wmo:94847,  name:"Pt Wilson",    mx:40,  my:166, anchor:"start"},
 ];
 

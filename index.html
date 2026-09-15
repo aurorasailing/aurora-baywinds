@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · index.html · v1.9 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · index.html · v1.11 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,7 +8,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aurora · Bay Winds</title>
-<meta name="description" content="Live Port Phillip wind for Aurora Sailing — five bay stations at a glance.">
+<meta name="description" content="Live Port Phillip wind for Aurora Sailing — every bay station at a glance.">
 <meta name="theme-color" content="#0A1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,9 +131,9 @@
 
 <footer>
   <b>Aurora Sailing · Bay Winds.</b>
-  Live wind for five Port Phillip stations from the
-  <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>.
-  Reading the numbers:
+  Live wind across Port Phillip — the
+  <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>’s
+  bay stations plus four clubs’ own. Reading the numbers:
   <ul class="notes">
     <li><b>Refresh</b> — the Bureau refreshes these stations about every 10 minutes,
       so "Updated N min ago" cycles up to roughly 10–15 minutes and then drops. Any
@@ -144,10 +144,12 @@
       couple of hours.</li>
     <li><b>F5 fresh breeze</b> — the Beaufort force and its name, a 0–12 scale for
       wind strength.</li>
+    <li><b>Club stations</b> — Brighton, Sandringham, Mornington and Blairgowrie come from
+      the clubs’ own weather stations: a live reading each, with no gust or trend.</li>
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
-  <div class="ver">index.html · v1.9</div>
+  <div class="ver">index.html · v1.11</div>
 </footer>
 
 <script>
@@ -171,13 +173,18 @@ const BANDS = [
   {max:999, name:"Strong",     c:"#F90D24", t:"#C21020"},
 ];
 
-// Order: the two that read the southerly change earliest sit up top
+// All bay stations, in the same order as the map. Club stations (Brighton, Sandringham,
+// Mornington, Blairgowrie) are a single live reading — no gust, no trend.
 const STATIONS = [
-  {wmo:95864, name:"St Kilda Harbour"},
-  {wmo:95872, name:"Fawkner Beacon"},
-  {wmo:94853, name:"South Channel Island"},
-  {wmo:94871, name:"Frankston Beach"},
-  {wmo:94847, name:"Point Wilson"},
+  {wmo:95864,  name:"St Kilda"},
+  {wmo:95872,  name:"Fawkner"},
+  {wmo:"rbyc", name:"Brighton",     club:true, realtime:true},
+  {wmo:"syc",  name:"Sandringham",  club:true},
+  {wmo:94871,  name:"Frankston"},
+  {wmo:"myc",  name:"Mornington",   club:true, realtime:true},
+  {wmo:94853,  name:"South Channel"},
+  {wmo:"bys",  name:"Blairgowrie",  club:true, realtime:true},
+  {wmo:94847,  name:"Point Wilson"},
 ];
 
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
@@ -232,14 +239,15 @@ async function loadStation(s){
   try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
     const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
     if(!rows.length) throw 0; store[s.wmo]=rows; return true;
-  }catch(e){ store[s.wmo]=sampleSeries(s); return false; }
+  }catch(e){ store[s.wmo]= (typeof s.wmo==="number") ? sampleSeries(s) : []; return false; }
 }
 async function loadAll(){ const oks=await Promise.all(STATIONS.map(loadStation));
-  usingSample=oks.some(v=>!v); render(); }
+  usingSample=STATIONS.some((s,i)=>typeof s.wmo==="number" && !oks[i]); render(); }
 
 function sampleSeries(s){
   const rows=[], now=new Date(), dirs=Object.keys(COMPASS);
-  let base=5+(s.wmo%8); const di=s.wmo%16;
+  const seed = typeof s.wmo==="number" ? s.wmo : 99;
+  let base=5+(seed%8); const di=seed%16;
   for(let i=0;i<24;i++){
     const t=new Date(now-i*10*60000), hr=t.getHours()+t.getMinutes()/60;
     const sea=Math.max(0,Math.sin((hr-9)/9*Math.PI))*7;
@@ -271,11 +279,11 @@ function render(){
       '<div class="bd"><div class="nm">'+s.name+'</div>'+
       '<div class="val"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span>'+
         '<span class="u">kt</span><span class="dir">'+dir+'</span></div>'+
-      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b>'+bft+' · <span class="gval">Gust '+(g==null?"–":g)+' kt</span>'+trLbl+'</div></div>';
+      '<div class="gst"><b style="color:'+band.t+'">'+band.name+'</b>'+bft+(g!=null?' · <span class="gval">Gust '+g+' kt</span>':'')+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+trLbl+'</div></div>';
     el.appendChild(box);
   });
   renderLegend(); renderBanner();
-  newestFull = STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
+  newestFull = STATIONS.filter(s=>typeof s.wmo==="number"||s.realtime).map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
   stampAge();
   document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
 }
