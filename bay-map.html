@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.16 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.17 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -185,6 +185,7 @@
     to roughly 10–15 minutes then drops — that range is normal. Automatic data isn’t
     quality-checked and can carry errors —
     always confirm conditions on the water before you sail.
+    <div style="margin:12px 0 2px"><b>Reading the wind barb:</b> the staff points into the wind — the direction it's blowing from. Each half-feather is 5 knots, a full feather 10, and a solid triangle 50; a ring means calm. The colour still shows the strength band, and the exact speed is written beside each. Feathers sit on the right of the staff — the Southern-Hemisphere convention.</div>
         <nav class="pagenav" aria-label="Aurora Bay Winds pages">
       <a href="index.html">Board</a>
       <span class="cur" aria-current="page">Bay map</span>
@@ -192,7 +193,7 @@
       <a href="gswac-sandringham.html">Sandringham</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.16</div>
+    <div class="ver">bay-map.html · v1.17</div>
   </footer>
 </div>
 
@@ -237,6 +238,18 @@ function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BAN
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
+// Southern-Hemisphere wind barb (staff points into the wind; feathers on the right = speed).
+function windBarb(mx,my,kt,color){
+  const L=30,STEP=6,FL=14,HL=7,tipY=my-L;
+  let s='<line x1="'+mx+'" y1="'+my+'" x2="'+mx+'" y2="'+tipY+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>';
+  let v=Math.round(kt/5)*5, pen=Math.floor(v/50); v-=pen*50;
+  let full=Math.floor(v/10); v-=full*10; let half=Math.floor(v/5), y=tipY;
+  if(pen===0&&full===0&&half===1) y=tipY+STEP;
+  for(let i=0;i<pen;i++){ s+='<path d="M'+mx+','+y+' L'+(mx+FL)+','+(y-4)+' L'+mx+','+(y-8)+' Z" fill="'+color+'"/>'; y+=STEP+3; }
+  for(let i=0;i<full;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+FL)+'" y2="'+(y-7)+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>'; y+=STEP; }
+  for(let i=0;i<half;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+HL)+'" y2="'+(y-3.5)+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>'; y+=STEP; }
+  return s;
+}
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
   const ap=h>=12?"pm":"am"; h=((h+11)%12)+1; return h+":"+m+ap; }
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
@@ -296,13 +309,12 @@ function renderMarkers(){
     grp.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}});
 
     const arw=document.createElementNS(NS,"g"); arw.setAttribute("class","b-arrow");
-    if(brg!=null) arw.setAttribute("transform","rotate("+(brg+180)+" "+s.mx+" "+s.my+")");
-    const p=document.createElementNS(NS,"path");
-    if(brg!=null){ p.setAttribute("d","M"+s.mx+","+(s.my+18)+" L"+s.mx+","+(s.my-18)+
-      " M"+(s.mx-7)+","+(s.my-9)+" L"+s.mx+","+(s.my-18)+" L"+(s.mx+7)+","+(s.my-9));
-      p.setAttribute("stroke",band.c); p.setAttribute("stroke-width","3.2");
-      p.setAttribute("fill","none"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round"); }
-    arw.appendChild(p);
+    if(kt!=null && kt<3){
+      arw.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="6" fill="none" stroke="'+band.c+'" stroke-width="2"/>';
+    } else if(kt!=null && brg!=null){
+      arw.setAttribute("transform","rotate("+brg+" "+s.mx+" "+s.my+")");
+      arw.innerHTML=windBarb(s.mx,s.my,kt,band.c);
+    }
 
     const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",s.mx); dot.setAttribute("cy",s.my);
     dot.setAttribute("r","4"); dot.setAttribute("fill",band.c);
