@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · gswac-sandringham.html · v1.0 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · gswac-sandringham.html · v1.1 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -96,12 +96,13 @@
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
-    <p style="margin:12px 0 0">It’s a live snapshot from the club’s station, so it
-    refreshes on its own schedule — always look at the water too.</p>
+    <p style="margin:12px 0 0">The time shows when we last <b>checked</b> the club’s
+    station. It sends its reading on its own schedule, so treat it as a live snapshot —
+    and always look at the water too.</p>
     <p style="margin:12px 0 0">Wind and temperature from
     <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham Yacht Club</a>.
     Always ask a grown-up and check the water before you sail.</p>
-    <div class="ver">gswac-sandringham.html · v1.0</div>
+    <div class="ver">gswac-sandringham.html · v1.1</div>
   </div>
 </footer>
 
@@ -176,7 +177,10 @@ function render(){
 }
 function stampAge(){
   const el=document.getElementById("hupd"); if(!el) return;
-  el.textContent = usingSample ? "Pretend wind" : "Live from Sandringham YC";
+  if(usingSample){ el.textContent="Pretend wind"; return; }
+  if(!newestFull){ el.textContent="Sandringham YC"; return; }
+  const m=Math.round((Date.now()-parseFull(newestFull).getTime())/60000);
+  el.textContent = (m<1 ? "Checked just now" : "Checked "+m+" min ago") + " · Sandringham YC";
 }
 
 load(); setInterval(load, REFRESH_MS); setInterval(stampAge, 30*1000);
