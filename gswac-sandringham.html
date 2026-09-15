@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · gswac-sandringham.html · v1.7 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · gswac-sandringham.html · v1.8 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -126,7 +126,7 @@
       <span class="cur" aria-current="page">Sandringham</span>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">gswac-sandringham.html · v1.7</div>
+    <div class="ver">gswac-sandringham.html · v1.8</div>
   </div>
 </footer>
 
@@ -158,8 +158,8 @@ function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.rou
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
 let rows=null, usingSample=false, newestFull=null, airTemp=null;
-let mode = (function(){ try{ return localStorage.getItem("gswac-mode")==="pro"?"pro":"easy"; }catch(e){ return "kids"; } })();
-function setMode(m){ mode=m; try{ localStorage.setItem("gswac-mode",m); }catch(e){}
+let mode = (function(){ try{ return localStorage.getItem("aurora-youth-mode")==="pro"?"pro":"easy"; }catch(e){ return "kids"; } })();
+function setMode(m){ mode=m; try{ localStorage.setItem("aurora-youth-mode",m); }catch(e){}
   document.querySelectorAll("#modeToggle button").forEach(b=>b.classList.toggle("on", b.dataset.mode===m));
   if(rows) render(); }
 
