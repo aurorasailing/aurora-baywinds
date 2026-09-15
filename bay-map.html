@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.5 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.11 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,9 +18,9 @@
     --green:#50E040; --green-b:#39D455; --navy:#0A1628; --slate:#2E4057;
     --ink:#1C2B3A; --white:#FFFFFF; --harbour:#F5F7F4; --seafoam:#E8EDE6;
     --muted:#7A8A7E; --line:#E1E6E0;
-    --calm-c:#B7DDB0;   --calm-t:#5A8A54;
-    --ideal-c:#2E9E3D;  --ideal-t:#1B7A29;
-    --fresh-c:#7BD877;  --fresh-t:#3B9743;
+    --calm-c:#C4C9C5;   --calm-t:#586059;
+    --ideal-c:#7BD877;  --ideal-t:#3B9743;
+    --fresh-c:#2E9E3D;  --fresh-t:#1B7A29;
     --breezy-c:#FFBB44; --breezy-t:#B37400;
     --recon-c:#F0792E;  --recon-t:#C2521A;
     --strong-c:#F90D24; --strong-t:#C21020;
@@ -118,6 +118,10 @@
   footer b{font-family:'Syne',sans-serif; font-weight:600; color:var(--slate)}
   footer a{color:var(--slate)}
   .ver{margin-top:14px; font-size:11px; color:var(--muted); letter-spacing:.04em}
+  .pagenav{display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:center; margin:14px 0 2px; padding-top:12px; border-top:1px solid var(--line); font-size:13px}
+  .pagenav a{color:var(--slate); text-decoration:none; font-weight:700}
+  .pagenav a:hover{color:var(--navy)}
+  .pagenav .cur{color:var(--muted); font-weight:700}
 </style>
 </head>
 <body>
@@ -140,15 +144,11 @@
   <div class="grid">
     <!-- MAP -->
     <div class="mapcard">
-      <svg class="bay" viewBox="0 0 600 720" role="img" aria-label="Port Phillip Bay with live wind at five stations">
-        <path d="M300,60 C400,60 486,120 500,240 C512,340 486,470 400,588
-                 C360,642 326,672 300,690 C274,672 250,648 224,606
-                 C214,588 208,576 196,570 C150,566 96,506 80,440
-                 C70,398 92,372 122,368 C150,364 150,340 146,306
-                 C138,232 150,140 214,92 C240,72 270,60 300,60 Z"
+      <svg class="bay" viewBox="0 0 600 765" role="img" aria-label="Port Phillip Bay with live wind at each station">
+        <path d="M335.2,65.7 C357.7,60.7 363.8,41.8 377.8,43.1 C391.8,44.4 410.8,56.5 419.4,73.3 C428.0,90.0 424.0,121.4 429.3,143.6 C434.6,165.8 439.2,185.6 451.1,206.5 C463.0,227.4 485.8,248.4 500.7,269.3 C515.6,290.2 530.4,305.6 540.3,332.2 C550.2,358.8 571.7,396.7 560.1,429.0 C548.5,461.3 493.0,495.0 470.9,525.8 C448.8,556.6 449.9,588.7 427.3,613.8 C404.7,638.9 367.9,659.9 335.2,676.6 C302.5,693.4 263.3,706.8 231.1,714.3 C198.9,721.8 164.3,730.7 142.0,721.9 C119.7,713.1 107.7,676.8 97.4,661.5 C87.2,646.2 80.0,641.0 80.5,630.1 C81.0,619.2 92.5,615.1 100.3,596.2 C108.1,577.4 130.1,550.1 127.1,517.0 C124.1,483.9 96.5,440.6 82.5,397.6 C68.5,354.7 50.0,298.1 42.9,259.3 C35.8,220.5 24.7,188.5 39.9,165.0 C55.1,141.5 100.2,133.8 134.0,118.5 C167.8,103.2 209.5,82.1 243.0,73.3 C276.5,64.5 312.7,70.7 335.2,65.7 Z"
               fill="var(--seafoam)" stroke="#C5D0C8" stroke-width="1.5" opacity="0.6"/>
-        <text class="b-edge" x="300" y="44" text-anchor="middle">MELBOURNE</text>
-        <text class="b-edge" x="300" y="712" text-anchor="middle">THE RIP</text>
+        <text class="b-edge" x="300" y="30" text-anchor="middle">MELBOURNE</text>
+        <text class="b-edge" x="150" y="752" text-anchor="middle">THE RIP</text>
         <g id="markers"></g>
       </svg>
       <div class="legend" id="legend"></div>
@@ -174,12 +174,21 @@
   <footer>
     <b>Aurora Sailing · Bay Winds.</b>
     Automatic wind observations from the
-    <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>.
-    These stations update about every 30 minutes, so "Updated N min ago" drifts up
-    toward 30 then drops — that range is normal. Automatic data isn’t quality-checked
-    and can carry errors —
+    <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>,
+    plus <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham Yacht Club</a>’s
+    and <a href="https://rbyc.org.au/club/webcam/" target="_blank" rel="noopener">Royal Brighton Yacht Club</a>’s
+    own stations (live readings, no 24-hour history).
+    The Bureau stations refresh about every 10 minutes, so "Updated N min ago" cycles up
+    to roughly 10–15 minutes then drops — that range is normal. Automatic data isn’t
+    quality-checked and can carry errors —
     always confirm conditions on the water before you sail.
-    <div class="ver">bay-map.html · v1.5</div>
+        <nav class="pagenav" aria-label="Aurora Bay Winds pages">
+      <a href="index.html">Board</a>
+      <span class="cur" aria-current="page">Bay map</span>
+      <a href="1st-vic-sea-scouts-albert-park.html">Albert Park</a>
+      <a href="gswac-sandringham.html">Sandringham</a>
+    </nav>
+    <div class="ver">bay-map.html · v1.11</div>
   </footer>
 </div>
 
@@ -194,9 +203,9 @@ const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
 const REFRESH_MS = 2 * 60 * 1000;
 
 const BANDS = [
-  {max:5,   name:"Calm",       c:"#B7DDB0", t:"#5A8A54"},
-  {max:11,  name:"Ideal",      c:"#2E9E3D", t:"#1B7A29"},
-  {max:16,  name:"Fresh",      c:"#7BD877", t:"#3B9743"},
+  {max:5,   name:"Calm",       c:"#C4C9C5", t:"#586059"},
+  {max:11,  name:"Ideal",      c:"#7BD877", t:"#3B9743"},
+  {max:16,  name:"Fresh",      c:"#2E9E3D", t:"#1B7A29"},
   {max:23,  name:"Breezy",     c:"#FFBB44", t:"#B37400"},
   {max:30,  name:"Reconsider", c:"#F0792E", t:"#C2521A"},
   {max:999, name:"Strong",     c:"#F90D24", t:"#C21020"},
@@ -204,11 +213,13 @@ const BANDS = [
 
 // mx/my = map coords (viewBox 600x720); anchor = label side (start|end)
 const STATIONS = [
-  {wmo:95864, name:"St Kilda",     mx:392, my:150, anchor:"start"},
-  {wmo:95872, name:"Fawkner",      mx:300, my:215, anchor:"start"},
-  {wmo:94853, name:"Sth Channel",  mx:300, my:590, anchor:"start"},
-  {wmo:94847, name:"Pt Wilson",    mx:150, my:340, anchor:"start"},
-  {wmo:94871, name:"Frankston",    mx:438, my:400, anchor:"end"},
+  {wmo:95864,  name:"St Kilda",     mx:405, my:76,  anchor:"start"},
+  {wmo:95872,  name:"Fawkner",      mx:357, my:182, anchor:"end"},
+  {wmo:"rbyc", name:"Brighton",     mx:414, my:129, anchor:"start", realtime:true},
+  {wmo:"syc",  name:"Sandringham",  mx:426, my:178, anchor:"start"},
+  {wmo:94853,  name:"Sth Channel",  mx:247, my:615, anchor:"start"},
+  {wmo:94871,  name:"Frankston",    mx:548, my:427, anchor:"end"},
+  {wmo:94847,  name:"Pt Wilson",    mx:40,  my:166, anchor:"start"},
 ];
 
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
@@ -229,14 +240,16 @@ async function loadStation(s){
   try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
     const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
     if(!rows.length) throw 0; store[s.wmo]=rows; return true;
-  }catch(e){ store[s.wmo]=sampleSeries(s); return false; }
+  }catch(e){ store[s.wmo]= (typeof s.wmo==="number") ? sampleSeries(s) : []; return false; }
 }
 async function loadAll(){ const oks=await Promise.all(STATIONS.map(loadStation));
-  usingSample=oks.some(v=>!v); render(); }
+  // only a Bureau-station failure means "sample data"; a flaky SYC just shows as unavailable
+  usingSample=STATIONS.some((s,i)=>typeof s.wmo==="number" && !oks[i]); render(); }
 
 function sampleSeries(s){
   const rows=[], now=new Date(), dirs=Object.keys(COMPASS);
-  let base=5+(s.wmo%8); const di=s.wmo%16;
+  const seed = typeof s.wmo==="number" ? s.wmo : 99;
+  let base=5+(seed%8); const di=seed%16;
   for(let i=0;i<48;i++){
     const t=new Date(now-i*30*60000), hr=t.getHours()+t.getMinutes()/60;
     const sea=Math.max(0,Math.sin((hr-9)/9*Math.PI))*7;
@@ -251,7 +264,7 @@ function sampleSeries(s){
 }
 
 function render(){ renderMarkers(); renderCards(); renderLegend(); renderChart(); renderBanner();
-  newestFull = STATIONS.map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
+  newestFull = STATIONS.filter(s=>typeof s.wmo==="number"||s.realtime).map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
   stampAge();
   document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
 }
@@ -312,7 +325,7 @@ function renderCards(){
     c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}};
     c.innerHTML=
       '<div><div class="nm">'+s.name+'</div>'+
-      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+' · <span class="gval">Gust '+(g==null?"–":g)+' kt</span>'+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
+      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+''+(g!=null?' · <span class="gval">Gust '+g+' kt</span>':'')+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
       '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div>';
     el.appendChild(c);
   });
@@ -333,7 +346,9 @@ function renderBanner(){ const b=document.getElementById("banner");
 
 function renderChart(){
   const svg=document.getElementById("chart"); const W=900,H=300,padL=40,padR=12,padT=12,padB=26;
-  const rows=(store[selected]||[]).slice(0,48).slice().reverse(); if(!rows.length){svg.innerHTML="";return;}
+  const rows=(store[selected]||[]).slice(0,48).slice().reverse();
+  if(rows.length===0){ svg.innerHTML='<text x="'+(W/2)+'" y="'+(H/2)+'" text-anchor="middle" class="axis-t" style="font-size:14px">This station isn’t reporting right now.</text>'; return; }
+  if(rows.length<2){ svg.innerHTML='<text x="'+(W/2)+'" y="'+(H/2)+'" text-anchor="middle" class="axis-t" style="font-size:14px">This station sends a single live reading — no 24-hour history.</text>'; return; }
   const gw=W-padL-padR, gh=H-padT-padB;
   const maxKt=Math.max(12,...rows.map(r=>Math.max(r.wind_spd_kt||0,r.gust_kt||0)))*1.1;
   const x=i=>padL+(i/(rows.length-1))*gw, y=v=>padT+gh-(v/maxKt)*gh;

@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · index.html · v1.6 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · index.html · v1.9 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,9 +18,9 @@
     --green:#50E040; --green-b:#39D455; --navy:#0A1628; --slate:#2E4057;
     --ink:#1C2B3A; --white:#FFFFFF; --harbour:#F5F7F4; --seafoam:#E8EDE6;
     --muted:#7A8A7E; --line:#E1E6E0;
-    --calm-c:#B7DDB0;   --calm-t:#5A8A54;
-    --ideal-c:#2E9E3D;  --ideal-t:#1B7A29;
-    --fresh-c:#7BD877;  --fresh-t:#3B9743;
+    --calm-c:#C4C9C5;   --calm-t:#586059;
+    --ideal-c:#7BD877;  --ideal-t:#3B9743;
+    --fresh-c:#2E9E3D;  --fresh-t:#1B7A29;
     --breezy-c:#FFBB44; --breezy-t:#B37400;
     --recon-c:#F0792E;  --recon-t:#C2521A;
     --strong-c:#F90D24; --strong-t:#C21020;
@@ -82,6 +82,17 @@
   footer .notes li{margin:5px 0; padding-left:12px; position:relative}
   footer .notes li::before{content:''; position:absolute; left:0; top:6px; width:5px; height:5px; border-radius:1px; background:var(--green-b)}
   footer .notes b{color:var(--slate)}
+
+  .pages{max-width:480px; margin:20px auto 0; padding:16px 16px 0; border-top:1px solid var(--line)}
+  .pages-h{font-family:'Syne',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--slate); margin-bottom:11px}
+  .pcard{display:flex; align-items:center; gap:12px; text-decoration:none; background:var(--white);
+    border:1px solid var(--line); border-left:3px solid var(--green); border-radius:3px; padding:13px 15px; margin-bottom:10px}
+  .pcard:active{background:var(--harbour)}
+  .pc-b{flex:1; min-width:0}
+  .pc-t{font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:var(--navy)}
+  .pc-d{font-size:12.5px; color:var(--muted); margin-top:3px; line-height:1.4}
+  .pc-x{font-family:'Syne',sans-serif; font-weight:700; font-size:22px; color:var(--green-b); flex:none; line-height:1}
 </style>
 </head>
 <body>
@@ -99,15 +110,34 @@
 <div class="boxes" id="boxes"></div>
 <div class="legend" id="legend"></div>
 
+<section class="pages">
+  <div class="pages-h">More from Bay Winds</div>
+  <a class="pcard" href="bay-map.html">
+    <div class="pc-b"><div class="pc-t">Bay map</div>
+      <div class="pc-d">The full Port Phillip map — a wind arrow at every station and a 24-hour graph.</div></div>
+    <span class="pc-x" aria-hidden="true">›</span>
+  </a>
+  <a class="pcard" href="1st-vic-sea-scouts-albert-park.html">
+    <div class="pc-b"><div class="pc-t">Albert Park · Young sailors</div>
+      <div class="pc-d">Is it a sailing day? A big, simple wind picture for the youngest sailors.</div></div>
+    <span class="pc-x" aria-hidden="true">›</span>
+  </a>
+  <a class="pcard" href="gswac-sandringham.html">
+    <div class="pc-b"><div class="pc-t">Sandringham · Young sailors</div>
+      <div class="pc-d">The same sailing-day picture, from Sandringham Yacht Club’s own station.</div></div>
+    <span class="pc-x" aria-hidden="true">›</span>
+  </a>
+</section>
+
 <footer>
   <b>Aurora Sailing · Bay Winds.</b>
   Live wind for five Port Phillip stations from the
   <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>.
   Reading the numbers:
   <ul class="notes">
-    <li><b>Refresh</b> — the Bureau updates these stations about every 30 minutes, so
-      "Updated N min ago" drifts up toward 30 and then drops. Anywhere in that range
-      is normal.</li>
+    <li><b>Refresh</b> — the Bureau refreshes these stations about every 10 minutes,
+      so "Updated N min ago" cycles up to roughly 10–15 minutes and then drops. Any
+      value in that range is normal.</li>
     <li><b>Gust</b> — the strongest gust in the station's latest reading (the Bureau's
       logged peak, not just the steady wind).</li>
     <li><b>Trend</b> — whether the wind has been building or easing over the last
@@ -117,7 +147,7 @@
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
-  <div class="ver">index.html · v1.6</div>
+  <div class="ver">index.html · v1.9</div>
 </footer>
 
 <script>
@@ -133,9 +163,9 @@ const TREND_WINDOW_MIN = 120;   // building/easing over the last ~2h (compare re
 const TREND_KT = 2;             // change smaller than this reads as "steady"
 
 const BANDS = [
-  {max:5,   name:"Calm",       c:"#B7DDB0", t:"#5A8A54"},
-  {max:11,  name:"Ideal",      c:"#2E9E3D", t:"#1B7A29"},
-  {max:16,  name:"Fresh",      c:"#7BD877", t:"#3B9743"},
+  {max:5,   name:"Calm",       c:"#C4C9C5", t:"#586059"},
+  {max:11,  name:"Ideal",      c:"#7BD877", t:"#3B9743"},
+  {max:16,  name:"Fresh",      c:"#2E9E3D", t:"#1B7A29"},
   {max:23,  name:"Breezy",     c:"#FFBB44", t:"#B37400"},
   {max:30,  name:"Reconsider", c:"#F0792E", t:"#C2521A"},
   {max:999, name:"Strong",     c:"#F90D24", t:"#C21020"},
@@ -146,8 +176,8 @@ const STATIONS = [
   {wmo:95864, name:"St Kilda Harbour"},
   {wmo:95872, name:"Fawkner Beacon"},
   {wmo:94853, name:"South Channel Island"},
-  {wmo:94847, name:"Point Wilson"},
   {wmo:94871, name:"Frankston Beach"},
+  {wmo:94847, name:"Point Wilson"},
 ];
 
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,

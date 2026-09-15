@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · gswac-sandringham.html · v1.3 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · 1st-vic-sea-scouts-albert-park.html · v1.15 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,8 +7,8 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sandringham Weather for Young Sailors</title>
-<meta name="description" content="Sandringham weather for young sailors — a big, simple wind picture from Sandringham Yacht Club’s own station, Port Phillip.">
+<title>Albert Park Lake Weather for Young Sailors</title>
+<meta name="description" content="Albert Park Lake weather for young sailors — a big, simple wind picture from St Kilda, Port Phillip.">
 <meta name="theme-color" content="#0A1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,7 +78,7 @@
 </header>
 
 <main>
-  <div class="place">Sandringham · Is it a Sailing Day?</div>
+  <div class="place">Albert Park Lake · Is it a Sailing Day?</div>
   <div class="hero" id="hero"></div>
   <div class="banner" id="banner"></div>
 </main>
@@ -93,33 +93,34 @@
       <li><span class="e">🌪️</span><span><b>Too windy</b> <span class="rng">23–30 kt</span> — best to wait.</span></li>
       <li><span class="e">☠️</span><span><b>Stay ashore</b> <span class="rng">30+ kt</span> — too wild to sail.</span></li>
     </ul>
-    <h2>Where’s this from?</h2>
-    This is the wind and temperature from <b>Sandringham Yacht Club’s own weather
-    station</b> — right where we sail. No guessing from far away: it’s the real breeze
-    on our own patch of the bay.
+    <h2>Why St Kilda?</h2>
+    We sail at Albert Park Lake, but there’s no wind-checker on the lake.
+    St Kilda is the closest one — just a little way toward the sea, down to the
+    south-east. It feels the fresh wind off the bay before it reaches us, so it’s a
+    good sneak peek at the wind coming our way — especially a cool one from the south.
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
-    <p style="margin:12px 0 0">The time shows when we last <b>checked</b> the club’s
-    station. It sends its reading on its own schedule, so treat it as a live snapshot —
-    and always look at the water too.</p>
-    <p style="margin:12px 0 0">Wind and temperature from
-    <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham Yacht Club</a>.
-    Always ask a grown-up and check the water before you sail.</p>
+    <p style="margin:12px 0 0">The wind picture gets a fresh check about every ten
+    minutes, so the “updated” time counts up to around ten or fifteen minutes and
+    then starts again — that’s normal.</p>
+    <p style="margin:12px 0 0">Wind from the <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>
+    at St Kilda Harbour. Always ask a grown-up and check the water before you sail.</p>
         <nav class="pagenav" aria-label="Aurora Bay Winds pages">
       <a href="index.html">Board</a>
       <a href="bay-map.html">Bay map</a>
-      <a href="1st-vic-sea-scouts-albert-park.html">Albert Park</a>
-      <span class="cur" aria-current="page">Sandringham</span>
+      <span class="cur" aria-current="page">Albert Park</span>
+      <a href="gswac-sandringham.html">Sandringham</a>
     </nav>
-    <div class="ver">gswac-sandringham.html · v1.3</div>
+    <div class="ver">1st-vic-sea-scouts-albert-park.html · v1.15</div>
   </div>
 </footer>
 
 <script>
 // const DATA_BASE = "./data";
 const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
-const STATION   = "syc";            // Sandringham YC’s own station (via the Worker)
+const STATION   = 95864;            // St Kilda Harbour RMYS (wind)
+const TEMP_STATION = 95936;         // Melbourne (Olympic Park) — nearest air temperature to the lake
 const REFRESH_MS = 2 * 60 * 1000;
 
 // wind strength → picture (knots)
@@ -151,13 +152,20 @@ async function load(){
     const j=await r.json(); const d=(j.observations?j.observations.data:j.data)||[];
     if(!d.length) throw 0; rows=d; usingSample=false;
   }catch(e){ rows=sample(); usingSample=true; }
+  // air temperature from Melbourne (Olympic Park) — optional, never breaks the page
+  try{
+    const rt=await fetch(DATA_BASE+"/"+TEMP_STATION+".json?_="+Date.now(),{cache:"no-store"});
+    if(rt.ok){ const jt=await rt.json(); const dt=(jt.observations?jt.observations.data:jt.data)||[];
+      const t=dt.length?dt[0].air_temp:null; airTemp=(t!=null&&isFinite(t))?Math.round(t):null; }
+    else airTemp=null;
+  }catch(e){ airTemp=null; }
   render();
 }
 function sample(){
   const out=[], now=new Date(), p=n=>String(n).padStart(2,"0"), dirs=Object.keys(DIR_DEG);
   for(let i=0;i<12;i++){ const t=new Date(now-i*10*60000);
     out.push({wind_spd_kt:9+Math.round(Math.sin(i/3)*3), wind_dir:dirs[(9+Math.round(Math.sin(i/6)*2))%16],
-      air_temp:15, local_date_time_full:""+t.getFullYear()+p(t.getMonth()+1)+p(t.getDate())+p(t.getHours())+p(t.getMinutes())+"00"}); }
+      local_date_time_full:""+t.getFullYear()+p(t.getMonth()+1)+p(t.getDate())+p(t.getHours())+p(t.getMinutes())+"00"}); }
   return out;
 }
 
@@ -167,7 +175,6 @@ function render(){
   const L  = kt==null ? LEVELS[0] : levelFor(kt);
   const f  = kt==null ? null : beaufort(kt);
   const dir = o ? dir8(o.wind_dir) : null;
-  airTemp = (o && o.air_temp!=null && isFinite(o.air_temp)) ? Math.round(o.air_temp) : null;
   const hero=document.getElementById("hero");
   hero.style.background   = L.c + "22";     // soft tint of the band colour
   hero.style.borderColor  = L.c;
@@ -188,9 +195,9 @@ function render(){
 function stampAge(){
   const el=document.getElementById("hupd"); if(!el) return;
   if(usingSample){ el.textContent="Pretend wind"; return; }
-  if(!newestFull){ el.textContent="Sandringham YC"; return; }
+  if(!newestFull){ el.textContent="—"; return; }
   const m=Math.round((Date.now()-parseFull(newestFull).getTime())/60000);
-  el.textContent = (m<1 ? "Checked just now" : "Checked "+m+" min ago") + " · Sandringham YC";
+  el.textContent = m<1 ? "Updated just now" : "Updated "+m+" min ago";
 }
 
 load(); setInterval(load, REFRESH_MS); setInterval(stampAge, 30*1000);
