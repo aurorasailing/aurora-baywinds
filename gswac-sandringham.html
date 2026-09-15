@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · gswac-sandringham.html · v1.10 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · gswac-sandringham.html · v1.11 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -74,6 +74,17 @@
   .pagenav a{color:var(--slate); text-decoration:none; font-weight:700}
   .pagenav a:hover{color:var(--navy)}
   .pagenav .cur{color:var(--muted); font-weight:700}
+  .spots{margin:14px 0 0; border-top:1px solid var(--line); padding-top:12px}
+  .spots>summary{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--slate); cursor:pointer; list-style:none}
+  .spots>summary::-webkit-details-marker{display:none}
+  .spots>summary::after{content:" ▾"; color:var(--muted); font-weight:400}
+  .spots[open]>summary::after{content:" ▴"}
+  .spots-list{margin-top:8px; display:flex; flex-direction:column}
+  .spots-h{font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:10px 0 3px}
+  .spots-list a{display:flex; flex-direction:column; text-decoration:none; padding:6px 0}
+  .spots-list a b{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy)}
+  .spots-list a span{font-size:12px; color:var(--muted)}
+  .spots-list a.here{opacity:.55} .spots-list a.here b{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -119,16 +130,30 @@
     <p style="margin:12px 0 0">Wind and temperature from
     <a href="https://syc.com.au/weather/" target="_blank" rel="noopener">Sandringham Yacht Club</a>.
     Always ask a grown-up and check the water before you sail.</p>
+    <details class="spots">
+      <summary>Sailing spots</summary>
+      <nav class="spots-list" aria-label="All sailing spots">
+        <div class="spots-h">Sea Scouts</div>
+        <a href="https://wind.aurorasailing.com.au/1st-vic-sea-scouts-albert-park.html"><b>1st Victorian Sea Scouts</b><span>Albert Park Lake (RMYS)</span></a>
+        <a href="https://wind.aurorasailing.com.au/gswac-sandringham.html"><b>GSWAC</b><span>Sandringham</span></a>
+        <a href="https://lakes.aurorasailing.com.au/bunga-arm.html"><b>Bunga Arm</b><span>Gippsland Lakes camp</span></a>
+        <div class="spots-h">Yacht-club youth sailing</div>
+        <a href="https://wind.aurorasailing.com.au/pmyc-port-melbourne.html"><b>Port Melbourne Yacht Club</b><span>Fawkner Beacon</span></a>
+        <a href="https://wind.aurorasailing.com.au/rmys-st-kilda.html"><b>Royal Melbourne Yacht Squadron</b><span>RMYS</span></a>
+        <a href="https://wind.aurorasailing.com.au/rbyc-brighton.html"><b>Royal Brighton Yacht Club</b><span>RBYC</span></a>
+        <a href="https://wind.aurorasailing.com.au/syc-sandringham.html"><b>Sandringham Yacht Club</b><span>SYC</span></a>
+      </nav>
+      <script>(function(){var h=location.href.split('#')[0].split('?')[0];document.querySelectorAll('.spots-list a').forEach(function(a){if(a.href.split('#')[0].split('?')[0]===h){a.classList.add('here');a.removeAttribute('href');}});})();</script>
+    </details>
     <p class="fb" style="margin:14px 0 2px"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a suggestion? Tell us →</a></p>
     <script>(function(){var a=document.querySelector('.fb a');if(!a)return;var p=document.querySelector('.place');var spot=p?p.textContent.replace(/\s*·.*$/,'').trim():document.title;a.href='mailto:wind@aurorasailing.com.au?subject='+encodeURIComponent('Aurora wind feedback — '+spot)+'&body='+encodeURIComponent('\n\n\n(About '+spot+' — '+location.href+')');})();</script>
         <nav class="pagenav" aria-label="Aurora Bay Winds pages">
       <a href="index.html">Board</a>
       <a href="bay-map.html">Bay map</a>
-      <a href="1st-vic-sea-scouts-albert-park.html">Albert Park</a>
-      <span class="cur" aria-current="page">Sandringham</span>
+      <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">gswac-sandringham.html · v1.10</div>
+    <div class="ver">gswac-sandringham.html · v1.11</div>
   </div>
 </footer>
 
