@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · gswac-sandringham.html · v1.14 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · gswac-sandringham.html · v1.15 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -65,9 +65,16 @@
   footer a{color:var(--slate)}
   .ver{margin-top:12px; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
   .modeToggle{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px; margin:2px auto 8px; background:var(--white)}
-  .modeToggle button{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:none; border:none; padding:5px 15px; border-radius:999px; cursor:pointer}
+  .modeToggle button{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.01em; color:var(--muted); background:none; border:none; padding:5px 13px; border-radius:999px; cursor:pointer}
   .modeToggle button.on{background:var(--green); color:#08351a}
   .emoji svg{width:clamp(104px,36vw,188px); height:clamp(104px,36vw,188px); display:block; margin:0 auto}
+  .qpic{margin:2px 0 4px}
+  .qpic img{width:100%; max-width:300px; height:auto; border-radius:16px; display:block; margin:0 auto; box-shadow:0 6px 20px rgba(10,22,40,.14)}
+  .qsub{font-family:'Syne',sans-serif; font-weight:600; font-size:14px; margin:-2px 0 2px; opacity:.92}
+  .key .qthumb{flex:0 0 auto} .key .qthumb img{width:46px; height:46px; object-fit:cover; border-radius:8px; display:block}
+  .keybox.quest{display:none}
+  body[data-mode="quest"] .keybox.generic{display:none}
+  body[data-mode="quest"] .keybox.quest{display:block}
   .cr-lab{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; fill:var(--slate)}
   .cr-n{fill:var(--green-b)}
   .pagenav{display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:center; margin:14px 0 2px; padding-top:12px; border-top:1px solid var(--line); font-size:13px}
@@ -96,9 +103,10 @@
 
 <main>
   <div class="place">Sandringham · Is it a Sailing Day?</div>
-  <div class="modeToggle" id="modeToggle" role="group" aria-label="View mode">
+  <div class="modeToggle" id="modeToggle" role="group" aria-label="View">
     <button type="button" data-mode="easy">Easy</button>
     <button type="button" data-mode="pro">Pro</button>
+    <button type="button" data-mode="quest">RS Quest</button>
   </div>
   <div class="hero" id="hero"></div>
   <div class="banner" id="banner"></div>
@@ -106,6 +114,7 @@
 
 <footer>
   <div class="foot-in">
+    <div class="keybox generic">
     <h2>What the pictures mean</h2>
     <ul class="key">
       <li><span class="e">🚣</span><span><b>Too calm</b> <span class="rng">under 5 kt</span> — not much wind, grab the oars.</span></li>
@@ -114,9 +123,24 @@
       <li><span class="e">🌪️</span><span><b>Too windy</b> <span class="rng">24–30 kt</span> — best to wait.</span></li>
       <li><span class="e">☠️</span><span><b>Stay ashore</b> <span class="rng">31+ kt</span> — too wild to sail.</span></li>
     </ul>
-    <h2>Easy or Pro</h2>
-    Tap <b>Pro</b> at the top to swap the picture for a compass rose and a wind barb — the way
-    sailors read the wind (<a href="wind-barbs.html">how to read a wind barb →</a>). Tap <b>Easy</b> to switch back.
+    </div>
+    <div class="keybox quest">
+    <h2>What the pictures mean · RS Quest</h2>
+    <ul class="key">
+      <li><span class="qthumb"><img src="quest-calm.jpg" alt=""></span><span><b>Calm</b> <span class="rng">under 5 kt</span> — not enough to sail.</span></li>
+      <li><span class="qthumb"><img src="quest-smooth.jpg" alt=""></span><span><b>Smooth sailing</b> <span class="rng">5–7 kt</span> — full main and jib, gentle.</span></li>
+      <li><span class="qthumb"><img src="quest-sporty.jpg" alt=""></span><span><b>Sporty sailing</b> <span class="rng">8–17 kt</span> — a proper breeze; ease the gnav as it builds.</span></li>
+      <li><span class="qthumb"><img src="quest-reef.jpg" alt=""></span><span><b>Reef!</b> <span class="rng">18–25 kt</span> — reef the main; consider easing the gnav.</span></li>
+      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Reefed main sail only</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port; ease the gnav.</span></li>
+      <li><span class="qthumb"><img src="quest-shore.jpg" alt=""></span><span><b>Stay on shore</b> <span class="rng">36+ kt</span> — don’t launch.</span></li>
+    </ul>
+    <p style="margin:8px 0 0">These levels are set for an <b>RS Quest</b> — read them down for a light or young crew. <a href="rs-quest-limits.html">Full wind limits &amp; reefing →</a></p>
+    <p style="margin:10px 0 0"><b>From experience:</b> you might launch in 10 knots and cop 30+ in a gust — you wouldn’t have launched in that, but a reefed Quest with weight aboard stays stable if you keep it flat, ease the gnav, and head in.</p>
+    </div>
+    <h2>The three views</h2>
+    Tap on top to switch: <b>Easy</b> shows a picture; <b>Pro</b> a compass rose and wind barb
+    (<a href="wind-barbs.html">how to read it →</a>); <b>RS Quest</b> shows the boat in today’s
+    conditions with reefing guidance for the Quests we sail.
     <h2 style="margin-top:16px">Where’s this from?</h2>
     This is the wind and temperature from <b>Sandringham Yacht Club’s own weather
     station</b> — right where we sail. No guessing from far away: it’s the real breeze
@@ -153,7 +177,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">gswac-sandringham.html · v1.14</div>
+    <div class="ver">gswac-sandringham.html · v1.15</div>
   </div>
 </footer>
 
@@ -172,6 +196,15 @@ const LEVELS = [
   {max:999, emoji:"☠️", word:"Stay ashore", c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
+function pick(arr,kt){ kt=Math.round(kt); for(const l of arr){ if(kt<=l.max) return l; } return arr[arr.length-1]; }
+const QLEVELS = [
+  {max:4,   img:"quest-calm.jpg",     word:"Calm",           sub:"not enough to sail",        c:"#C4C9C5", t:"#586059"},
+  {max:7,   img:"quest-smooth.jpg",   word:"Smooth sailing", sub:"full main and jib \u2014 gentle", c:"#7BD877", t:"#3B9743"},
+  {max:17,  img:"quest-sporty.jpg",   word:"Sporty sailing", sub:"flat and fun \u2014 ease the gnav as it builds", c:"#2E9E3D", t:"#1B7A29"},
+  {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef in and depower \u2014 ease the gnav", c:"#FFBB44", t:"#B37400"},
+  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only", sub:"caught out? reefed, flat, hold on \u2014 get in", c:"#F0792E", t:"#C2521A"},
+  {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"don\u2019t launch \u2014 stay in port", c:"#F90D24", t:"#C21020"},
+];
 
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
@@ -185,8 +218,9 @@ function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.rou
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
 let rows=null, usingSample=false, newestFull=null, airTemp=null;
-let mode = (function(){ try{ return localStorage.getItem("aurora-youth-mode")==="pro"?"pro":"easy"; }catch(e){ return "kids"; } })();
+let mode = (function(){ try{ var v=localStorage.getItem("aurora-youth-mode"); return v==="quest"?"quest":(v==="pro"?"pro":"easy"); }catch(e){ return "easy"; } })();
 function setMode(m){ mode=m; try{ localStorage.setItem("aurora-youth-mode",m); }catch(e){}
+  document.body.setAttribute("data-mode", m);
   document.querySelectorAll("#modeToggle button").forEach(b=>b.classList.toggle("on", b.dataset.mode===m));
   if(rows) render(); }
 
@@ -234,7 +268,8 @@ function compassRose(deg,kt,color){
 function render(){
   const o = rows&&rows.length ? rows[0] : null;
   const kt = o ? Math.round(o.wind_spd_kt) : null;
-  const L  = kt==null ? LEVELS[0] : levelFor(kt);
+  const usingQuest = mode==="quest";
+  const L  = kt==null ? (usingQuest?QLEVELS[0]:LEVELS[0]) : pick(usingQuest?QLEVELS:LEVELS, kt);
   const f  = kt==null ? null : beaufort(kt);
   const dir = o ? dir8(o.wind_dir) : null;
   airTemp = (o && o.air_temp!=null && isFinite(o.air_temp)) ? Math.round(o.air_temp) : null;
@@ -242,13 +277,17 @@ function render(){
   hero.style.background   = L.c + "22";     // soft tint of the band colour
   hero.style.borderColor  = L.c;
   const deg = o ? (o.wind_dir_deg!=null&&isFinite(o.wind_dir_deg) ? Math.round(o.wind_dir_deg) : (o.wind_dir in DIR_DEG ? Math.round(DIR_DEG[o.wind_dir]) : null)) : null;
-  const pic = mode==="pro" ? '<div class="emoji pro">'+compassRose(deg,kt,L.t)+'</div>' : '<div class="emoji">'+L.emoji+'</div>';
+  let pic, extra="";
+  if(mode==="pro"){ pic = '<div class="emoji pro">'+compassRose(deg,kt,L.t)+'</div>'; }
+  else if(usingQuest){ pic = '<div class="qpic"><img src="'+L.img+'" alt="RS Quest in '+L.word+' conditions"></div>'; extra = '<div class="qsub" style="color:'+L.t+'">'+(L.sub||'')+'</div>'; }
+  else { pic = '<div class="emoji">'+L.emoji+'</div>'; }
   const wdirHtml = mode==="pro"
     ? ((o&&o.wind_dir&&(o.wind_dir in DIR_DEG)) ? 'from the <b>'+o.wind_dir+'</b>'+(deg!=null?' · '+deg+'°':'') : '')
     : (dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '');
   hero.innerHTML =
     pic+
     '<div class="word" style="color:'+L.t+'">'+L.word+'</div>'+
+    extra+
     '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
     '<div class="wdir">'+wdirHtml+'</div>'+
     '<div class="bft">'+(f==null?"":"Force "+f+" · "+BEAUFORT_NAME[f])+'</div>'+
@@ -268,6 +307,7 @@ function stampAge(){
   el.textContent = (m<1 ? "Checked just now" : "Checked "+m+" min ago") + " · Sandringham YC";
 }
 
+document.body.setAttribute("data-mode", mode);
 document.querySelectorAll("#modeToggle button").forEach(b=>{ b.classList.toggle("on", b.dataset.mode===mode); b.addEventListener("click",()=>setMode(b.dataset.mode)); });
 load(); setInterval(load, REFRESH_MS); setInterval(stampAge, 30*1000);
 </script>
