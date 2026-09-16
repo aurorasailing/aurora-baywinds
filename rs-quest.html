@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.1 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.2 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -65,7 +65,8 @@
   footer a{color:var(--slate)}
   .ver{margin-top:12px; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
   .modeToggle{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px; margin:2px auto 8px; background:var(--white)}
-  .modeToggle button{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:none; border:none; padding:5px 15px; border-radius:999px; cursor:pointer}
+  .modeToggle button{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; letter-spacing:.01em; color:var(--muted); background:none; border:none; padding:5px 14px; border-radius:999px; cursor:pointer}
+  .x3badge{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(44px,15vw,78px); line-height:1; color:var(--muted); letter-spacing:.02em; margin:8px 0 2px}
   .modeToggle button.on{background:var(--green); color:#08351a}
   .emoji svg{width:clamp(104px,36vw,188px); height:clamp(104px,36vw,188px); display:block; margin:0 auto}
   .qpic{margin:2px 0 4px}
@@ -100,9 +101,9 @@
 
 <main>
   <div class="place">RS Quest · Is it a Sailing Day?</div>
-  <div class="modeToggle" id="modeToggle" role="group" aria-label="View mode">
-    <button type="button" data-mode="easy">Easy</button>
-    <button type="button" data-mode="pro">Pro</button>
+  <div class="modeToggle" id="modeToggle" role="group" aria-label="Boat type">
+    <button type="button" data-mode="quest">RS Quest</button>
+    <button type="button" data-mode="x3">X3 (coming soon)</button>
   </div>
   <div class="hero" id="hero"></div>
   <div class="banner" id="banner"></div>
@@ -119,9 +120,6 @@
       <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Reefed main sail only</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port.</span></li>
       <li><span class="qthumb"><img src="quest-shore.jpg" alt=""></span><span><b>Stay on shore</b> <span class="rng">36+ kt</span> — …or good luck.</span></li>
     </ul>
-    <h2>Easy or Pro</h2>
-    Tap <b>Pro</b> at the top to swap the picture for a compass rose and a wind barb — the way
-    sailors read the wind (<a href="wind-barbs.html">how to read a wind barb →</a>). Tap <b>Easy</b> to switch back.
     <h2 style="margin-top:16px">Where’s this from?</h2>
     This is the wind from <b>Fawkner Beacon</b> — the Bureau of Meteorology’s marine beacon out on
     Port Phillip, a good open-water reading for the bay. The levels here are set for an <b>RS Quest</b>
@@ -157,7 +155,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.1</div>
+    <div class="ver">rs-quest.html · v1.2</div>
   </div>
 </footer>
 
@@ -190,8 +188,8 @@ function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.rou
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
 let rows=null, usingSample=false, newestFull=null, airTemp=null;
-let mode = (function(){ try{ return localStorage.getItem("aurora-youth-mode")==="pro"?"pro":"easy"; }catch(e){ return "kids"; } })();
-function setMode(m){ mode=m; try{ localStorage.setItem("aurora-youth-mode",m); }catch(e){}
+let mode = (function(){ try{ return localStorage.getItem("rs-quest-boat")==="x3"?"x3":"quest"; }catch(e){ return "quest"; } })();
+function setMode(m){ mode=m; try{ localStorage.setItem("rs-quest-boat",m); }catch(e){}
   document.querySelectorAll("#modeToggle button").forEach(b=>b.classList.toggle("on", b.dataset.mode===m));
   if(rows) render(); }
 
@@ -244,22 +242,30 @@ function render(){
   const dir = o ? dir8(o.wind_dir) : null;
   airTemp = (o && o.air_temp!=null && isFinite(o.air_temp)) ? Math.round(o.air_temp) : null;
   const hero=document.getElementById("hero");
-  hero.style.background   = L.c + "22";     // soft tint of the band colour
-  hero.style.borderColor  = L.c;
-  const deg = o ? (o.wind_dir_deg!=null&&isFinite(o.wind_dir_deg) ? Math.round(o.wind_dir_deg) : (o.wind_dir in DIR_DEG ? Math.round(DIR_DEG[o.wind_dir]) : null)) : null;
-  const pic = mode==="pro" ? '<div class="emoji pro">'+compassRose(deg,kt,L.t)+'</div>' : '<div class="qpic"><img src="'+L.img+'" alt="RS Quest in '+L.word+' conditions"></div>';
-  const wdirHtml = mode==="pro"
-    ? ((o&&o.wind_dir&&(o.wind_dir in DIR_DEG)) ? 'from the <b>'+o.wind_dir+'</b>'+(deg!=null?' · '+deg+'°':'') : '')
-    : (dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '');
-  hero.innerHTML =
-    pic+
-    '<div class="word" style="color:'+L.t+'">'+L.word+'</div>'+
-    '<div class="qsub" style="color:'+L.t+'">'+(L.sub||'')+'</div>'+
-    '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
-    '<div class="wdir">'+wdirHtml+'</div>'+
-    '<div class="bft">'+(f==null?"":"Force "+f+" · "+BEAUFORT_NAME[f])+'</div>'+
-    '<div class="air">'+(airTemp==null?"":'🌡️ <b>'+airTemp+'°</b> in the air')+'</div>'+
-    '<div class="hupd" id="hupd"></div>';
+  const wdirSimple = dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '';
+  if(mode==="x3"){
+    hero.style.background  = "var(--seafoam)";
+    hero.style.borderColor = "var(--line)";
+    hero.innerHTML =
+      '<div class="x3badge">RS X3</div>'+
+      '<div class="word" style="color:var(--slate)">Coming soon</div>'+
+      '<div class="qsub" style="color:var(--muted)">wind guidance for the RS X3 is on the way</div>'+
+      '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
+      '<div class="wdir">'+wdirSimple+'</div>'+
+      '<div class="hupd" id="hupd"></div>';
+  } else {
+    hero.style.background  = L.c + "22";
+    hero.style.borderColor = L.c;
+    hero.innerHTML =
+      '<div class="qpic"><img src="'+L.img+'" alt="RS Quest in '+L.word+' conditions"></div>'+
+      '<div class="word" style="color:'+L.t+'">'+L.word+'</div>'+
+      '<div class="qsub" style="color:'+L.t+'">'+(L.sub||'')+'</div>'+
+      '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
+      '<div class="wdir">'+wdirSimple+'</div>'+
+      '<div class="bft">'+(f==null?"":"Force "+f+" · "+BEAUFORT_NAME[f])+'</div>'+
+      '<div class="air">'+(airTemp==null?"":'🌡️ <b>'+airTemp+'°</b> in the air')+'</div>'+
+      '<div class="hupd" id="hupd"></div>';
+  }
   newestFull = o ? o.local_date_time_full : null;
   document.getElementById("banner").classList.toggle("show", usingSample);
   document.getElementById("banner").textContent = usingSample ? "Showing pretend wind — the live feed isn’t connected yet." : "";
@@ -269,9 +275,9 @@ function render(){
 function stampAge(){
   const el=document.getElementById("hupd"); if(!el) return;
   if(usingSample){ el.textContent="Pretend wind"; return; }
-  if(!newestFull){ el.textContent="Sandringham YC"; return; }
+  if(!newestFull){ el.textContent="Fawkner Beacon"; return; }
   const m=Math.round((Date.now()-parseFull(newestFull).getTime())/60000);
-  el.textContent = (m<1 ? "Checked just now" : "Checked "+m+" min ago") + " · Sandringham YC";
+  el.textContent = (m<1 ? "Updated just now" : "Updated "+m+" min ago") + " · Fawkner Beacon";
 }
 
 document.querySelectorAll("#modeToggle button").forEach(b=>{ b.classList.toggle("on", b.dataset.mode===mode); b.addEventListener("click",()=>setMode(b.dataset.mode)); });
