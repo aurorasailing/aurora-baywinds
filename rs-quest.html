@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.2 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.6 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -116,8 +116,8 @@
       <li><span class="qthumb"><img src="quest-calm.jpg" alt=""></span><span><b>Calm</b> <span class="rng">under 5 kt</span> — not enough to sail.</span></li>
       <li><span class="qthumb"><img src="quest-smooth.jpg" alt=""></span><span><b>Smooth sailing</b> <span class="rng">5–7 kt</span> — gentle and easy.</span></li>
       <li><span class="qthumb"><img src="quest-sporty.jpg" alt=""></span><span><b>Sporty sailing</b> <span class="rng">8–17 kt</span> — a proper breeze, great fun.</span></li>
-      <li><span class="qthumb"><img src="quest-reef.jpg" alt=""></span><span><b>Reef!</b> <span class="rng">18–25 kt</span> — reef the main before you go.</span></li>
-      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Reefed main sail only</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port.</span></li>
+      <li><span class="qthumb"><img src="quest-reef.jpg" alt=""></span><span><b>Reef!</b> <span class="rng">18–25 kt</span> — reef the main before you go; consider easing the gnav.</span></li>
+      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Reefed main sail only</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port; ease the gnav.</span></li>
       <li><span class="qthumb"><img src="quest-shore.jpg" alt=""></span><span><b>Stay on shore</b> <span class="rng">36+ kt</span> — …or good luck.</span></li>
     </ul>
     <h2 style="margin-top:16px">Where’s this from?</h2>
@@ -125,6 +125,8 @@
     Port Phillip, a good open-water reading for the bay. The levels here are set for an <b>RS Quest</b>
     — a stable training dinghy that carries a breeze well, so “sporty” runs higher than you’d set for a
     small single-hander.
+    <p style="margin:12px 0 0">These levels follow <b>RS Sailing’s guidance for the Quest</b> — read them down for a light or young crew. <a href="rs-quest-limits.html">Full wind limits &amp; reefing →</a></p>
+    <p style="margin:10px 0 0"><b>From experience:</b> you might launch in 10 knots and cop 30+ in a gust — you wouldn’t have launched in that, but a reefed Quest with weight aboard stays stable if you keep it flat, ease the gnav, and head in. Know your reef point before you go.</p>
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
@@ -155,7 +157,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.2</div>
+    <div class="ver">rs-quest.html · v1.6</div>
   </div>
 </footer>
 
@@ -168,11 +170,11 @@ const REFRESH_MS = 2 * 60 * 1000;
 // wind strength → picture (knots)
 const LEVELS = [
   {max:4,   img:"quest-calm.jpg",     word:"Calm",           sub:"not enough to sail",        c:"#C4C9C5", t:"#586059"},
-  {max:7,   img:"quest-smooth.jpg",   word:"Smooth sailing", sub:"gentle and easy",           c:"#7BD877", t:"#3B9743"},
-  {max:17,  img:"quest-sporty.jpg",   word:"Sporty sailing", sub:"a proper breeze — great fun", c:"#2E9E3D", t:"#1B7A29"},
-  {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef the main before you go", c:"#FFBB44", t:"#B37400"},
-  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"hold on — don’t leave port",  c:"#F0792E", t:"#C2521A"},
-  {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"…or good luck",             c:"#F90D24", t:"#C21020"},
+  {max:7,   img:"quest-smooth.jpg",   word:"Smooth sailing", sub:"full main and jib — gentle",           c:"#7BD877", t:"#3B9743"},
+  {max:17,  img:"quest-sporty.jpg",   word:"Sporty sailing", sub:"flat and fun — ease the gnav as it builds", c:"#2E9E3D", t:"#1B7A29"},
+  {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef in and depower — ease the gnav", c:"#FFBB44", t:"#B37400"},
+  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"caught out? reefed, flat, hold on — get in",  c:"#F0792E", t:"#C2521A"},
+  {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"don’t launch — stay in port",             c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
 
