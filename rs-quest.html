@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.0 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.1 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -116,7 +116,7 @@
       <li><span class="qthumb"><img src="quest-smooth.jpg" alt=""></span><span><b>Smooth sailing</b> <span class="rng">5–7 kt</span> — gentle and easy.</span></li>
       <li><span class="qthumb"><img src="quest-sporty.jpg" alt=""></span><span><b>Sporty sailing</b> <span class="rng">8–17 kt</span> — a proper breeze, great fun.</span></li>
       <li><span class="qthumb"><img src="quest-reef.jpg" alt=""></span><span><b>Reef!</b> <span class="rng">18–25 kt</span> — reef the main before you go.</span></li>
-      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Main only!</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port.</span></li>
+      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Reefed main sail only</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port.</span></li>
       <li><span class="qthumb"><img src="quest-shore.jpg" alt=""></span><span><b>Stay on shore</b> <span class="rng">36+ kt</span> — …or good luck.</span></li>
     </ul>
     <h2>Easy or Pro</h2>
@@ -157,7 +157,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.0</div>
+    <div class="ver">rs-quest.html · v1.1</div>
   </div>
 </footer>
 
@@ -173,7 +173,7 @@ const LEVELS = [
   {max:7,   img:"quest-smooth.jpg",   word:"Smooth sailing", sub:"gentle and easy",           c:"#7BD877", t:"#3B9743"},
   {max:17,  img:"quest-sporty.jpg",   word:"Sporty sailing", sub:"a proper breeze — great fun", c:"#2E9E3D", t:"#1B7A29"},
   {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef the main before you go", c:"#FFBB44", t:"#B37400"},
-  {max:35,  img:"quest-mainonly.jpg", word:"Main only!",     sub:"hold on — don’t leave port",  c:"#F0792E", t:"#C2521A"},
+  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"hold on — don’t leave port",  c:"#F0792E", t:"#C2521A"},
   {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"…or good luck",             c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
