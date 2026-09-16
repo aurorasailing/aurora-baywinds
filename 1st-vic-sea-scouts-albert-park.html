@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · 1st-vic-sea-scouts-albert-park.html · v1.21 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · 1st-vic-sea-scouts-albert-park.html · v1.23 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -108,11 +108,11 @@
   <div class="foot-in">
     <h2>What the pictures mean</h2>
     <ul class="key">
-      <li><span class="e">🚣</span><span><b>Too calm</b> <span class="rng">0–5 kt</span> — not much wind, grab the oars.</span></li>
+      <li><span class="e">🚣</span><span><b>Too calm</b> <span class="rng">under 5 kt</span> — not much wind, grab the oars.</span></li>
       <li><span class="e">⛵️</span><span><b>Sailing weather!</b> <span class="rng">5–15 kt</span> — a great breeze to sail in.</span></li>
-      <li><span class="e">🛟</span><span><b>Getting strong</b> <span class="rng">15–23 kt</span> — be careful out there.</span></li>
-      <li><span class="e">🌪️</span><span><b>Too windy</b> <span class="rng">23–30 kt</span> — best to wait.</span></li>
-      <li><span class="e">☠️</span><span><b>Stay ashore</b> <span class="rng">30+ kt</span> — too wild to sail.</span></li>
+      <li><span class="e">🛟</span><span><b>Getting strong</b> <span class="rng">16–23 kt</span> — be careful out there.</span></li>
+      <li><span class="e">🌪️</span><span><b>Too windy</b> <span class="rng">24–30 kt</span> — best to wait.</span></li>
+      <li><span class="e">☠️</span><span><b>Stay ashore</b> <span class="rng">31+ kt</span> — too wild to sail.</span></li>
     </ul>
     <h2>Easy or Pro</h2>
     Tap <b>Pro</b> at the top to swap the picture for a compass rose and a wind barb — the way
@@ -156,7 +156,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">1st-vic-sea-scouts-albert-park.html · v1.21</div>
+    <div class="ver">1st-vic-sea-scouts-albert-park.html · v1.23</div>
   </div>
 </footer>
 
@@ -169,13 +169,13 @@ const REFRESH_MS = 2 * 60 * 1000;
 
 // wind strength → picture (knots)
 const LEVELS = [
-  {max:5,   emoji:"🚣", word:"Too calm",    c:"#C4C9C5", t:"#586059"},
+  {max:4,   emoji:"🚣", word:"Too calm",    c:"#C4C9C5", t:"#586059"},
   {max:15,  emoji:"⛵️", word:"Sail!",       c:"#7BD877", t:"#3B9743"},
   {max:23,  emoji:"🛟", word:"Careful",     c:"#FFBB44", t:"#B37400"},
   {max:30,  emoji:"🌪️", word:"Too windy",   c:"#F0792E", t:"#C2521A"},
   {max:999, emoji:"☠️", word:"Stay ashore", c:"#F90D24", t:"#C21020"},
 ];
-function levelFor(kt){ for(const l of LEVELS){ if(kt<l.max) return l; } return LEVELS[LEVELS.length-1]; }
+function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
 
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];

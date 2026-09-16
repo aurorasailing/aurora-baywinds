@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · pmyc-port-melbourne.html · v1.6 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.0 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,8 +7,8 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Port Melbourne — Is it a Sailing Day?</title>
-<meta name="description" content="Live wind at Port Melbourne — a simple sailing-day picture from Fawkner Beacon, Port Phillip.">
+<title>RS Quest — Is it a Sailing Day?</title>
+<meta name="description" content="Is it a Quest day? Live wind at Fawkner Beacon shown as an RS Quest in today’s conditions — Port Phillip.">
 <meta name="theme-color" content="#0A1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,6 +68,10 @@
   .modeToggle button{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:none; border:none; padding:5px 15px; border-radius:999px; cursor:pointer}
   .modeToggle button.on{background:var(--green); color:#08351a}
   .emoji svg{width:clamp(104px,36vw,188px); height:clamp(104px,36vw,188px); display:block; margin:0 auto}
+  .qpic{margin:2px 0 4px}
+  .qpic img{width:100%; max-width:300px; height:auto; border-radius:16px; display:block; margin:0 auto; box-shadow:0 6px 20px rgba(10,22,40,.14)}
+  .qsub{font-family:'Syne',sans-serif; font-weight:600; font-size:14px; margin:-2px 0 2px; opacity:.92}
+  .key .qthumb{flex:0 0 auto} .key .qthumb img{width:46px; height:46px; object-fit:cover; border-radius:8px; display:block}
   .cr-lab{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; fill:var(--slate)}
   .cr-n{fill:var(--green-b)}
   .pagenav{display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:center; margin:14px 0 2px; padding-top:12px; border-top:1px solid var(--line); font-size:13px}
@@ -95,7 +99,7 @@
 </header>
 
 <main>
-  <div class="place">Port Melbourne YC · Is it a Sailing Day?</div>
+  <div class="place">RS Quest · Is it a Sailing Day?</div>
   <div class="modeToggle" id="modeToggle" role="group" aria-label="View mode">
     <button type="button" data-mode="easy">Easy</button>
     <button type="button" data-mode="pro">Pro</button>
@@ -108,18 +112,21 @@
   <div class="foot-in">
     <h2>What the pictures mean</h2>
     <ul class="key">
-      <li><span class="e">🚣</span><span><b>Too calm</b> <span class="rng">under 5 kt</span> — not much wind, grab the oars.</span></li>
-      <li><span class="e">⛵️</span><span><b>Sailing weather!</b> <span class="rng">5–15 kt</span> — a great breeze to sail in.</span></li>
-      <li><span class="e">🛟</span><span><b>Getting strong</b> <span class="rng">16–23 kt</span> — be careful out there.</span></li>
-      <li><span class="e">🌪️</span><span><b>Too windy</b> <span class="rng">24–30 kt</span> — best to wait.</span></li>
-      <li><span class="e">☠️</span><span><b>Stay ashore</b> <span class="rng">31+ kt</span> — too wild to sail.</span></li>
+      <li><span class="qthumb"><img src="quest-calm.jpg" alt=""></span><span><b>Calm</b> <span class="rng">under 5 kt</span> — not enough to sail.</span></li>
+      <li><span class="qthumb"><img src="quest-smooth.jpg" alt=""></span><span><b>Smooth sailing</b> <span class="rng">5–7 kt</span> — gentle and easy.</span></li>
+      <li><span class="qthumb"><img src="quest-sporty.jpg" alt=""></span><span><b>Sporty sailing</b> <span class="rng">8–17 kt</span> — a proper breeze, great fun.</span></li>
+      <li><span class="qthumb"><img src="quest-reef.jpg" alt=""></span><span><b>Reef!</b> <span class="rng">18–25 kt</span> — reef the main before you go.</span></li>
+      <li><span class="qthumb"><img src="quest-mainonly.jpg" alt=""></span><span><b>Main only!</b> <span class="rng">26–35 kt</span> — hold on, don’t leave port.</span></li>
+      <li><span class="qthumb"><img src="quest-shore.jpg" alt=""></span><span><b>Stay on shore</b> <span class="rng">36+ kt</span> — …or good luck.</span></li>
     </ul>
     <h2>Easy or Pro</h2>
     Tap <b>Pro</b> at the top to swap the picture for a compass rose and a wind barb — the way
     sailors read the wind (<a href="wind-barbs.html">how to read a wind barb →</a>). Tap <b>Easy</b> to switch back.
     <h2 style="margin-top:16px">Where’s this from?</h2>
-    This is the wind from <b>Fawkner Beacon</b> — the Bureau of Meteorology’s marine
-    beacon out on the bay, the nearest station to Port Melbourne.
+    This is the wind from <b>Fawkner Beacon</b> — the Bureau of Meteorology’s marine beacon out on
+    Port Phillip, a good open-water reading for the bay. The levels here are set for an <b>RS Quest</b>
+    — a stable training dinghy that carries a breeze well, so “sporty” runs higher than you’d set for a
+    small single-hander.
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
@@ -150,7 +157,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">pmyc-port-melbourne.html · v1.6</div>
+    <div class="ver">rs-quest.html · v1.0</div>
   </div>
 </footer>
 
@@ -162,11 +169,12 @@ const REFRESH_MS = 2 * 60 * 1000;
 
 // wind strength → picture (knots)
 const LEVELS = [
-  {max:4,   emoji:"🚣", word:"Too calm",    c:"#C4C9C5", t:"#586059"},
-  {max:15,  emoji:"⛵️", word:"Sail!",       c:"#7BD877", t:"#3B9743"},
-  {max:23,  emoji:"🛟", word:"Careful",     c:"#FFBB44", t:"#B37400"},
-  {max:30,  emoji:"🌪️", word:"Too windy",   c:"#F0792E", t:"#C2521A"},
-  {max:999, emoji:"☠️", word:"Stay ashore", c:"#F90D24", t:"#C21020"},
+  {max:4,   img:"quest-calm.jpg",     word:"Calm",           sub:"not enough to sail",        c:"#C4C9C5", t:"#586059"},
+  {max:7,   img:"quest-smooth.jpg",   word:"Smooth sailing", sub:"gentle and easy",           c:"#7BD877", t:"#3B9743"},
+  {max:17,  img:"quest-sporty.jpg",   word:"Sporty sailing", sub:"a proper breeze — great fun", c:"#2E9E3D", t:"#1B7A29"},
+  {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef the main before you go", c:"#FFBB44", t:"#B37400"},
+  {max:35,  img:"quest-mainonly.jpg", word:"Main only!",     sub:"hold on — don’t leave port",  c:"#F0792E", t:"#C2521A"},
+  {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"…or good luck",             c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
 
@@ -239,13 +247,14 @@ function render(){
   hero.style.background   = L.c + "22";     // soft tint of the band colour
   hero.style.borderColor  = L.c;
   const deg = o ? (o.wind_dir_deg!=null&&isFinite(o.wind_dir_deg) ? Math.round(o.wind_dir_deg) : (o.wind_dir in DIR_DEG ? Math.round(DIR_DEG[o.wind_dir]) : null)) : null;
-  const pic = mode==="pro" ? '<div class="emoji pro">'+compassRose(deg,kt,L.t)+'</div>' : '<div class="emoji">'+L.emoji+'</div>';
+  const pic = mode==="pro" ? '<div class="emoji pro">'+compassRose(deg,kt,L.t)+'</div>' : '<div class="qpic"><img src="'+L.img+'" alt="RS Quest in '+L.word+' conditions"></div>';
   const wdirHtml = mode==="pro"
     ? ((o&&o.wind_dir&&(o.wind_dir in DIR_DEG)) ? 'from the <b>'+o.wind_dir+'</b>'+(deg!=null?' · '+deg+'°':'') : '')
     : (dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '');
   hero.innerHTML =
     pic+
     '<div class="word" style="color:'+L.t+'">'+L.word+'</div>'+
+    '<div class="qsub" style="color:'+L.t+'">'+(L.sub||'')+'</div>'+
     '<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div>'+
     '<div class="wdir">'+wdirHtml+'</div>'+
     '<div class="bft">'+(f==null?"":"Force "+f+" · "+BEAUFORT_NAME[f])+'</div>'+

@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.22 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.23 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -220,7 +220,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.22</div>
+    <div class="ver">bay-map.html · v1.23</div>
   </footer>
 </div>
 
@@ -235,9 +235,9 @@ const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
 const REFRESH_MS = 2 * 60 * 1000;
 
 const BANDS = [
-  {max:5,   name:"Calm",       c:"#C4C9C5", t:"#586059"},
-  {max:11,  name:"Ideal",      c:"#7BD877", t:"#3B9743"},
-  {max:16,  name:"Fresh",      c:"#2E9E3D", t:"#1B7A29"},
+  {max:4,   name:"Calm",       c:"#C4C9C5", t:"#586059"},
+  {max:10,  name:"Ideal",      c:"#7BD877", t:"#3B9743"},
+  {max:15,  name:"Fresh",      c:"#2E9E3D", t:"#1B7A29"},
   {max:23,  name:"Breezy",     c:"#FFBB44", t:"#B37400"},
   {max:30,  name:"Reconsider", c:"#F0792E", t:"#C2521A"},
   {max:999, name:"Strong",     c:"#F90D24", t:"#C21020"},
@@ -261,7 +261,7 @@ const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
 
 const store={}; let usingSample=false, selected=STATIONS[0].wmo, newestFull=null;
 
-function bandFor(kt){ for(const b of BANDS){ if(kt<b.max) return b; } return BANDS[BANDS.length-1]; }
+function bandFor(kt){ kt=Math.round(kt); for(const b of BANDS){ if(kt<=b.max) return b; } return BANDS[BANDS.length-1]; }
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
@@ -381,7 +381,7 @@ function select(w){ selected=w; renderCards(); renderChart();
 
 function renderLegend(){
   const el=document.getElementById("legend");
-  el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
+  el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max+1:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
   }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in each reading. "F5 fresh breeze" is the Beaufort force and name (0–12).</span>';
 }
