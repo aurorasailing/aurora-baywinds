@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.10 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.11 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -132,7 +132,7 @@
     reaches Port Melbourne, often an hour ahead, so it’s the one to check <b>before you leave home</b>, even if the
     wind hasn’t arrived at the club yet. On a <b>northerly</b>, <b>RMYS at St Kilda</b> reads it better and sits
     close to the boat (Fawkner picks up northerlies late). The page shows the fitting station and names it under
-    the reading; the air temperature is from St Kilda. The levels here are set for an <b>RS Quest</b> — a stable
+    the reading; the air temperature is from Melbourne (Olympic Park). The levels here are set for an <b>RS Quest</b> — a stable
     training dinghy that carries a breeze well, so “sporty” runs higher than you’d set for a small single-hander.
     <p style="margin:12px 0 0">These levels follow <b>RS Sailing’s guidance for the Quest</b> — read them down for a light or young crew. <a href="rs-quest-limits.html">Full wind limits &amp; reefing →</a></p>
     <p style="margin:10px 0 0"><b>From experience:</b> you might launch in 10 knots and cop 30+ in a gust — you wouldn’t have launched in that, but a reefed Quest with weight aboard stays stable if you keep it flat, ease the gnav, and head in. Know your reef point before you go.</p>
@@ -166,7 +166,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.10</div>
+    <div class="ver">rs-quest.html · v1.11</div>
   </div>
 </footer>
 
@@ -175,6 +175,7 @@
 const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
 const ST_SOUTH  = 95872;   // Fawkner Beacon — good on southerlies
 const ST_NORTH  = 95864;   // RMYS / St Kilda — better on northerlies
+const TEMP_ST   = 95936;   // Olympic Park — reliable air temperature near Port Melbourne
 const REFRESH_MS = 2 * 60 * 1000;
 
 // wind strength → picture (knots)
@@ -215,15 +216,16 @@ async function fetchOne(wmo){
 // Northerly = wind from the N sector (NW..N..NE). Fawkner leads the southerly change, so classify by it.
 function isNortherly(wd){ if(!wd || !(wd in DIR_DEG)) return false; const d=DIR_DEG[wd]; return d>=315 || d<=45; }
 async function load(){
-  const [fk, rm] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH)]);
+  const [fk, rm, op] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH), fetchOne(TEMP_ST)]);
   const useNorth = fk ? isNortherly(fk.wind_dir) : !!rm;
   const active = useNorth ? (rm||fk) : (fk||rm);
+  const tOf = x => (x && x.air_temp!=null && isFinite(x.air_temp)) ? Math.round(x.air_temp) : null;
+  const t1=tOf(op), t2=tOf(rm), t3=tOf(active);
+  outTemp = t1!=null ? t1 : (t2!=null ? t2 : t3);
   if(active){
     rows=[active]; usingSample=false;
     activeName = (active===rm) ? "RMYS · St Kilda" : "Fawkner Beacon";
-    outTemp = (rm && rm.air_temp!=null && isFinite(rm.air_temp)) ? Math.round(rm.air_temp)
-            : (active.air_temp!=null && isFinite(active.air_temp)) ? Math.round(active.air_temp) : null;
-  } else { rows=sample(); usingSample=true; activeName="Fawkner Beacon"; outTemp=null; }
+  } else { rows=sample(); usingSample=true; activeName="Fawkner Beacon"; }
   render();
 }
 function sample(){
