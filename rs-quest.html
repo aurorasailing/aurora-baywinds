@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.11 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.12 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -48,8 +48,8 @@
   .air{font-family:'Syne',sans-serif; font-weight:600; font-size:15px; color:var(--slate); margin-top:10px}
   .readrow{display:flex; align-items:baseline; justify-content:center; gap:18px; margin:14px 0 2px}
   .readrow .knots{margin:0}
-  .otemp{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(24px,8vw,40px); line-height:1; color:var(--slate)}
-  .otemp span{display:block; font-family:'Syne',sans-serif; font-weight:600; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:3px}
+  .otemp{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(40px,12vw,64px); line-height:1; color:var(--navy)}
+  .otemp b{font-family:'Syne',sans-serif; font-weight:600; font-size:.34em; color:var(--muted); margin-left:6px; vertical-align:middle}
   .src{font-family:'Syne',sans-serif; font-weight:600; font-size:13px; color:var(--slate); margin-top:4px}
   .air b{font-weight:700; color:var(--navy)}
   .wdir{font-family:'Syne',sans-serif; font-weight:400; font-size:17px; color:var(--slate); margin-top:6px}
@@ -166,7 +166,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.11</div>
+    <div class="ver">rs-quest.html · v1.12</div>
   </div>
 </footer>
 
@@ -269,7 +269,7 @@ function render(){
   const dir = o ? dir8(o.wind_dir) : null;
   const hero=document.getElementById("hero");
   const wdirSimple = dir ? 'from the <b>'+DIR_NAME[dir]+'</b>' : '';
-  const readrow = '<div class="readrow">'+(outTemp==null?'':'<div class="otemp">'+outTemp+'°<span>air</span></div>')+'<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div></div>';
+  const readrow = '<div class="readrow">'+(outTemp==null?'':'<div class="otemp">'+outTemp+'<b>°C</b></div>')+'<div class="knots">'+(kt==null?"–":kt)+'<b>knots</b></div></div>';
   const srcHtml = '<div class="src">reading <b>'+activeName+'</b></div>';
   if(mode==="x3"){
     hero.style.background  = "var(--seafoam)";
