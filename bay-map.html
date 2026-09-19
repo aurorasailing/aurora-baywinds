@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.56 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.57 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -102,6 +102,12 @@
   .xl-t{font-family:'Syne',sans-serif; font-weight:700; font-size:19px; color:var(--navy); display:block}
   .xl-d{font-size:14px; color:var(--slate); margin-top:3px; display:block; line-height:1.4}
   .xl-x{font-size:26px; color:var(--green-b); flex:none; line-height:1}
+  .xbtn{display:inline-flex; align-items:center; gap:8px; margin:2px 0 0; padding:8px 16px;
+    background:var(--white); border:1px solid var(--line); border-radius:999px; text-decoration:none;
+    font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--navy);
+    transition:border-color .15s ease, box-shadow .15s ease, color .15s ease}
+  .xbtn:hover{border-color:var(--green-b); color:var(--green-b); box-shadow:0 2px 10px rgba(10,22,40,.06)}
+  .xbtn .arw{color:var(--green-b)}
   @media(max-width:760px){ .cards-desktop{display:none} .cards-mobile{display:block}
     .mapcard .legend{position:static; flex-direction:row; flex-wrap:wrap; gap:8px 16px; background:none;
       border:none; padding:0; margin:12px 2px 0; -webkit-backdrop-filter:none; backdrop-filter:none; font-size:12.5px} }
@@ -180,6 +186,8 @@
     <p class="lead">Live wind at every station on the bay, from Melbourne down to the Heads — five from the Bureau, seven from the clubs, plus the shipping-channel and Heads stations from Ports Victoria (including <b>waves</b> at the entrance). Tap a Bureau station for its 24-hour graph.</p>
     <div class="banner" id="banner"></div>
   </div>
+
+  <a class="xbtn" href="northern-bay.html">Northern Bay view <span class="arw">→</span></a>
 
   <div class="grid">
     <!-- MAP -->
@@ -279,7 +287,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.56</div>
+    <div class="ver">bay-map.html · v1.57</div>
   </footer>
 </div>
 
