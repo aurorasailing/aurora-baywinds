@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · index.html · v1.26 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · index.html · v1.27 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -182,7 +182,7 @@
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
-  <div class="ver">index.html · v1.26</div>
+  <div class="ver">index.html · v1.27</div>
     <details class="spots">
       <summary>Sailing spots</summary>
       <nav class="spots-list" aria-label="All sailing spots">
@@ -210,6 +210,8 @@
 ──────────────────────────────────────────────────────────────────────── */
 /* const DATA_BASE = "./data"; */
 const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
+// Ports Victoria / OMC PortWeather stations come from a separate Worker.
+const PW_BASE = "https://aurora-portweather.gregor-fea.workers.dev";
 const REFRESH_MS = 2 * 60 * 1000;
 const TREND_WINDOW_MIN = 120;   // building/easing over the last ~2h (compare recent vs ~2h-ago averages)
 const TREND_KT = 2;             // change smaller than this reads as "steady"
@@ -226,6 +228,7 @@ const BANDS = [
 // All bay stations, in the same order as the map. Club stations (Brighton, Sandringham,
 // Mornington, Blairgowrie) are a single live reading — no gust, no trend.
 const STATIONS = [
+  {wmo:"webbdock", name:"Webb Dock", pw:true, realtime:true},
   {wmo:95864,  name:"St Kilda"},
   {wmo:95872,  name:"Fawkner"},
   {wmo:"rbyc", name:"Brighton",     club:true, realtime:true},
@@ -288,7 +291,8 @@ function vane(brg, col){
 }
 
 async function loadStation(s){
-  try{ const r=await fetch(DATA_BASE+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
+  try{ const base = s.pw ? PW_BASE : DATA_BASE;
+       const r=await fetch(base+"/"+s.wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
     const j=await r.json(); const rows=(j.observations?j.observations.data:j.data)||[];
     if(!rows.length) throw 0; store[s.wmo]=rows; return true;
   }catch(e){ store[s.wmo]= (typeof s.wmo==="number") ? sampleSeries(s) : []; return false; }
