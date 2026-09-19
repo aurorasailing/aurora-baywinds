@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.54 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.55 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -91,6 +91,23 @@
   .cgroup .cgrid{padding:0 12px 13px}
   .scard.static{cursor:default}
   .scard.static:hover{box-shadow:none}
+  .xbtn{display:inline-flex; align-items:center; gap:8px; margin:2px 0 0; padding:8px 16px;
+    background:var(--white); border:1px solid var(--line); border-radius:999px; text-decoration:none;
+    font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--navy);
+    transition:border-color .15s ease, box-shadow .15s ease, color .15s ease}
+  .xbtn:hover{border-color:var(--green-b); color:var(--green-b); box-shadow:0 2px 10px rgba(10,22,40,.06)}
+  .xbtn .arw{color:var(--green-b)}
+  .xlink{display:flex; align-items:center; gap:18px; margin:24px 0 4px; padding:18px 22px;
+    background:var(--seafoam); border:1px solid var(--line); border-radius:6px; text-decoration:none;
+    transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease}
+  .xlink:hover{box-shadow:0 6px 20px rgba(10,22,40,.09); border-color:var(--green-b); transform:translateY(-1px)}
+  .xlink:focus-visible{outline:2px solid var(--green-b); outline-offset:2px}
+  .xlink .xl-b{flex:1}
+  .xl-e{font-family:'Syne',sans-serif; font-weight:700; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--green); display:block; margin-bottom:5px}
+  .xl-t{font-family:'Syne',sans-serif; font-weight:700; font-size:19px; color:var(--navy); display:block}
+  .xl-d{font-size:14px; color:var(--slate); margin-top:3px; display:block; line-height:1.4}
+  .xl-x{font-size:26px; color:var(--green-b); flex:none; line-height:1}
   @media(max-width:760px){ .cards-desktop{display:none} .cards-mobile{display:block}
     .mapcard .legend{position:static; flex-direction:row; flex-wrap:wrap; gap:8px 16px; background:none;
       border:none; padding:0; margin:12px 2px 0; -webkit-backdrop-filter:none; backdrop-filter:none; font-size:12.5px} }
@@ -170,6 +187,8 @@
     <div class="banner" id="banner"></div>
   </div>
 
+  <a class="xbtn" href="bay-map.html">Whole bay view <span class="arw">→</span></a>
+
   <div class="grid">
     <!-- MAP -->
     <div class="mapcard">
@@ -201,6 +220,16 @@
     <div class="cards-desktop" id="cards-desktop"></div>
     <div class="cards-mobile" id="cards-mobile"></div>
   </div>
+
+  <!-- CROSS-LINK: whole-of-bay map -->
+  <a class="xlink" href="bay-map.html">
+    <span class="xl-b">
+      <span class="xl-e">Whole bay</span>
+      <span class="xl-t">Port Phillip — the full map</span>
+      <span class="xl-d">Every Bureau, club, channel and Heads station across the bay, plus waves at the entrance.</span>
+    </span>
+    <span class="xl-x" aria-hidden="true">→</span>
+  </a>
 
   <!-- GRAPH -->
   <div class="graphcard">
@@ -258,7 +287,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">northern-bay.html · v1.4</div>
+    <div class="ver">northern-bay.html · v1.5</div>
   </footer>
 </div>
 
