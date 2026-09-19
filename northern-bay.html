@@ -7,7 +7,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aurora · Bay Winds — Port Phillip</title>
+<title>Aurora · Northern Bay — Port Phillip</title>
 <meta name="description" content="Live Port Phillip Bay wind for Aurora Sailing, read from the Bureau of Meteorology.">
 <meta name="theme-color" content="#0A1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,16 +67,16 @@
 
   /* Main grid */
   .grid{display:block; margin:26px 0 6px}
-  .mapcard{width:100%; max-width:calc(min(80vh, 720px) * 0.936 + 28px); margin:0 auto; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
+  .mapcard{width:100%; max-width:min(760px, calc(80vh * 1.41)); margin:0 auto; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
   svg.bay{display:block; width:100%; height:auto}
-  .b-name{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; fill:var(--navy)}
-  .b-val{font-family:'Syne',sans-serif; font-weight:600; font-size:13px; fill:var(--slate)}
-  .b-edge{font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.12em; fill:var(--muted)}
+  .b-name{font-family:'Syne',sans-serif; font-weight:700; font-size:5.6px; fill:var(--navy)}
+  .b-val{font-family:'Syne',sans-serif; font-weight:600; font-size:5.2px; fill:var(--slate)}
+  .b-edge{font-family:'Syne',sans-serif; font-weight:600; font-size:4.4px; letter-spacing:.05em; fill:var(--muted)}
   .b-hit{cursor:pointer}
   .b-arrow{transition:transform .5s ease}
 
   /* Station cards */
-  .cards-desktop{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:20px}
+  .cards-desktop{display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-top:20px}
   .cards-desktop .col-wp{grid-column:1 / -1}
   .colh{font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin:0 0 11px}
   .cgrid{display:flex; flex-direction:column; gap:10px}
@@ -161,16 +161,16 @@
 
 <div class="wrap">
   <div class="top">
-    <span class="eyebrow">Live from the bay</span>
-    <h1>Port Phillip, <span class="accent">right now</span></h1>
-    <p class="lead">Live wind at every station on the bay, from Melbourne down to the Heads — five from the Bureau, seven from the clubs, plus the shipping-channel and Heads stations from Ports Victoria (including <b>waves</b> at the entrance). Tap a Bureau station for its 24-hour graph.</p>
+    <span class="eyebrow">Live · top of the bay</span>
+    <h1>Northern Bay, <span class="accent">right now</span></h1>
+    <p class="lead">The northern end of Port Phillip — the Yarra mouth, the shipping channel and the eastern beaches from St Kilda to Beaumaris. Eight stations, live. Tap a Bureau station for its 24-hour graph.</p>
     <div class="banner" id="banner"></div>
   </div>
 
   <div class="grid">
     <!-- MAP -->
     <div class="mapcard">
-      <svg class="bay" viewBox="0 60 660 705" role="img" aria-label="Port Phillip Bay with live wind at each station">
+      <svg class="bay" viewBox="346 120 268 190" role="img" aria-label="Northern Port Phillip Bay with live wind at each station">
         <path d="M200.5,570.0 C200.1,563.0 226.8,560.5 238.0,546.7 C249.2,533.0 260.7,503.0 267.8,487.5 C274.9,472.0 286.7,468.7 280.7,453.5 C274.7,438.3 245.3,402.0 231.9,396.2 C218.5,390.4 212.3,412.2 200.5,418.5 C188.7,424.8 178.9,422.6 160.8,434.1 C142.7,445.6 115.9,487.5 92.1,487.5 C68.3,487.5 26.9,451.9 18.0,434.1 C9.1,416.3 26.2,396.1 38.6,380.7 C51.0,365.3 78.7,342.3 92.1,341.8 C105.5,341.3 107.3,385.0 118.8,377.7 C130.2,370.4 141.1,315.4 160.8,298.1 C180.5,280.8 206.6,288.4 237.2,273.9 C267.8,259.3 322.5,230.2 344.1,210.8 C365.7,191.4 354.9,166.3 367.0,157.4 C379.1,148.5 402.1,156.6 416.7,157.4 C431.3,158.2 444.6,161.7 454.9,162.2 C465.2,162.7 473.1,152.7 478.6,160.3 C484.1,167.9 483.4,194.5 487.7,207.9 C492.0,221.3 500.2,229.1 504.5,240.9 C508.8,252.7 502.9,269.2 513.7,278.7 C524.5,288.2 555.0,280.3 569.4,298.1 C583.8,315.9 595.8,363.6 600.0,385.5 C604.2,407.4 602.3,414.6 594.7,429.2 C587.1,443.8 565.2,460.3 554.2,472.9 C543.2,485.5 539.2,485.5 529.0,504.9 C518.8,524.3 510.6,568.0 493.1,589.4 C475.7,610.8 445.8,622.6 424.3,633.1 C402.8,643.6 380.6,651.4 364.0,652.5 C347.4,653.6 335.4,645.6 325.0,639.9 C314.6,634.2 310.9,626.6 301.4,618.5 C291.9,610.4 278.0,596.3 267.8,591.3 C257.6,586.3 251.5,591.9 240.3,588.4 C229.1,584.9 200.9,577.0 200.5,570.0 Z"
               fill="var(--seafoam)" stroke="#C5D0C8" stroke-width="1.5" opacity="0.6"/>
         <!-- shipping channel (dredged): in the Heads, E along the South Channel, elbow at Hovell Pile, then N past Fawkner to Melbourne -->
@@ -247,12 +247,12 @@
     <script>(function(){var a=document.querySelector('.fb a');if(!a)return;var p=document.querySelector('.place');var spot=p?p.textContent.replace(/\s*·.*$/,'').trim():document.title;a.href='mailto:wind@aurorasailing.com.au?subject='+encodeURIComponent('Aurora wind feedback — '+spot)+'&body='+encodeURIComponent('\n\n\n(About '+spot+' — '+location.href+')');})();</script>
         <nav class="pagenav" aria-label="Aurora Bay Winds pages">
       <a href="index.html">Board</a>
-      <span class="cur" aria-current="page">Bay map</span>
-      <a href="northern-bay.html">Northern Bay</a>
+      <a href="bay-map.html">Bay map</a>
+      <span class="cur" aria-current="page">Northern Bay</span>
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.50</div>
+    <div class="ver">northern-bay.html · v1.0</div>
   </footer>
 </div>
 
@@ -277,34 +277,20 @@ const BANDS = [
 
 // mx/my = map coords (viewBox 600x720); anchor = label side (start|end)
 const STATIONS = [
-  {wmo:95864,  name:"St Kilda",     mx:479, my:160,  anchor:"start"},
+  {wmo:95864,  name:"St Kilda",     mx:479, my:160, anchor:"start"},
   {wmo:95872,  name:"Fawkner",      mx:448, my:230, anchor:"end"},
   {wmo:"rbyc", name:"Brighton",     mx:488, my:208, anchor:"start", realtime:true},
   {wmo:"syc",  name:"Sandringham",  mx:504, my:241, anchor:"start"},
   {wmo:"bryc", name:"Black Rock",   mx:510, my:262, anchor:"end", realtime:true},
   {wmo:"bmys", name:"Beaumaris",    mx:514, my:279, anchor:"start", realtime:true},
-  {wmo:94871,  name:"Frankston",    mx:593, my:429, anchor:"end"},
-  {wmo:"myc",  name:"Mornington",   mx:529, my:505, anchor:"end", realtime:true},
-  {wmo:94853,  name:"Sth Channel",  mx:311, my:584, anchor:"start"},
-  {wmo:"bys",  name:"Blairgowrie",  mx:325, my:640, anchor:"start", realtime:true},
-  {wmo:"slyc", name:"St Leonards",  mx:281,  my:454, anchor:"start", realtime:true},
-  {wmo:94847,  name:"Pt Wilson",    mx:119,  my:378, anchor:"start"},
 ];
 
 // Ports Victoria / OMC "PortWeather" stations (separate Worker). Buoys draw a wave marker,
 // met stations a wind barb; a station with no feed yet shows a hollow pin until its route exists.
 const PW_BASE = "https://aurora-portweather.gregor-fea.workers.dev";
 const PW_STATIONS = [
-  { id:"nepean",   name:"Point Nepean",   mx:278, my:640, anchor:"end" },   // wave buoy — ocean side, E of channel
-  { id:"lonsdale", name:"Point Lonsdale",  mx:240, my:588, anchor:"end" },   // wind — western head
-  { id:"geelong",  name:"Geelong",        mx:69,  my:407, anchor:"start" },
-  { id:"hovell",   name:"Hovell Pile",    mx:392, my:560, anchor:"start" },
-  { id:"southwharf",name:"South Wharf",   mx:455, my:90,  anchor:"end" },
-  { id:"webbdock", name:"Webb Dock",      mx:430, my:166, anchor:"end" },  // coast at the Yarra mouth
-  { id:"vts",      name:"Melbourne VTS",  mx:414, my:132, anchor:"end" },
-  { id:"breakwater",name:"Breakwater Pier",mx:438, my:198, anchor:"end" },  // on channel W edge, Webb Dock->Fawkner
-  { id:"hastings", name:"Hastings",       mx:584, my:562, anchor:"end" },     // Western Port — on W shore
-  { id:"flinders", name:"Flinders",       mx:598, my:670, anchor:"end" },     // Western Port — on W shore (S tip)
+  { id:"webbdock", name:"Webb Dock",      mx:430, my:166, anchor:"end" },
+  { id:"breakwater",name:"Breakwater Pier",mx:438, my:198, anchor:"end" },
 ];
 const pw={};
 
@@ -314,17 +300,13 @@ STATIONS.forEach(s=>CARDS[String(s.wmo)]={key:String(s.wmo),name:s.name,kind:"st
 PW_STATIONS.forEach(s=>CARDS[s.id]={key:s.id,name:s.name,kind:"pw",id:s.id,wave:s.id==="nepean",my:s.my});
 // Desktop: spatial columns (west | shipping channel | east) + Western Port
 const DGROUPS=[
-  {key:"W", title:"Western shore",    ids:["94847","geelong","slyc"]},
-  {key:"C", title:"Shipping channel", ids:["vts","southwharf","webbdock","breakwater","95872","hovell","94853","nepean","lonsdale"]},
-  {key:"E", title:"Eastern shore",    ids:["95864","rbyc","syc","bryc","bmys","94871","myc","bys"]},
-  {key:"WP",title:"Western Port",     ids:["hastings","flinders"]},
+  {key:"C", title:"Yarra mouth & channel", ids:["webbdock","breakwater","95872"]},
+  {key:"E", title:"Eastern shore",         ids:["95864","rbyc","syc","bryc","bmys"]},
 ];
 // Mobile: accordion by region
 const MGROUPS=[
-  {key:"N", title:"Northern bay",    ids:["vts","southwharf","webbdock","breakwater","95872","95864","rbyc","syc","bryc","bmys"]},
-  {key:"S", title:"Southern bay",    ids:["slyc","94853","hovell","nepean","lonsdale","94871","myc","bys"]},
-  {key:"G", title:"Geelong & Corio", ids:["geelong","94847"]},
-  {key:"WP",title:"Western Port",    ids:["hastings","flinders"]},
+  {key:"C", title:"Yarra mouth & channel", ids:["webbdock","breakwater","95872"]},
+  {key:"E", title:"Eastern shore",         ids:["95864","rbyc","syc","bryc","bmys"]},
 ];
 
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
@@ -337,15 +319,16 @@ function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
 function bearing(d){ return (d in COMPASS)?COMPASS[d]:null; }
 // Southern-Hemisphere wind barb (staff points into the wind; feathers on the right = speed).
+const MS=0.4;  // marker scale for the zoomed northern view
 function windBarb(mx,my,kt,color){
-  const L=30,STEP=6,FL=14,HL=7,tipY=my-L;
-  let s='<line x1="'+mx+'" y1="'+my+'" x2="'+mx+'" y2="'+tipY+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>';
+  const L=30*MS,STEP=6*MS,FL=14*MS,HL=7*MS,SW=(2.2*MS).toFixed(2),tipY=my-L;
+  let s='<line x1="'+mx+'" y1="'+my+'" x2="'+mx+'" y2="'+tipY+'" stroke="'+color+'" stroke-width="'+SW+'" stroke-linecap="round"/>';
   let v=Math.round(kt/5)*5, pen=Math.floor(v/50); v-=pen*50;
   let full=Math.floor(v/10); v-=full*10; let half=Math.floor(v/5), y=tipY;
   if(pen===0&&full===0&&half===1) y=tipY+STEP;
-  for(let i=0;i<pen;i++){ s+='<path d="M'+mx+','+y+' L'+(mx+FL)+','+(y-4)+' L'+mx+','+(y-8)+' Z" fill="'+color+'"/>'; y+=STEP+3; }
-  for(let i=0;i<full;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+FL)+'" y2="'+(y-7)+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>'; y+=STEP; }
-  for(let i=0;i<half;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+HL)+'" y2="'+(y-3.5)+'" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round"/>'; y+=STEP; }
+  for(let i=0;i<pen;i++){ s+='<path d="M'+mx+','+y+' L'+(mx+FL)+','+(y-4*MS)+' L'+mx+','+(y-8*MS)+' Z" fill="'+color+'"/>'; y+=STEP+3*MS; }
+  for(let i=0;i<full;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+FL)+'" y2="'+(y-7*MS)+'" stroke="'+color+'" stroke-width="'+SW+'" stroke-linecap="round"/>'; y+=STEP; }
+  for(let i=0;i<half;i++){ s+='<line x1="'+mx+'" y1="'+y+'" x2="'+(mx+HL)+'" y2="'+(y-3.5*MS)+'" stroke="'+color+'" stroke-width="'+SW+'" stroke-linecap="round"/>'; y+=STEP; }
   return s;
 }
 function fmtTime(f){ if(!f) return ""; let h=+f.slice(8,10); const m=f.slice(10,12);
@@ -420,20 +403,20 @@ function renderMarkers(){
 
     const arw=document.createElementNS(NS,"g"); arw.setAttribute("class","b-arrow");
     if(kt!=null && kt<3){
-      arw.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="6" fill="none" stroke="'+band.c+'" stroke-width="2"/>';
+      arw.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="'+(6*MS)+'" fill="none" stroke="'+band.c+'" stroke-width="'+(2*MS)+'"/>';
     } else if(kt!=null && brg!=null){
       arw.setAttribute("transform","rotate("+brg+" "+s.mx+" "+s.my+")");
       arw.innerHTML=windBarb(s.mx,s.my,kt,band.c);
     }
 
     const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",s.mx); dot.setAttribute("cy",s.my);
-    dot.setAttribute("r","4"); dot.setAttribute("fill",band.c);
+    dot.setAttribute("r",(4*MS).toFixed(2)); dot.setAttribute("fill",band.c);
 
-    const off = s.anchor==="end" ? -16 : 16;
+    const off = (s.anchor==="end" ? -16 : 16)*MS;
     const t1=document.createElementNS(NS,"text"); t1.setAttribute("class","b-name");
-    t1.setAttribute("x",s.mx+off); t1.setAttribute("y",s.my-3); t1.setAttribute("text-anchor",s.anchor); t1.textContent=s.name;
+    t1.setAttribute("x",s.mx+off); t1.setAttribute("y",s.my-3*MS); t1.setAttribute("text-anchor",s.anchor); t1.textContent=s.name;
     const t2=document.createElementNS(NS,"text"); t2.setAttribute("class","b-val");
-    t2.setAttribute("x",s.mx+off); t2.setAttribute("y",s.my+15); t2.setAttribute("text-anchor",s.anchor);
+    t2.setAttribute("x",s.mx+off); t2.setAttribute("y",s.my+15*MS); t2.setAttribute("text-anchor",s.anchor);
     t2.textContent = kt!=null ? kt+" kt "+(o.wind_dir||"") : "– –";
 
     grp.appendChild(arw); grp.appendChild(dot); grp.appendChild(t1); grp.appendChild(t2);
@@ -446,29 +429,29 @@ function renderPortweather(g){
   const NS="http://www.w3.org/2000/svg";
   PW_STATIONS.forEach(s=>{
     const o=pw[s.id];
-    const off = s.anchor==="end" ? -16 : 16;
+    const off = (s.anchor==="end" ? -16 : 16)*MS;
     const grp=document.createElementNS(NS,"g");
     let colour="#9AA3AE", val="– –";
     if(o && o.hs_m!=null){                 // wave buoy → two wavy lines, coloured by sea state
       const b=waveBand(o.hs_m); colour=b.c; val=o.hs_m+" m"+(o.wave_dir?" "+o.wave_dir:"");
       grp.innerHTML=
-        '<path d="M'+(s.mx-8)+','+(s.my-3)+' q4,-5 8,0 t8,0" fill="none" stroke="'+b.c+'" stroke-width="2.4" stroke-linecap="round"/>'+
-        '<path d="M'+(s.mx-8)+','+(s.my+3)+' q4,-5 8,0 t8,0" fill="none" stroke="'+b.c+'" stroke-width="2.4" stroke-linecap="round"/>';
+        '<path d="M'+(s.mx-8*MS)+','+(s.my-3*MS)+' q'+(4*MS)+',-'+(5*MS)+' '+(8*MS)+',0 t'+(8*MS)+',0" fill="none" stroke="'+b.c+'" stroke-width="'+(2.4*MS)+'" stroke-linecap="round"/>'+
+        '<path d="M'+(s.mx-8*MS)+','+(s.my+3*MS)+' q'+(4*MS)+',-'+(5*MS)+' '+(8*MS)+',0 t'+(8*MS)+',0" fill="none" stroke="'+b.c+'" stroke-width="'+(2.4*MS)+'" stroke-linecap="round"/>';
     } else if(o && o.wind_spd_kt!=null){    // met station → wind barb, like the others
       const kt=Math.round(o.wind_spd_kt), band=bandFor(kt), brg=bearing(o.wind_dir); colour=band.c;
       val=kt+" kt "+(o.wind_dir||"");
-      if(kt<3){ grp.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="6" fill="none" stroke="'+band.c+'" stroke-width="2"/>'; }
+      if(kt<3){ grp.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="'+(6*MS)+'" fill="none" stroke="'+band.c+'" stroke-width="'+(2*MS)+'"/>'; }
       else if(brg!=null){ const a=document.createElementNS(NS,"g");
         a.setAttribute("transform","rotate("+brg+" "+s.mx+" "+s.my+")"); a.innerHTML=windBarb(s.mx,s.my,kt,band.c); grp.appendChild(a); }
     } else {                                // no feed yet → hollow pin
-      grp.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="5" fill="none" stroke="#9AA3AE" stroke-width="1.6" stroke-dasharray="2 2"/>';
+      grp.innerHTML='<circle cx="'+s.mx+'" cy="'+s.my+'" r="'+(5*MS)+'" fill="none" stroke="#9AA3AE" stroke-width="'+(1.6*MS)+'" stroke-dasharray="1 1"/>';
     }
     const dot=document.createElementNS(NS,"circle"); dot.setAttribute("cx",s.mx); dot.setAttribute("cy",s.my);
-    dot.setAttribute("r","3.4"); dot.setAttribute("fill",colour); grp.appendChild(dot);
+    dot.setAttribute("r",(3.4*MS).toFixed(2)); dot.setAttribute("fill",colour); grp.appendChild(dot);
     const t1=document.createElementNS(NS,"text"); t1.setAttribute("class","b-name");
-    t1.setAttribute("x",s.mx+off); t1.setAttribute("y",s.my-3); t1.setAttribute("text-anchor",s.anchor); t1.textContent=s.name;
+    t1.setAttribute("x",s.mx+off); t1.setAttribute("y",s.my-3*MS); t1.setAttribute("text-anchor",s.anchor); t1.textContent=s.name;
     const t2=document.createElementNS(NS,"text"); t2.setAttribute("class","b-val");
-    t2.setAttribute("x",s.mx+off); t2.setAttribute("y",s.my+15); t2.setAttribute("text-anchor",s.anchor); t2.textContent=val;
+    t2.setAttribute("x",s.mx+off); t2.setAttribute("y",s.my+15*MS); t2.setAttribute("text-anchor",s.anchor); t2.textContent=val;
     grp.appendChild(t1); grp.appendChild(t2);
     g.appendChild(grp);
   });
