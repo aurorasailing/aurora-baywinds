@@ -1,0 +1,174 @@
+<!doctype html>
+<!-- Aurora Bay Winds · portweather-heads.html · v1.0 (PortWeather) · 2026-09-19 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Rip · wind &amp; waves · Aurora Sailing</title>
+<meta name="description" content="Live wind and waves at the entrance to Port Phillip — Point Lonsdale and Point Nepean — from Ports Victoria's PortWeather stations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#2E4057; --slate:#4A5568; --muted:#8A94A6; --paper:#F7F5F0; --card:#fff;
+    --green:#2E9E3D; --green-b:#1B7A29; --amber:#E8A33D; --orange:#E1741E; --red:#D0402A; --grey:#9AA3AE;
+    --blue:#2E6FA6; --blue-d:#1C4E7A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--navy);
+    font-family:'Lato',-apple-system,system-ui,sans-serif;line-height:1.5;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:0 auto;padding:18px 16px 40px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 2px}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);margin:0 0 2px;letter-spacing:-.01em}
+  .place{font-family:'Syne',sans-serif;font-weight:700;color:var(--slate);font-size:14px;margin:0 0 16px}
+  .card{background:var(--card);border:1px solid #ECE8DF;border-radius:18px;padding:20px 18px;margin:0 0 14px;
+    box-shadow:0 1px 2px rgba(46,64,87,.04)}
+  .ctag{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 10px}
+  .big{font-family:'Lato',sans-serif;font-weight:300;font-size:clamp(48px,15vw,72px);line-height:1;color:var(--navy)}
+  .big b{font-family:'Syne',sans-serif;font-weight:600;font-size:.30em;color:var(--muted);margin-left:8px;vertical-align:middle}
+  .sub{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-top:6px}
+  .row2{display:flex;gap:12px;margin-top:14px}
+  .cell{flex:1;background:#FAF8F3;border:1px solid #ECE8DF;border-radius:12px;padding:10px 12px}
+  .cell .k{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .cell .v{font-family:'Lato',sans-serif;font-weight:700;font-size:22px;color:var(--navy);margin-top:2px}
+  .pill{display:inline-block;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+    padding:3px 10px;border-radius:999px;color:#fff;vertical-align:middle}
+  .hupd{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;color:var(--muted);margin-top:12px}
+  .note{font-size:14px;color:var(--slate)}
+  .note b{color:var(--navy)}
+  .foot{margin-top:8px;font-size:12.5px;color:var(--muted)}
+  .foot a{color:var(--slate);font-weight:700;text-decoration:none}
+  .fb{margin:16px 0 2px}
+  .fb a{font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:14px}
+  .ver{font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);margin-top:20px;text-align:center}
+  .bnav{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:14px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+  .bnav a{color:var(--slate);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Aurora Sailing · at the entrance</p>
+  <h1>The Rip</h1>
+  <div class="place">The Rip · wind &amp; waves · Point Lonsdale + Point Nepean</div>
+
+  <!-- WIND (Point Lonsdale) -->
+  <div class="card">
+    <div class="ctag">Wind · Point Lonsdale</div>
+    <div class="big" id="w-kt">–<b>knots</b></div>
+    <div class="sub" id="w-sub" style="color:var(--muted)">checking…</div>
+    <div class="row2">
+      <div class="cell"><div class="k">Gust</div><div class="v" id="w-gust">–</div></div>
+      <div class="cell"><div class="k">Direction</div><div class="v" id="w-dir">–</div></div>
+      <div class="cell"><div class="k">Air</div><div class="v" id="w-air">–</div></div>
+    </div>
+    <div class="hupd" id="w-upd"></div>
+  </div>
+
+  <!-- WAVES (Point Nepean) -->
+  <div class="card">
+    <div class="ctag">Waves · Point Nepean</div>
+    <div class="big" id="v-hs">–<b>m Hs</b></div>
+    <div class="sub" id="v-sub" style="color:var(--muted)">checking…</div>
+    <div class="row2">
+      <div class="cell"><div class="k">Period</div><div class="v" id="v-tp">–</div></div>
+      <div class="cell"><div class="k">Swell</div><div class="v" id="v-sw">–</div></div>
+      <div class="cell"><div class="k">From</div><div class="v" id="v-dir">–</div></div>
+    </div>
+    <div class="hupd" id="v-upd"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctag">Reading the Rip</div>
+    <p class="note" style="margin:0"><b>This is the entrance, not the bay.</b> The wind here is the open-water breeze
+    before it softens inside the Heads, and the wave height is ocean swell meeting the tide — it can stand up fast on an
+    ebb against a southerly. Treat these as the <b>conditions at the gate</b>: useful for the run down to Queenscliff and
+    for judging what's marching up the bay, not the wind you'll feel at a club berth.</p>
+  </div>
+
+  <p class="fb"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a suggestion? Tell us →</a></p>
+
+  <div class="bnav">
+    <a href="index.html">← Board</a>
+    <a href="bay-map.html">Bay map</a>
+    <a href="wind-barbs.html">Wind barbs</a>
+  </div>
+
+  <div class="foot">
+    Wind &amp; waves from <a href="https://ports.vic.gov.au/boating-and-events/tides-waves-winds-weather/" target="_blank" rel="noopener">Ports Victoria</a>’s
+    PortWeather stations (OMC International) at Point Lonsdale and Point Nepean.
+  </div>
+  <div class="ver">portweather-heads.html · v1.0</div>
+</div>
+
+<script>
+  // Point at the PortWeather Worker (rename to your deployed host if different).
+  const DATA_BASE = "https://aurora-portweather.gregor-fea.workers.dev";
+
+  function windBand(kt){
+    if(kt==null) return {c:"var(--grey)", t:"—"};
+    if(kt<5)  return {c:"var(--grey)",  t:"Too light"};
+    if(kt<=15)return {c:"var(--green)", t:"Sailable"};
+    if(kt<=23)return {c:"var(--amber)", t:"Careful"};
+    if(kt<=30)return {c:"var(--orange)",t:"Strong"};
+    return {c:"var(--red)", t:"Stay ashore"};
+  }
+  // OMC's own Hs thresholds: green < 2 m, amber 2–4 m, red > 4 m.
+  function waveBand(hs){
+    if(hs==null) return {c:"var(--grey)", t:"—"};
+    if(hs<1)  return {c:"var(--green)", t:"Slight"};
+    if(hs<2)  return {c:"var(--green)", t:"Moderate"};
+    if(hs<4)  return {c:"var(--amber)", t:"Rough"};
+    return {c:"var(--red)", t:"Very rough"};
+  }
+  function ago(full){
+    if(!full) return "";
+    const m=full.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/); if(!m) return "";
+    const d=new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]);
+    const min=Math.max(0,Math.round((Date.now()-d.getTime())/60000));
+    return min<1?"Updated just now":("Updated "+min+" min ago");
+  }
+  async function grab(path){
+    try{ const r=await fetch(DATA_BASE+path+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0;
+      const j=await r.json(); const d=(j.observations&&j.observations.data)||[]; return d[0]||null; }
+    catch(e){ return null; }
+  }
+  async function load(){
+    const [w,v]=await Promise.all([grab("/lonsdale.json"),grab("/nepean.json")]);
+    // Wind
+    if(w){
+      const kt=w.wind_spd_kt, b=windBand(kt);
+      document.getElementById("w-kt").innerHTML=(kt==null?"–":kt)+'<b>knots</b>';
+      document.getElementById("w-sub").innerHTML='<span class="pill" style="background:'+b.c+'">'+b.t+'</span>'+
+        (w.wind_dir?'  from the <b>'+w.wind_dir+'</b>':'');
+      document.getElementById("w-sub").style.color="var(--slate)";
+      document.getElementById("w-gust").textContent=(w.gust_kt==null?"–":w.gust_kt+" kt");
+      document.getElementById("w-dir").textContent=(w.wind_dir||"–");
+      document.getElementById("w-air").textContent=(w.air_temp==null?"–":w.air_temp+"°");
+      document.getElementById("w-upd").textContent=ago(w.local_date_time_full);
+    } else { document.getElementById("w-sub").textContent="No reading right now."; }
+    // Waves
+    if(v){
+      const hs=v.hs_m, b=waveBand(hs);
+      document.getElementById("v-hs").innerHTML=(hs==null?"–":hs)+'<b>m Hs</b>';
+      document.getElementById("v-sub").innerHTML='<span class="pill" style="background:'+b.c+'">'+b.t+'</span>'+
+        (v.wave_dir?'  from the <b>'+v.wave_dir+'</b>':'');
+      document.getElementById("v-sub").style.color="var(--slate)";
+      document.getElementById("v-tp").textContent=(v.tp_s==null?"–":v.tp_s+" s");
+      document.getElementById("v-sw").textContent=(v.swell_m==null?"–":v.swell_m+" m"+(v.swell_s?" @ "+v.swell_s+"s":""));
+      document.getElementById("v-dir").textContent=(v.wave_dir||"–");
+      document.getElementById("v-upd").textContent=ago(v.local_date_time_full);
+    } else { document.getElementById("v-sub").textContent="No reading right now."; }
+  }
+  load(); setInterval(load, 120000);
+  // Feedback prefill (spot = page title, "· …" trimmed) with the page URL in the body.
+  (function(){var a=document.querySelector('.fb a');if(!a)return;var p=document.querySelector('.place');
+    var spot=(p?p.textContent:document.title).replace(/\s*·.*$/,'').trim();
+    a.href='mailto:wind@aurorasailing.com.au?subject='+encodeURIComponent('Aurora wind feedback — '+spot)+
+      '&body='+encodeURIComponent('\n\n\n(About '+spot+' — '+location.href+')');})();
+</script>
+</body>
+</html>
