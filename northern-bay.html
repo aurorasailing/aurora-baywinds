@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.50 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.51 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -67,7 +67,7 @@
 
   /* Main grid */
   .grid{display:block; margin:26px 0 6px}
-  .mapcard{width:100%; max-width:min(760px, calc(80vh * 1.41)); margin:0 auto; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
+  .mapcard{position:relative; width:100%; max-width:min(760px, calc(80vh * 1.41)); margin:0 auto; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
   svg.bay{display:block; width:100%; height:auto}
   .b-name{font-family:'Syne',sans-serif; font-weight:700; font-size:5.6px; fill:var(--navy)}
   .b-val{font-family:'Syne',sans-serif; font-weight:600; font-size:5.2px; fill:var(--slate)}
@@ -91,7 +91,9 @@
   .cgroup .cgrid{padding:0 12px 13px}
   .scard.static{cursor:default}
   .scard.static:hover{box-shadow:none}
-  @media(max-width:760px){ .cards-desktop{display:none} .cards-mobile{display:block} }
+  @media(max-width:760px){ .cards-desktop{display:none} .cards-mobile{display:block}
+    .mapcard .legend{position:static; flex-direction:row; flex-wrap:wrap; gap:8px 16px; background:none;
+      border:none; padding:0; margin:12px 2px 0; -webkit-backdrop-filter:none; backdrop-filter:none; font-size:12.5px} }
   .scard{display:flex; align-items:center; justify-content:space-between; gap:14px;
     background:var(--white); border:1px solid var(--line); border-left:3px solid var(--line);
     border-radius:3px; padding:13px 16px; cursor:pointer;
@@ -109,13 +111,14 @@
   .scard .dir{font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:var(--slate); margin-left:7px}
 
   /* Legend */
-  .legend{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center;
-    font-size:13px; color:var(--slate); margin:16px 0 0}
+  .legend{position:absolute; top:22px; right:22px; z-index:2; display:flex; flex-direction:column; gap:5px;
+    background:rgba(255,255,255,.82); border:1px solid var(--line); border-radius:5px; padding:9px 11px;
+    font-size:11.5px; color:var(--slate); margin:0; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px)}
+  .legnote{font-size:12.5px; color:var(--muted); margin:14px 2px 0; line-height:1.45}
   .legend .sw{display:inline-flex; align-items:center; gap:7px}
   .legend .c{width:12px; height:12px; border-radius:2px; display:inline-block}
   .legend .rng{color:var(--muted)}
-  .legend .note{width:100%; color:var(--muted); font-size:12.5px; margin-top:2px}
-
+  
   /* Graph */
   .graphcard{background:var(--white); border:1px solid var(--line); border-radius:4px;
     padding:20px 20px 10px; margin:26px 0 44px}
@@ -189,6 +192,7 @@
         <g id="markers"></g>
       </svg>
       <div class="legend" id="legend"></div>
+      <p class="legnote">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in each reading. “F5 fresh breeze” is the Beaufort force and name (0–12).</p>
     </div>
 
     <!-- CARDS: desktop = spatial columns (west | channel | east) + Western Port; mobile = accordion by region -->
@@ -252,7 +256,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">northern-bay.html · v1.0</div>
+    <div class="ver">northern-bay.html · v1.1</div>
   </footer>
 </div>
 
@@ -499,7 +503,7 @@ function renderLegend(){
   const el=document.getElementById("legend");
   el.innerHTML=BANDS.map((b,i)=>{ const lo=i?BANDS[i-1].max+1:0, rng=b.max===999?lo+"+":lo+"–"+b.max;
     return '<span class="sw"><span class="c" style="background:'+b.c+'"></span>'+b.name+' <span class="rng">'+rng+' kt</span></span>';
-  }).join("")+'<span class="note">Arrows fly with the wind; the label shows where it’s from. Gust is the strongest in each reading. "F5 fresh breeze" is the Beaufort force and name (0–12).</span>';
+  }).join("");
 }
 function renderBanner(){ const b=document.getElementById("banner");
   if(usingSample){ b.classList.add("show"); b.innerHTML="<b>Showing sample data.</b> The live BOM mirror isn’t connected yet — point <code>DATA_BASE</code> at your mirrored feed to go live."; }
