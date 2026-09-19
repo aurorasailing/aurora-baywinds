@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.46 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.47 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -66,8 +66,8 @@
   .banner.show{display:block}
 
   /* Main grid */
-  .grid{display:flex; flex-wrap:wrap; gap:34px; align-items:flex-start; margin:26px 0 6px}
-  .mapcard{flex:1.05 1 380px; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
+  .grid{display:block; margin:26px 0 6px}
+  .mapcard{width:100%; background:var(--white); border:1px solid var(--line); border-radius:4px; padding:14px}
   svg.bay{display:block; width:100%; height:auto}
   .b-name{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; fill:var(--navy)}
   .b-val{font-family:'Syne',sans-serif; font-weight:600; font-size:13px; fill:var(--slate)}
@@ -76,7 +76,22 @@
   .b-arrow{transition:transform .5s ease}
 
   /* Station cards */
-  .stations{flex:0.95 1 320px; display:flex; flex-direction:column; gap:11px}
+  .cards-desktop{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:20px}
+  .cards-desktop .col-wp{grid-column:1 / -1}
+  .colh{font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin:0 0 11px}
+  .cgrid{display:flex; flex-direction:column; gap:10px}
+  .col-wp .cgrid{flex-direction:row; flex-wrap:wrap}
+  .col-wp .scard{flex:1 1 260px}
+  .cards-mobile{display:none; margin-top:18px}
+  .cgroup{border:1px solid var(--line); border-radius:4px; margin-bottom:10px; overflow:hidden; background:var(--white)}
+  .cgroup>summary{font-family:'Syne',sans-serif; font-weight:700; font-size:14.5px; color:var(--navy); padding:13px 15px; cursor:pointer; list-style:none}
+  .cgroup>summary::-webkit-details-marker{display:none}
+  .cgroup>summary::after{content:'▾'; float:right; color:var(--muted); font-weight:400}
+  .cgroup[open]>summary::after{content:'▴'}
+  .cgroup .cgrid{padding:0 12px 13px}
+  .scard.static{cursor:default}
+  .scard.static:hover{box-shadow:none}
+  @media(max-width:760px){ .cards-desktop{display:none} .cards-mobile{display:block} }
   .scard{display:flex; align-items:center; justify-content:space-between; gap:14px;
     background:var(--white); border:1px solid var(--line); border-left:3px solid var(--line);
     border-radius:3px; padding:13px 16px; cursor:pointer;
@@ -176,8 +191,9 @@
       <div class="legend" id="legend"></div>
     </div>
 
-    <!-- CARDS -->
-    <div class="stations" id="cards"></div>
+    <!-- CARDS: desktop = spatial columns (west | channel | east) + Western Port; mobile = accordion by region -->
+    <div class="cards-desktop" id="cards-desktop"></div>
+    <div class="cards-mobile" id="cards-mobile"></div>
   </div>
 
   <!-- GRAPH -->
@@ -235,7 +251,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.46</div>
+    <div class="ver">bay-map.html · v1.47</div>
   </footer>
 </div>
 
@@ -291,10 +307,29 @@ const PW_STATIONS = [
 ];
 const pw={};
 
+// Unified card model (BOM/club via store + PortWeather via pw), keyed by string.
+const CARDS={};
+STATIONS.forEach(s=>CARDS[String(s.wmo)]={key:String(s.wmo),name:s.name,kind:"store",wmo:s.wmo,wave:false});
+PW_STATIONS.forEach(s=>CARDS[s.id]={key:s.id,name:s.name,kind:"pw",id:s.id,wave:s.id==="nepean"});
+// Desktop: spatial columns (west | shipping channel | east) + Western Port
+const DGROUPS=[
+  {key:"W", title:"Western shore",    ids:["94847","geelong","slyc"]},
+  {key:"C", title:"Shipping channel", ids:["vts","southwharf","webbdock","breakwater","95872","hovell","94853","nepean","lonsdale"]},
+  {key:"E", title:"Eastern shore",    ids:["95864","rbyc","syc","bryc","bmys","94871","myc","bys"]},
+  {key:"WP",title:"Western Port",     ids:["hastings","flinders"]},
+];
+// Mobile: accordion by region
+const MGROUPS=[
+  {key:"N", title:"Northern bay",    ids:["vts","southwharf","webbdock","breakwater","95872","95864","rbyc","syc","bryc","bmys"]},
+  {key:"S", title:"Southern bay",    ids:["slyc","94853","hovell","nepean","lonsdale","94871","myc","bys"]},
+  {key:"G", title:"Geelong & Corio", ids:["geelong","94847"]},
+  {key:"WP",title:"Western Port",    ids:["hastings","flinders"]},
+];
+
 const COMPASS = {N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,
   S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
 
-const store={}; let usingSample=false, selected=STATIONS[0].wmo, newestFull=null;
+const store={}; let usingSample=false, selected=String(STATIONS[0].wmo), newestFull=null;
 
 function bandFor(kt){ kt=Math.round(kt); for(const b of BANDS){ if(kt<=b.max) return b; } return BANDS[BANDS.length-1]; }
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
@@ -356,7 +391,7 @@ function sampleSeries(s){
   return rows;
 }
 
-function render(){ renderMarkers(); renderCards(); renderLegend(); renderChart(); renderBanner();
+function render(){ renderMarkers(); renderAllCards(); renderLegend(); renderChart(); renderBanner();
   newestFull = STATIONS.filter(s=>typeof s.wmo==="number"||s.realtime).map(s=>latest(s.wmo)).filter(Boolean).map(o=>o.local_date_time_full).filter(Boolean).sort().slice(-1)[0] || null;
   stampAge();
   document.getElementById("live").style.background = usingSample?"var(--muted)":"var(--green-b)";
@@ -438,26 +473,43 @@ function renderPortweather(g){
   });
 }
 
-function renderCards(){
-  const el=document.getElementById("cards"); el.innerHTML="";
-  STATIONS.forEach(s=>{
-    const o=latest(s.wmo), kt=o?Math.round(o.wind_spd_kt):null;
-    const band=kt!=null?bandFor(kt):BANDS[0], g=o&&o.gust_kt!=null?Math.round(o.gust_kt):null;
-    const dir=o&&o.wind_dir&&(o.wind_dir in COMPASS)?o.wind_dir:"–";
-    const c=document.createElement("div"); c.className="scard"+(s.wmo===selected?" active":"");
-    c.style.borderLeftColor=band.c; c.tabIndex=0; c.setAttribute("role","button");
-    c.onclick=()=>select(s.wmo);
-    c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(s.wmo);}};
-    c.innerHTML=
-      '<div><div class="nm">'+s.name+'</div>'+
-      '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+''+(g!=null?' · <span class="gval">Gust '+g+' kt</span>':'')+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
-      '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div>';
-    el.appendChild(c);
-  });
+function cardHTML(card){
+  const o = card.kind==="store" ? latest(card.wmo) : (pw[card.id]||null);
+  if(card.wave){
+    const hs=o&&o.hs_m!=null?o.hs_m:null, b=waveBand(hs), dir=o&&o.wave_dir?o.wave_dir:"–";
+    const sub = hs==null ? "No reading yet"
+      : "Wave height"+(o.tp_s!=null?" · "+o.tp_s+" s":"")+(o.swell_m!=null?" · swell "+o.swell_m+" m":"");
+    return '<div class="scard static wave" style="border-left-color:'+b.c+'">'+
+      '<div><div class="nm">'+card.name+'</div><div class="sub">'+sub+'</div></div>'+
+      '<div class="rt"><span class="kt" style="color:'+b.c+'">'+(hs==null?"–":hs)+'</span><span class="u">m</span><span class="dir">'+dir+'</span></div></div>';
+  }
+  const kt=o?Math.round(o.wind_spd_kt):null, band=kt!=null?bandFor(kt):BANDS[0];
+  const g=o&&o.gust_kt!=null?Math.round(o.gust_kt):null;
+  const dir=o&&o.wind_dir&&(o.wind_dir in COMPASS)?o.wind_dir:"–";
+  const clickable = card.kind==="store";
+  const active = clickable && String(card.wmo)===selected;
+  const attrs = clickable ? ' data-wmo="'+card.key+'" tabindex="0" role="button"' : "";
+  return '<div class="scard'+(active?" active":"")+(clickable?"":" static")+'"'+attrs+' style="border-left-color:'+band.c+'">'+
+    '<div><div class="nm">'+card.name+'</div>'+
+    '<div class="sub"><span style="color:'+band.t+';font-weight:700">'+band.name+'</span>'+(kt==null?"":' <span class="bft">F'+beaufort(kt)+' '+BEAUFORT_NAME[beaufort(kt)]+'</span>')+(g!=null?' · <span class="gval">Gust '+g+' kt</span>':'')+(o&&o.air_temp!=null?' · '+o.air_temp+'°':'')+'</div></div>'+
+    '<div class="rt"><span class="kt" style="color:'+band.t+'">'+(kt==null?"–":kt)+'</span><span class="u">kt</span><span class="dir">'+dir+'</span></div></div>';
+}
+function renderGroupSet(root, groups, accordion){
+  if(!root) return;
+  root.innerHTML = groups.map(gr=>{
+    const cards = gr.ids.map(id=>CARDS[id]).filter(Boolean).map(cardHTML).join("");
+    if(accordion) return '<details class="cgroup" open><summary>'+gr.title+'</summary><div class="cgrid">'+cards+'</div></details>';
+    return '<section class="col'+(gr.key==="WP"?" col-wp":"")+'"><div class="colh">'+gr.title+'</div><div class="cgrid">'+cards+'</div></section>';
+  }).join("");
+}
+function renderAllCards(){
+  renderGroupSet(document.getElementById("cards-desktop"), DGROUPS, false);
+  renderGroupSet(document.getElementById("cards-mobile"),  MGROUPS, true);
 }
 
-function select(w){ selected=w; renderCards(); renderChart();
-  document.getElementById("gtitle").textContent=(STATIONS.find(s=>s.wmo===w)||{}).name+" · last 24 hours"; }
+function select(w){ selected=String(w); renderAllCards(); renderChart();
+  const st=STATIONS.find(s=>String(s.wmo)===selected);
+  document.getElementById("gtitle").textContent=(st?st.name:"")+" · last 24 hours"; }
 
 function renderLegend(){
   const el=document.getElementById("legend");
@@ -492,6 +544,10 @@ function renderChart(){
 
 loadAll(); setInterval(loadAll, REFRESH_MS); setInterval(stampAge, 30*1000);
 loadPW(); setInterval(loadPW, 120000);
+["cards-desktop","cards-mobile"].forEach(id=>{ const el=document.getElementById(id); if(!el) return;
+  el.addEventListener("click",e=>{ const c=e.target.closest(".scard[data-wmo]"); if(c) select(c.getAttribute("data-wmo")); });
+  el.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ const c=e.target.closest(".scard[data-wmo]"); if(c){ e.preventDefault(); select(c.getAttribute("data-wmo")); } } });
+});
 </script>
 </body>
 </html>
