@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.28 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.29 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -158,13 +158,13 @@
       <svg class="bay" viewBox="0 0 660 765" role="img" aria-label="Port Phillip Bay with live wind at each station">
         <path d="M335.2,65.7 C357.7,60.7 363.8,41.8 377.8,43.1 C391.8,44.4 410.8,56.5 419.4,73.3 C428.0,90.0 424.0,121.4 429.3,143.6 C434.6,165.8 439.2,185.6 451.1,206.5 C463.0,227.4 485.8,248.4 500.7,269.3 C515.6,290.2 530.4,305.6 540.3,332.2 C550.2,358.8 571.7,396.7 560.1,429.0 C548.5,461.3 493.0,495.0 470.9,525.8 C448.8,556.6 449.9,588.7 427.3,613.8 C404.7,638.9 367.9,659.9 335.2,676.6 C302.5,693.4 263.3,706.8 231.1,714.3 C198.9,721.8 164.3,730.7 142.0,721.9 C119.7,713.1 107.7,676.8 97.4,661.5 C87.2,646.2 80.0,641.0 80.5,630.1 C81.0,619.2 92.5,615.1 100.3,596.2 C108.1,577.4 130.1,550.1 127.1,517.0 C124.1,483.9 96.5,440.6 82.5,397.6 C68.5,354.7 50.0,298.1 42.9,259.3 C35.8,220.5 24.7,188.5 39.9,165.0 C55.1,141.5 100.2,133.8 134.0,118.5 C167.8,103.2 209.5,82.1 243.0,73.3 C276.5,64.5 312.7,70.7 335.2,65.7 Z"
               fill="var(--seafoam)" stroke="#C5D0C8" stroke-width="1.5" opacity="0.6"/>
-        <!-- shipping channel (dredged) — Melbourne down to the fork, then to the Heads and the SE -->
+        <!-- shipping channel (dredged): in the Heads, E along the South Channel, elbow at Hovell Pile, then N past Fawkner to Melbourne -->
         <g opacity="0.5" fill="none" stroke="#9DB4C7" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M345,102 C352,210 374,360 356,505"/>
-          <path d="M356,505 C322,566 270,616 233,652"/>
-          <path d="M356,505 C388,560 402,592 412,612"/>
+          <path d="M212,676 C280,672 350,645 400,608"/>
+          <path d="M400,608 C384,440 360,260 354,120"/>
         </g>
-        <text class="b-edge" transform="rotate(84 372 300)" x="372" y="300" text-anchor="middle" font-size="10" opacity="0.8">SHIPPING CHANNEL</text>
+        <text class="b-edge" transform="rotate(88 392 382)" x="392" y="382" text-anchor="middle" font-size="10" opacity="0.85">SHIPPING CHANNEL</text>
+        <text class="b-edge" transform="rotate(-14 300 700)" x="300" y="700" text-anchor="middle" font-size="9" opacity="0.7">SOUTH CHANNEL</text>
         <!-- Western Port — western edge only (a sliver east of the Mornington Peninsula) -->
         <path d="M606,432 C640,474 650,542 641,602 C635,648 622,676 611,694 L660,704 L660,420 Z"
               fill="var(--seafoam)" opacity="0.32"/>
@@ -237,7 +237,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.28</div>
+    <div class="ver">bay-map.html · v1.29</div>
   </footer>
 </div>
 
@@ -282,7 +282,7 @@ const PW_BASE = "https://aurora-portweather.gregor-fea.workers.dev";
 const PW_STATIONS = [
   { id:"nepean",   name:"Point Nepean",   mx:255, my:648, anchor:"start" },   // wave buoy (live)
   { id:"geelong",  name:"Geelong",        mx:58,  my:300, anchor:"start" },
-  { id:"hovell",   name:"Hovell Pile",    mx:372, my:410, anchor:"start" },
+  { id:"hovell",   name:"Hovell Pile",    mx:400, my:608, anchor:"start" },
   { id:"southwharf",name:"South Wharf",   mx:352, my:70,  anchor:"end" },
   { id:"webbdock", name:"Webb Dock",      mx:330, my:92,  anchor:"end" },
   { id:"vts",      name:"Melbourne VTS",  mx:360, my:110, anchor:"end" },
