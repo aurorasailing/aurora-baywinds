@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.47 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.48 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -251,7 +251,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.47</div>
+    <div class="ver">bay-map.html · v1.48</div>
   </footer>
 </div>
 
@@ -309,8 +309,8 @@ const pw={};
 
 // Unified card model (BOM/club via store + PortWeather via pw), keyed by string.
 const CARDS={};
-STATIONS.forEach(s=>CARDS[String(s.wmo)]={key:String(s.wmo),name:s.name,kind:"store",wmo:s.wmo,wave:false});
-PW_STATIONS.forEach(s=>CARDS[s.id]={key:s.id,name:s.name,kind:"pw",id:s.id,wave:s.id==="nepean"});
+STATIONS.forEach(s=>CARDS[String(s.wmo)]={key:String(s.wmo),name:s.name,kind:"store",wmo:s.wmo,wave:false,my:s.my});
+PW_STATIONS.forEach(s=>CARDS[s.id]={key:s.id,name:s.name,kind:"pw",id:s.id,wave:s.id==="nepean",my:s.my});
 // Desktop: spatial columns (west | shipping channel | east) + Western Port
 const DGROUPS=[
   {key:"W", title:"Western shore",    ids:["94847","geelong","slyc"]},
@@ -497,7 +497,7 @@ function cardHTML(card){
 function renderGroupSet(root, groups, accordion){
   if(!root) return;
   root.innerHTML = groups.map(gr=>{
-    const cards = gr.ids.map(id=>CARDS[id]).filter(Boolean).map(cardHTML).join("");
+    const cards = gr.ids.map(id=>CARDS[id]).filter(Boolean).sort((a,b)=>a.my-b.my).map(cardHTML).join("");
     if(accordion) return '<details class="cgroup" open><summary>'+gr.title+'</summary><div class="cgrid">'+cards+'</div></details>';
     return '<section class="col'+(gr.key==="WP"?" col-wp":"")+'"><div class="colh">'+gr.title+'</div><div class="cgrid">'+cards+'</div></section>';
   }).join("");
