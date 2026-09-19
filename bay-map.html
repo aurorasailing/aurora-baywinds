@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.43 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.46 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -155,23 +155,22 @@
   <div class="grid">
     <!-- MAP -->
     <div class="mapcard">
-      <svg class="bay" viewBox="0 0 660 765" role="img" aria-label="Port Phillip Bay with live wind at each station">
+      <svg class="bay" viewBox="0 60 660 705" role="img" aria-label="Port Phillip Bay with live wind at each station">
         <path d="M200.5,570.0 C200.1,563.0 226.8,560.5 238.0,546.7 C249.2,533.0 260.7,503.0 267.8,487.5 C274.9,472.0 286.7,468.7 280.7,453.5 C274.7,438.3 245.3,402.0 231.9,396.2 C218.5,390.4 212.3,412.2 200.5,418.5 C188.7,424.8 178.9,422.6 160.8,434.1 C142.7,445.6 115.9,487.5 92.1,487.5 C68.3,487.5 26.9,451.9 18.0,434.1 C9.1,416.3 26.2,396.1 38.6,380.7 C51.0,365.3 78.7,342.3 92.1,341.8 C105.5,341.3 107.3,385.0 118.8,377.7 C130.2,370.4 141.1,315.4 160.8,298.1 C180.5,280.8 206.6,288.4 237.2,273.9 C267.8,259.3 322.5,230.2 344.1,210.8 C365.7,191.4 354.9,166.3 367.0,157.4 C379.1,148.5 402.1,156.6 416.7,157.4 C431.3,158.2 444.6,161.7 454.9,162.2 C465.2,162.7 473.1,152.7 478.6,160.3 C484.1,167.9 483.4,194.5 487.7,207.9 C492.0,221.3 500.2,229.1 504.5,240.9 C508.8,252.7 502.9,269.2 513.7,278.7 C524.5,288.2 555.0,280.3 569.4,298.1 C583.8,315.9 595.8,363.6 600.0,385.5 C604.2,407.4 602.3,414.6 594.7,429.2 C587.1,443.8 565.2,460.3 554.2,472.9 C543.2,485.5 539.2,485.5 529.0,504.9 C518.8,524.3 510.6,568.0 493.1,589.4 C475.7,610.8 445.8,622.6 424.3,633.1 C402.8,643.6 380.6,651.4 364.0,652.5 C347.4,653.6 335.4,645.6 325.0,639.9 C314.6,634.2 310.9,626.6 301.4,618.5 C291.9,610.4 278.0,596.3 267.8,591.3 C257.6,586.3 251.5,591.9 240.3,588.4 C229.1,584.9 200.9,577.0 200.5,570.0 Z"
               fill="var(--seafoam)" stroke="#C5D0C8" stroke-width="1.5" opacity="0.6"/>
         <!-- shipping channel (dredged): in the Heads, E along the South Channel, elbow at Hovell Pile, then N past Fawkner to Melbourne -->
         <g opacity="0.5" fill="none" stroke="#9DB4C7" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M260.1,579.7 C250,597 240,611 232,626"/>
+          <path d="M260.1,579.7 C255,590 250,598 245,607"/>
           <path d="M260.1,579.7 C271.6,582.1 309.2,594.2 328.9,594.2 C348.6,594.2 368.1,585.4 378.5,579.7 C388.9,574.1 389.3,563.5 391.5,560.3 "/>
           <path d="M391.5,560.3 C397.0,534.4 415.9,464.9 424.3,404.9 C432.7,344.9 440.6,240.9 441.9,200.1 C443.2,159.3 433.6,166.9 432.0,160.3 "/>
         </g>
-        <text class="b-edge" transform="rotate(84 404 372)" x="404" y="372" text-anchor="middle" font-size="10" opacity="0.8">SHIPPING CHANNEL</text>
+        <text class="b-edge" transform="rotate(96 396 376)" x="396" y="376" text-anchor="middle" font-size="10" opacity="0.8">SHIPPING CHANNEL</text>
         <!-- Western Port — western edge only (a sliver east of the Mornington Peninsula) -->
         <path d="M614,430 C586,480 580,560 586,620 C590,662 602,684 612,694 L660,704 L660,420 Z"
               fill="var(--seafoam)" opacity="0.32"/>
         <path d="M614,430 C586,480 580,560 586,620 C590,662 602,684 612,694"
               fill="none" stroke="#C5D0C8" stroke-width="1.5" opacity="0.7"/>
         <text class="b-edge" transform="rotate(90 636 556)" x="636" y="556" text-anchor="middle" font-size="10">WESTERN PORT</text>
-        <text class="b-edge" x="300" y="18" text-anchor="middle">MELBOURNE</text>
         <g id="markers"></g>
       </svg>
       <div class="legend" id="legend"></div>
@@ -236,7 +235,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.43</div>
+    <div class="ver">bay-map.html · v1.46</div>
   </footer>
 </div>
 
@@ -284,8 +283,8 @@ const PW_STATIONS = [
   { id:"geelong",  name:"Geelong",        mx:69,  my:407, anchor:"start" },
   { id:"hovell",   name:"Hovell Pile",    mx:392, my:560, anchor:"start" },
   { id:"southwharf",name:"South Wharf",   mx:455, my:90,  anchor:"end" },
-  { id:"webbdock", name:"Webb Dock",      mx:430, my:170, anchor:"start" },  // coast at the Yarra mouth
-  { id:"vts",      name:"Melbourne VTS",  mx:414, my:116, anchor:"end" },
+  { id:"webbdock", name:"Webb Dock",      mx:430, my:166, anchor:"end" },  // coast at the Yarra mouth
+  { id:"vts",      name:"Melbourne VTS",  mx:414, my:132, anchor:"end" },
   { id:"breakwater",name:"Breakwater Pier",mx:438, my:198, anchor:"end" },  // on channel W edge, Webb Dock->Fawkner
   { id:"hastings", name:"Hastings",       mx:584, my:562, anchor:"end" },     // Western Port — on W shore
   { id:"flinders", name:"Flinders",       mx:598, my:670, anchor:"end" },     // Western Port — on W shore (S tip)
