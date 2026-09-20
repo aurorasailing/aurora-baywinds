@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · bay-map.html · v1.58 (Cloudflare) · 2026-09-14 -->
+<!-- Aurora Bay Winds · bay-map.html · v1.59 (Cloudflare) · 2026-09-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -290,7 +290,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">bay-map.html · v1.58</div>
+    <div class="ver">bay-map.html · v1.59</div>
   </footer>
 </div>
 
@@ -407,7 +407,7 @@ async function loadPW(){
       const j=await r.json(); const d=(j.observations&&j.observations.data)||[]; pw[s.id]=d[0]||null; }
     catch(e){ pw[s.id]=null; }
   }));
-  renderMarkers();
+  renderMarkers(); renderAllCards();
 }
 function waveBand(hs){ if(hs==null) return {c:"#9AA3AE",t:"—"};
   if(hs<1) return {c:"#2E9E3D",t:"slight"}; if(hs<2) return {c:"#2E9E3D",t:"moderate"};
