@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.13 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.14 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -49,6 +49,9 @@
   .qalert.red .qa-t{color:#C2521A}
   .qa-b{font-size:14px; color:var(--slate); line-height:1.45}
   .qa-r{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; margin-top:8px; color:var(--slate)}
+  .explain{max-width:440px; margin:26px auto 4px; padding-top:16px; border-top:1px solid var(--line); text-align:left}
+  .explain h3{font-family:'Syne',sans-serif; font-weight:700; font-size:15px; color:var(--navy); margin:0 0 7px}
+  .explain p{font-size:13.5px; color:var(--slate); line-height:1.5; margin:0 0 8px}
   .emoji{font-size:clamp(104px,36vw,188px); line-height:1; margin:2px 0 6px}
   .word{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(30px,9vw,50px); line-height:1.05; letter-spacing:-.01em}
   .knots{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(40px,12vw,64px); line-height:1; margin:16px 0 2px; color:var(--navy)}
@@ -145,7 +148,7 @@
     the reading; the air temperature is from Melbourne (Olympic Park). The levels here are set for an <b>RS Quest</b> — a stable
     training dinghy that carries a breeze well, so “sporty” runs higher than you’d set for a small single-hander.
     <p style="margin:12px 0 0">These levels follow <b>RS Sailing’s guidance for the Quest</b> — read them down for a light or young crew. <a href="rs-quest-limits.html">Full wind limits &amp; reefing →</a></p>
-    <p style="margin:10px 0 0"><b>From experience:</b> you might launch in 10 knots and cop 30+ in a gust — you wouldn’t have launched in that, but a reefed Quest with weight aboard stays stable if you keep it flat, ease the gnav, and head in. Know your reef point before you go.</p>
+    <p style="margin:10px 0 0"><b>From experience:</b> you might launch in 10 knots and cop 30+ in a gust — you wouldn’t have launched in that, but a reefed Quest with weight aboard stays stable if you keep the sail flat, ease the gnav, and head in. Know your reef point before you go.</p>
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
@@ -168,6 +171,11 @@
       </nav>
       <script>(function(){var h=location.href.split('#')[0].split('?')[0];document.querySelectorAll('.spots-list a').forEach(function(a){if(a.href.split('#')[0].split('?')[0]===h){a.classList.add('here');a.removeAttribute('href');}});})();</script>
     </details>
+    <div class="explain">
+      <h3>Why the “blowing in the bay” alert on a northerly?</h3>
+      <p>On a <b>northerly</b> (offshore) wind the shoreline shelters <b>St Kilda&nbsp;(RMYS)</b>, so your launch reading can look gentle while the open bay is much stronger. This page always reads <b>two</b> stations — RMYS in the lee and <b>Fawkner Beacon</b> out in the open — and normally shows whichever fits your launch area (Fawkner on southerlies, RMYS on northerlies).</p>
+      <p>When Fawkner is well up on the sheltered reading — a full band stronger, <b>8+&nbsp;knots</b> more, or gusting hard — an amber/red strip appears: <i>calmer here, but strong in the bay</i>. Close to shore may be OK, but rig for the bigger number before you clear the lee. A separate <b>“very gusty”</b> flag shows when the gust runs well above the average (10+&nbsp;knots over, or half again) — the lull-then-hit pattern that’s hard to hold.</p>
+    </div>
     <p class="fb" style="margin:14px 0 2px"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a suggestion? Tell us →</a></p>
     <script>(function(){var a=document.querySelector('.fb a');if(!a)return;var p=document.querySelector('.place');var spot=p?p.textContent.replace(/\s*·.*$/,'').trim():document.title;a.href='mailto:wind@aurorasailing.com.au?subject='+encodeURIComponent('Aurora wind feedback — '+spot)+'&body='+encodeURIComponent('\n\n\n(About '+spot+' — '+location.href+')');})();</script>
         <nav class="pagenav" aria-label="Aurora Sailing pages">
@@ -178,7 +186,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.13</div>
+    <div class="ver">rs-quest.html · v1.14</div>
   </div>
 </footer>
 
@@ -197,7 +205,7 @@ const LEVELS = [
   {max:12,  img:"quest-cruisy.jpg",   word:"Cruisy", sub:"a lovely working breeze — full sail",   c:"#5BC94A", t:"#227A2E"},
   {max:17,  img:"quest-sporty.jpg",   word:"Sporty", sub:"fun and exciting — ease the gnav as it builds", c:"#2E9E3D", t:"#1B7A29"},
   {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef in and depower — ease the gnav", c:"#FFBB44", t:"#B37400"},
-  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"caught out? reefed, flat, hold on — get in",  c:"#F0792E", t:"#C2521A"},
+  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"caught out? reefed, sail flat, hold on — get in",  c:"#F0792E", t:"#C2521A"},
   {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"don’t launch — stay in port",             c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
@@ -305,7 +313,7 @@ function buildAlerts(active){
     if(spread>=10 || (iM>=6 && iG>=1.5*iM)){
       parts.push({lvl:(iG>=30?2:1),
         title:"Very gusty",
-        body:"Mean <b>"+iM+" kt</b>, gusting <b>"+iG+" kt</b> — sudden hits between the lulls. Keep it flat, ease early, and don’t cleat the main.",
+        body:"Mean <b>"+iM+" kt</b>, gusting <b>"+iG+" kt</b> — sudden hits between the lulls. Keep the sail flat, ease early, and be ready to dump the mainsheet in the hits.",
         rig:null});
     }
   }
