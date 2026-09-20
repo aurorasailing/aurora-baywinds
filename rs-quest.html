@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.12 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.13 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -40,13 +40,22 @@
     text-transform:uppercase; color:var(--slate); margin-bottom:14px}
   .hero{width:100%; max-width:440px; border:2px solid var(--line); border-radius:28px;
     padding:30px 22px 34px; text-align:center; transition:background .4s ease, border-color .4s ease}
+  .qalerts{width:100%; max-width:440px; display:flex; flex-direction:column; gap:10px; margin-bottom:14px}
+  .qalert{border-radius:16px; padding:14px 16px; text-align:left; border:2px solid}
+  .qalert.amber{background:#FFF6E6; border-color:#FFBB44}
+  .qalert.red{background:#FDECEC; border-color:#F0792E}
+  .qa-t{font-family:'Syne',sans-serif; font-weight:800; font-size:16px; margin-bottom:4px}
+  .qalert.amber .qa-t{color:#B37400}
+  .qalert.red .qa-t{color:#C2521A}
+  .qa-b{font-size:14px; color:var(--slate); line-height:1.45}
+  .qa-r{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; margin-top:8px; color:var(--slate)}
   .emoji{font-size:clamp(104px,36vw,188px); line-height:1; margin:2px 0 6px}
   .word{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(30px,9vw,50px); line-height:1.05; letter-spacing:-.01em}
   .knots{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(40px,12vw,64px); line-height:1; margin:16px 0 2px; color:var(--navy)}
   .knots b{font-family:'Syne',sans-serif; font-weight:600; font-size:.34em; color:var(--muted); margin-left:6px; vertical-align:middle}
   .bft{font-family:'Syne',sans-serif; font-weight:600; font-size:15px; color:var(--muted); margin-top:4px}
   .air{font-family:'Syne',sans-serif; font-weight:600; font-size:15px; color:var(--slate); margin-top:10px}
-  .readrow{display:flex; align-items:baseline; justify-content:center; gap:18px; margin:14px 0 2px}
+  .readrow{display:flex; align-items:baseline; justify-content:center; gap:28px; margin:14px 0 2px}
   .readrow .knots{margin:0}
   .otemp{font-family:'Lato',sans-serif; font-weight:300; font-size:clamp(40px,12vw,64px); line-height:1; color:var(--navy)}
   .otemp b{font-family:'Syne',sans-serif; font-weight:600; font-size:.34em; color:var(--muted); margin-left:6px; vertical-align:middle}
@@ -110,6 +119,7 @@
     <button type="button" data-mode="quest">RS Quest</button>
     <button type="button" data-mode="x3">X3 (coming soon)</button>
   </div>
+  <div class="qalerts" id="qalerts" style="display:none"></div>
   <div class="hero" id="hero"></div>
   <div class="banner" id="banner"></div>
 </main>
@@ -163,10 +173,12 @@
         <nav class="pagenav" aria-label="Aurora Sailing pages">
       <a href="index.html">Board</a>
       <a href="bay-map.html">Bay map</a>
+      <a href="northern-bay.html">Northern Bay</a>
+      <a href="the-rip.html">The Rip</a>
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.12</div>
+    <div class="ver">rs-quest.html · v1.13</div>
   </div>
 </footer>
 
@@ -202,6 +214,7 @@ function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.rou
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
 let rows=null, usingSample=false, newestFull=null, airTemp=null;
+let fkRow=null, rmRow=null, useNorth=false;
 let activeName="Fawkner Beacon", outTemp=null;
 let mode = (function(){ try{ return localStorage.getItem("rs-quest-boat")==="x3"?"x3":"quest"; }catch(e){ return "quest"; } })();
 function setMode(m){ mode=m; try{ localStorage.setItem("rs-quest-boat",m); }catch(e){}
@@ -217,7 +230,8 @@ async function fetchOne(wmo){
 function isNortherly(wd){ if(!wd || !(wd in DIR_DEG)) return false; const d=DIR_DEG[wd]; return d>=315 || d<=45; }
 async function load(){
   const [fk, rm, op] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH), fetchOne(TEMP_ST)]);
-  const useNorth = fk ? isNortherly(fk.wind_dir) : !!rm;
+  fkRow=fk; rmRow=rm;
+  useNorth = fk ? isNortherly(fk.wind_dir) : !!rm;
   const active = useNorth ? (rm||fk) : (fk||rm);
   const tOf = x => (x && x.air_temp!=null && isFinite(x.air_temp)) ? Math.round(x.air_temp) : null;
   const t1=tOf(op), t2=tOf(rm), t3=tOf(active);
@@ -261,6 +275,44 @@ function compassRose(deg,kt,color){
   s+='<circle cx="50" cy="50" r="2.4" fill="'+color+'"/>';
   return '<svg viewBox="0 0 100 100" role="img" aria-label="Wind direction and strength on a compass">'+s+'</svg>';
 }
+function ktOf(o){ return o&&o.wind_spd_kt!=null&&isFinite(o.wind_spd_kt)?Math.round(o.wind_spd_kt):null; }
+function gustOf(o){ return o&&o.gust_kt!=null&&isFinite(o.gust_kt)?Math.round(o.gust_kt):null; }
+function bandIdx(k){ if(k==null) return -1; for(let i=0;i<LEVELS.length;i++){ if(k<=LEVELS[i].max) return i; } return LEVELS.length-1; }
+// Cross-check: the launch reading (active, possibly sheltered) vs the open bay (Fawkner), plus gustiness.
+function buildAlerts(active){
+  if(usingSample || !active) return "";
+  const parts=[];
+  const inshore=active, openBay=fkRow;
+  const sameStation = !openBay || openBay===active;   // active IS Fawkner (southerly) → no separate exposed station
+  const iM=ktOf(inshore), oM=ktOf(openBay), oG=gustOf(openBay);
+  // 1) deceptive lee — sheltered launch, strong open bay
+  if(!sameStation && iM!=null && oM!=null){
+    const openPeak=Math.max(oM, oG||0);
+    const diverge = (bandIdx(oM)-bandIdx(iM) >= 1) || (oM-iM >= 8);
+    if(diverge){
+      const lvl = (openPeak>=24 || (oG!=null&&oG>=30)) ? 2 : 1;
+      const where = activeName.replace("·","at");
+      parts.push({lvl:lvl,
+        title: lvl>=2 ? "Sheltered here — but it’s blowing in the bay" : "Calmer inshore than out in the bay",
+        body: "You’re reading <b>"+where+"</b> in the lee at <b>"+iM+" kt</b>. Out in the open, <b>Fawkner Beacon</b> is <b>"+oM+" kt"+(oG!=null?" gusting "+oG:"")+"</b>. Close to shore may be OK — but the moment you clear the lee, expect the bigger number, and rig for it before you launch.",
+        rig: "At the shore: <b>"+LEVELS[bandIdx(iM)].word+"</b> &nbsp;·&nbsp; Out in the bay: <b>"+LEVELS[bandIdx(openPeak)].word+"</b>"});
+    }
+  }
+  // 2) gustiness at the launch reading
+  const iG=gustOf(inshore);
+  if(iM!=null && iG!=null){
+    const spread=iG-iM;
+    if(spread>=10 || (iM>=6 && iG>=1.5*iM)){
+      parts.push({lvl:(iG>=30?2:1),
+        title:"Very gusty",
+        body:"Mean <b>"+iM+" kt</b>, gusting <b>"+iG+" kt</b> — sudden hits between the lulls. Keep it flat, ease early, and don’t cleat the main.",
+        rig:null});
+    }
+  }
+  if(!parts.length) return "";
+  return parts.map(function(p){ var cls=p.lvl>=2?"qalert red":"qalert amber";
+    return '<div class="'+cls+'"><div class="qa-t">'+p.title+'</div><div class="qa-b">'+p.body+'</div>'+(p.rig?'<div class="qa-r">'+p.rig+'</div>':'')+'</div>'; }).join("");
+}
 function render(){
   const o = rows&&rows.length ? rows[0] : null;
   const kt = o ? Math.round(o.wind_spd_kt) : null;
@@ -295,6 +347,7 @@ function render(){
       srcHtml+
       '<div class="hupd" id="hupd"></div>';
   }
+  const al=document.getElementById("qalerts"); if(al){ const ah=buildAlerts(o); al.innerHTML=ah; al.style.display=ah?"flex":"none"; }
   newestFull = o ? o.local_date_time_full : null;
   document.getElementById("banner").classList.toggle("show", usingSample);
   document.getElementById("banner").textContent = usingSample ? "Showing pretend wind — the live feed isn’t connected yet." : "";
