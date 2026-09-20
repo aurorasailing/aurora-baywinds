@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · rs-quest.html · v1.14 (Cloudflare) · 2026-09-15 -->
+<!-- Aurora Bay Winds · rs-quest.html · v1.15 (Cloudflare) · 2026-09-15 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -186,7 +186,7 @@
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">rs-quest.html · v1.14</div>
+    <div class="ver">rs-quest.html · v1.15</div>
   </div>
 </footer>
 
@@ -292,22 +292,28 @@ function buildAlerts(active){
   const parts=[];
   const inshore=active, openBay=fkRow;
   const sameStation = !openBay || openBay===active;   // active IS Fawkner (southerly) → no separate exposed station
-  const iM=ktOf(inshore), oM=ktOf(openBay), oG=gustOf(openBay);
-  // 1) deceptive lee — sheltered launch, strong open bay
+  const iM=ktOf(inshore), oM=ktOf(openBay), oG=gustOf(openBay), iG=gustOf(inshore);
+  // 1) open bay materially stronger/gustier than the sheltered launch — a deceptive lee, OR a strong/gusty bay on a northerly
   if(!sameStation && iM!=null && oM!=null){
     const openPeak=Math.max(oM, oG||0);
-    const diverge = (bandIdx(oM)-bandIdx(iM) >= 1) || (oM-iM >= 8);
-    if(diverge){
+    const diverge   = (bandIdx(oM)-bandIdx(iM) >= 1) || (oM-iM >= 8);   // clearly calmer in the lee
+    const strongBay = (oM>=21) || (oG!=null && oG>=25);                 // floor: strong/gusty in the open, even if the lee reads similar
+    if(diverge || strongBay){
       const lvl = (openPeak>=24 || (oG!=null&&oG>=30)) ? 2 : 1;
       const where = activeName.replace("·","at");
-      parts.push({lvl:lvl,
-        title: lvl>=2 ? "Sheltered here — but it’s blowing in the bay" : "Calmer inshore than out in the bay",
-        body: "You’re reading <b>"+where+"</b> in the lee at <b>"+iM+" kt</b>. Out in the open, <b>Fawkner Beacon</b> is <b>"+oM+" kt"+(oG!=null?" gusting "+oG:"")+"</b>. Close to shore may be OK — but the moment you clear the lee, expect the bigger number, and rig for it before you launch.",
+      let title, body;
+      if(diverge){
+        title = lvl>=2 ? "Sheltered here — but it’s blowing in the bay" : "Calmer inshore than out in the bay";
+        body  = "You’re reading <b>"+where+"</b> in the lee at <b>"+iM+" kt</b>. Out in the open, <b>Fawkner Beacon</b> is <b>"+oM+" kt"+(oG!=null?" gusting "+oG:"")+"</b>. Close to shore may be OK — but the moment you clear the lee, expect the bigger number, and rig for it before you launch.";
+      } else {
+        title = "Strong and gusty out in the bay";
+        body  = "Sheltered <b>"+where+"</b> is <b>"+iM+" kt"+(iG!=null?" gusting "+iG:"")+"</b>; out in the open, <b>Fawkner Beacon</b> is <b>"+oM+" kt"+(oG!=null?" gusting "+oG:"")+"</b>. It’ll be livelier once you clear the lee — rig to depower and be ready for the gusts.";
+      }
+      parts.push({lvl:lvl, title:title, body:body,
         rig: "At the shore: <b>"+LEVELS[bandIdx(iM)].word+"</b> &nbsp;·&nbsp; Out in the bay: <b>"+LEVELS[bandIdx(openPeak)].word+"</b>"});
     }
   }
   // 2) gustiness at the launch reading
-  const iG=gustOf(inshore);
   if(iM!=null && iG!=null){
     const spread=iG-iM;
     if(spread>=10 || (iM>=6 && iG>=1.5*iM)){
