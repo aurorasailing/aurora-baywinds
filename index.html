@@ -105,12 +105,16 @@
   .spots-list a b{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy)}
   .spots-list a span{font-size:12px; color:var(--muted)}
   .spots-list a.here{cursor:default} .spots-list a.here b{color:var(--navy)}
+  .brandlink{display:flex; align-items:baseline; gap:inherit; text-decoration:none; color:inherit}
+  .credit{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--green,#50E040); margin:16px 0 4px; letter-spacing:.01em}
+  .credit a{color:var(--green,#50E040); text-decoration:none}
+  .credit a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand"><span class="a">Aurora</span><span class="b">Bay Winds</span></div>
+  <div class="brand"><a class="brandlink" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Bay Winds</span></a></div>
   <div class="upd"><span class="live" id="live"></span><span id="upd">Loading…</span></div>
 </header>
 
@@ -183,7 +187,8 @@
   </ul>
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
-  <div class="ver">index.html · v1.28</div>
+
+    <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing → aurorasailing.com.au</a> · Melbourne, Australia</div>  <div class="ver">index.html · v1.29</div>
     <details class="spots">
       <summary>Sailing spots</summary>
       <nav class="spots-list" aria-label="All sailing spots">

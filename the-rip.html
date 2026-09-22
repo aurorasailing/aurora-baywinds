@@ -49,11 +49,15 @@
   .bnav{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:14px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
   .bnav a{color:var(--slate);text-decoration:none}
     .bnav .cur{color:var(--muted)}
+  .brandlink{display:flex; align-items:baseline; gap:inherit; text-decoration:none; color:inherit}
+  .credit{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--green,#50E040); margin:16px 0 4px; letter-spacing:.01em}
+  .credit a{color:var(--green,#50E040); text-decoration:none}
+  .credit a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="eyebrow">Aurora Sailing · at the entrance</p>
+  <p class="eyebrow"><a href="https://aurorasailing.com.au" style="color:inherit;text-decoration:none">Aurora Sailing</a> · at the entrance</p>
   <h1>The Rip <span class="beta">beta</span></h1>
   <div class="place">The Rip · wind &amp; waves · Point Lonsdale + Point Nepean</div>
 
@@ -105,7 +109,8 @@
     Wind &amp; waves from <a href="https://ports.vic.gov.au/boating-and-events/tides-waves-winds-weather/" target="_blank" rel="noopener">Ports Victoria</a>’s
     PortWeather stations (OMC International) at Point Lonsdale and Point Nepean.
   </div>
-  <div class="ver">the-rip.html · v1.2</div>
+
+    <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing → aurorasailing.com.au</a> · Melbourne, Australia</div>  <div class="ver">the-rip.html · v1.3</div>
 </div>
 
 <script>

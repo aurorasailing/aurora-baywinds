@@ -85,12 +85,16 @@
   .spots-list a b{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy)}
   .spots-list a span{font-size:12px; color:var(--muted)}
   .spots-list a.here{cursor:default} .spots-list a.here b{color:var(--navy)}
+  .brandlink{display:flex; align-items:baseline; gap:inherit; text-decoration:none; color:inherit}
+  .credit{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--green,#50E040); margin:16px 0 4px; letter-spacing:.01em}
+  .credit a{color:var(--green,#50E040); text-decoration:none}
+  .credit a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand"><span class="a">Aurora</span><span class="b">Sailing</span></div>
+  <div class="brand"><a class="brandlink" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Sailing</span></a></div>
   <div class="upd"><span class="live" id="live"></span></div>
 </header>
 
@@ -133,7 +137,7 @@
         <div class="spots-h">Sea Scouts</div>
         <a href="https://wind.aurorasailing.com.au/1st-vic-sea-scouts-albert-park.html"><b>1st Victorian Sea Scouts</b><span>Albert Park Lake (RMYS)</span></a>
         <a href="https://wind.aurorasailing.com.au/gswac-sandringham.html"><b>GSWAC</b><span>Sandringham</span></a>
-        <a href="https://lakes.aurorasailing.com.au/bunga-arm.html"><b>Bunga Arm</b><span>Gippsland Lakes camp</span></a>
+        <a href="https://lakes.aurorasailing.com.au/bunga-arm.html"><b>Bunga Arm</b><span>Gippsland Lakes camp · beta</span></a>
         <div class="spots-h">Yacht-club youth sailing</div>
         <a href="https://wind.aurorasailing.com.au/pmyc-port-melbourne.html"><b>Port Melbourne Yacht Club</b><span>Fawkner Beacon</span></a>
         <a href="https://wind.aurorasailing.com.au/rmys-st-kilda.html"><b>Royal Melbourne Yacht Squadron</b><span>RMYS</span></a>
@@ -147,10 +151,13 @@
         <nav class="pagenav" aria-label="Aurora Sailing pages">
       <a href="index.html">Board</a>
       <a href="bay-map.html">Bay map</a>
+      <a href="northern-bay.html">Northern Bay</a>
+      <a href="the-rip.html">The Rip</a>
       <a href="wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
-    <div class="ver">pmyc-port-melbourne.html · v1.7</div>
+
+    <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing → aurorasailing.com.au</a> · Melbourne, Australia</div>    <div class="ver">pmyc-port-melbourne.html · v1.8</div>
   </div>
 </footer>
 
