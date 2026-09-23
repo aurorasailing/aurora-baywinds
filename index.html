@@ -106,7 +106,7 @@
   .spots-list a span{font-size:12px; color:var(--muted)}
   .spots-list a.here{cursor:default} .spots-list a.here b{color:var(--navy)}
   .brandlink{display:flex; align-items:baseline; gap:inherit; text-decoration:none; color:inherit}
-  .credit{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--green,#50E040); margin:16px 0 4px; letter-spacing:.01em}
+  .credit{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--muted,#7A8A7E); margin:16px 0 4px; letter-spacing:.01em}
   .credit a{color:var(--green,#50E040); text-decoration:none}
   .credit a:hover{text-decoration:underline}
 </style>
@@ -188,7 +188,6 @@
   Observations are automatic and not quality-checked — always confirm conditions
   on the water before you sail.
 
-    <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing → aurorasailing.com.au</a> · Melbourne, Australia</div>  <div class="ver">index.html · v1.29</div>
     <details class="spots">
       <summary>Sailing spots</summary>
       <nav class="spots-list" aria-label="All sailing spots">
@@ -206,7 +205,9 @@
     </details>
     <p class="fb" style="margin:14px 0 2px"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a suggestion? Tell us →</a></p>
     <script>(function(){var a=document.querySelector('.fb a');if(!a)return;var p=document.querySelector('.place');var spot=p?p.textContent.replace(/\s*·.*$/,'').trim():document.title;a.href='mailto:wind@aurorasailing.com.au?subject='+encodeURIComponent('Aurora wind feedback — '+spot)+'&body='+encodeURIComponent('\n\n\n(About '+spot+' — '+location.href+')');})();</script>
-</footer>
+    <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
+    <div class="ver">index.html · v1.29</div>
+  </footer>
 
 <script>
 /* ── CONFIG ──────────────────────────────────────────────────────────────
