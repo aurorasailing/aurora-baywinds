@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-briefing.html · v0.5 (tide now the BoM observed gauge via Worker; manual water temp) · 2026-10-14 -->
+<!-- Aurora Explorer · PMYC-briefing.html · v0.6 (observed tide; launch-assist note; manual water temp) · 2026-10-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -253,7 +253,7 @@
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.5 · live wind, air, forecast &amp; observed tide · water temp manual</div>
+    <div class="ver">PMYC-briefing.html · v0.6 · live wind, air, forecast &amp; observed tide · water temp manual</div>
   </div>
 </footer>
 
@@ -476,7 +476,7 @@ function compute(){
   if(I.dir!=null && I.dir>=135 && I.dir<=225 && oM!=null && oM>=10) f.location.push({lvl:'info', t:'Onshore waves — launch past the sandbank',
     b:`Wade the boat onto / past the bank before sailing; land by heading into the wind just short of it. Centreboard\u2019s up until you\u2019re past — the waves will wash a learner back up the beach.`});
   if(TH.lowTide(I.activeM, S.tide)) f.location.push({lvl:'info', t:'Light wind + incoming tide',
-    b:`Hard to leave the beach under sail — the tide pushes you back on. Walk the boat out past the bank and start from there; expect learners to get caught.`});
+    b:`Hard to leave the beach under sail — the tide pushes you back on. Walk the boat out past the bank and start from there. If it\u2019s a battle, signal for assistance (the come-closer wave) for a tow to deeper water — no shame in it.`});
   if(S.jelly) f.location.push({lvl:'info', t:'Jellyfish about',
     b:`Bluebottles sting a little; the big blobby ones can push a centreboard up if you hit one. (Season window — TBD.)`});
   const ti = traffic(I);
