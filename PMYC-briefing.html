@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-briefing.html · v0.6 (observed tide; launch-assist note; manual water temp) · 2026-10-14 -->
+<!-- Aurora Explorer · PMYC-briefing.html · v0.8 (concussion line reworded for everyone; observed tide + next-turn + arrow) · 2026-10-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -134,7 +134,7 @@
   <details class="proto">
     <summary>Today's inputs <span class="tag">wind, air, forecast &amp; tide live</span></summary>
     <div class="ctrls">
-      <p class="ctrl-note">Wind, gust, direction and air temperature come from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide is the Bureau's observed gauge at St Kilda Marina. Only water temp is entered by hand now.</p>
+      <p class="ctrl-note">Wind, gust, direction and air temperature come from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide is the Bureau's observed gauge at St Kilda Marina, with the next turn predicted. Only water temp is entered by hand now.</p>
       <div class="ctrl" data-live="1"><label>Wind — open bay <span class="val" id="v-wind"></span></label><input type="range" id="c-wind" min="0" max="40" value="11"></div>
       <div class="ctrl" data-live="1"><label>Gust <span class="val" id="v-gust"></span></label><input type="range" id="c-gust" min="0" max="55" value="15"></div>
       <div class="ctrl" data-live="1"><label>Direction <span class="val" id="v-dir"></span></label><input type="range" id="c-dir" min="0" max="359" value="200"></div>
@@ -234,7 +234,7 @@
       <h3>First aid</h3>
       <p>Notify the safety boat first — it radios ahead. Kits: clubhouse upstairs by the tower stairs, and the boat shed by the sailing-school shed. Log what's used; incident report usually needed. Small cut, help yourself; anything real, get assistance.</p>
       <h3>Head knocks — concussion</h3>
-      <p>Light bump, keep watching (them or yourself); hard knock, tell someone; knocked out, emergency; monitor — it can come on later. <b>If in doubt, sit them out.</b> Detail on the Concussion page.</p>
+      <p>Light bump, keep watching (them or yourself); hard knock, tell someone; knocked out, emergency; monitor — it can come on later. <b>If in doubt, stay ashore or head back in — rest, and keep watching.</b> Detail on the Concussion page.</p>
     </div>
   </section>
 
@@ -253,7 +253,7 @@
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.6 · live wind, air, forecast &amp; observed tide · water temp manual</div>
+    <div class="ver">PMYC-briefing.html · v0.8 · live wind, air, forecast &amp; observed tide · water temp manual</div>
   </div>
 </footer>
 
@@ -373,6 +373,36 @@ function applyTide(){
     let lk=c.querySelector('.lk'), lab=c.querySelector('label');
     if(tide.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!tide.ok && lk) lk.remove(); }
   if(tide.ok){ S.tide = tide.rising?'rising':'falling'; const e=document.getElementById('c-tide'); if(e) e.value=S.tide; }
+}
+
+/* --- tide prediction: next turn TIME only (the reliable part) --------------
+   The observed gauge gives the level and direction now; a tidal prediction gives
+   when the next high/low falls. We use Open-Meteo marine for the timing and
+   ignore its height (the bay's height is what wanders — see the tides page).
+   If the model has no coverage for the bay point, the next-turn line just drops;
+   Williamstown astronomical predictions could replace it for a sharper time.   */
+const TIDEPRED_URL = "https://marine-api.open-meteo.com/v1/marine?latitude=-37.86&longitude=144.92"
+  + "&hourly=sea_level_height_msl&forecast_days=2&timezone=Australia%2FMelbourne";
+const tidePred = { ok:false, risingNow:null, levelNow:null, nextHigh:null, nextLow:null };
+async function loadTidePred(){
+  try{
+    const r=await fetch(TIDEPRED_URL,{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const h=j.hourly||{}, v=h.sea_level_height_msl, t=h.time; if(!v||!t||v.length<3) throw 0;
+    const n=melbNow(), key=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")+"T"+String(n.getHours()).padStart(2,"0");
+    let i=t.findIndex(x=>x.slice(0,13)===key); if(i<0) i=0;
+    tidePred.levelNow = v[i];
+    tidePred.risingNow = (v[i+1]!=null&&v[i]!=null) ? v[i+1]>=v[i] : (v[i]>=v[i-1]);
+    let nextHigh=null, nextLow=null;
+    for(let k=i+1;k<v.length-1;k++){
+      if(v[k]==null||v[k-1]==null||v[k+1]==null) continue;
+      if(!nextHigh && v[k]>=v[k-1] && v[k]>v[k+1]) nextHigh={time:t[k].slice(11,16), h:v[k]};
+      if(!nextLow  && v[k]<=v[k-1] && v[k]<v[k+1]) nextLow ={time:t[k].slice(11,16), h:v[k]};
+      if(nextHigh && nextLow) break;
+    }
+    tidePred.nextHigh=nextHigh; tidePred.nextLow=nextLow;
+    tidePred.ok = !!(nextHigh||nextLow);
+  }catch(e){ tidePred.ok=false; }
+  render();
 }
 
 /* --- thresholds (constants; TBD ones flagged for Gregor / research) -------- */
@@ -517,15 +547,23 @@ function render(){
   }
   const windStr = I.activeM!=null ? I.activeM : '—';
   const airStr  = I.airTemp!=null ? I.airTemp : '—';
-  let tideH, tideSub;
-  if(tide.ok){ tideH=tide.heightNow; tideSub=(tide.rising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
-  else { tideH=(I.north?1.0:0.8)+(S.tide==='rising'?0.4:-0.1); tideSub=(S.tide==='rising'?'incoming':'falling'); }
+  // direction from the observed gauge (fallback: prediction slope, then manual)
+  const tRising = tide.ok ? tide.rising : (tidePred.ok ? tidePred.risingNow : (S.tide==='rising'));
+  const tArrow = `<span style="color:${tRising?'var(--green-b)':'var(--muted)'};font-size:.6em;vertical-align:middle;margin-right:4px">${tRising?'\u25B2':'\u25BC'}</span>`;
+  let tideH;
+  if(tide.ok) tideH=tide.heightNow; else if(tidePred.ok) tideH=tidePred.levelNow; else tideH=(I.north?1.0:0.8)+(S.tide==='rising'?0.4:-0.1);
+  let tideSub;
+  if(tidePred.ok){ const nt = tRising?tidePred.nextHigh:tidePred.nextLow;
+    tideSub = (nt&&nt.time) ? ('next '+(tRising?'High':'Low')+' '+nt.time) : (tRising?'rising':'falling'); }
+  else if(tide.ok){ tideSub = (tRising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
+  else { tideSub = (tRising?'incoming':'falling'); }
+  const tideVal = (tideH!=null) ? (tArrow + tideH.toFixed(tide.ok?2:1)) : '—';
   document.getElementById('lb-grid').innerHTML =
     fig('Wind', windStr, 'kt', cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:'')) +
     fig('Air', airStr, '\u00b0C', S.sun?'sunny':'cloud') +
     fig('Water', S.water, '\u00b0C', 'entered') +
     fig('UV', S.uv, '', fc.ok&&fc.uvMax!=null?('peaks '+fc.uvMax):(S.uv>=8?'very high':(S.uv>=3?'protect':'low'))) +
-    fig('Tide', tideH!=null?tideH.toFixed(tide.ok?2:1):'—', 'm', tideSub) +
+    fig('Tide', tideVal, 'm', tideSub) +
     fig('Rain', S.rain?'Recent':'None', '', fc.ok&&fc.rainChance!=null?(S.rain?('recent · '+fc.rainChance+'% later'):(fc.rainChance+'% later')):(S.rain?'after heavy rain':''));
   document.getElementById('flags-wind').innerHTML     = flagHTML(f.wind);
   const wflags = (fc.ok && fc.line) ? [{lvl:'info', t:'Rest of day', b:fc.line}].concat(f.weather) : f.weather;
@@ -591,10 +629,12 @@ tick(); setInterval(tick, 30000);
 render();                 // paint immediately from entered values
 load();                   // live wind + air (Bay Winds Worker)
 loadForecast();           // UV, sun/cloud, rain, rest-of-day (Open-Meteo)
-loadTide();               // height, trend, next turn (Open-Meteo marine)
+loadTide();               // observed level + direction (BoM gauge via Worker)
+loadTidePred();           // next high/low TIME (tidal prediction)
 setInterval(load, REFRESH_MS);
 setInterval(loadForecast, REFRESH_MS);
 setInterval(loadTide, REFRESH_MS);
+setInterval(loadTidePred, REFRESH_MS);
 </script>
 </body>
 </html>
