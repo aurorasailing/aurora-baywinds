@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-briefing.html · v0.3 (live wind + air + forecast; manual tide & water temp) · 2026-10-14 -->
+<!-- Aurora Explorer · PMYC-briefing.html · v0.5 (tide now the BoM observed gauge via Worker; manual water temp) · 2026-10-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -132,9 +132,9 @@
   <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader — read it, read the day, and decide.</p>
 
   <details class="proto">
-    <summary>Today's inputs <span class="tag">wind, air &amp; forecast live</span></summary>
+    <summary>Today's inputs <span class="tag">wind, air, forecast &amp; tide live</span></summary>
     <div class="ctrls">
-      <p class="ctrl-note">Wind, gust, direction and air temperature come from the Bay Winds stations; UV, sun/cloud, rain and the rest-of-day forecast from Open-Meteo. Tide and water temp are entered by hand until their feeds are wired.</p>
+      <p class="ctrl-note">Wind, gust, direction and air temperature come from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide is the Bureau's observed gauge at St Kilda Marina. Only water temp is entered by hand now.</p>
       <div class="ctrl" data-live="1"><label>Wind — open bay <span class="val" id="v-wind"></span></label><input type="range" id="c-wind" min="0" max="40" value="11"></div>
       <div class="ctrl" data-live="1"><label>Gust <span class="val" id="v-gust"></span></label><input type="range" id="c-gust" min="0" max="55" value="15"></div>
       <div class="ctrl" data-live="1"><label>Direction <span class="val" id="v-dir"></span></label><input type="range" id="c-dir" min="0" max="359" value="200"></div>
@@ -142,7 +142,7 @@
       <div class="ctrl"><label>Water temp <span class="val" id="v-water"></span></label><input type="range" id="c-water" min="8" max="26" value="17"></div>
       <div class="ctrl" data-fc="1"><label>UV index <span class="val" id="v-uv"></span></label><input type="range" id="c-uv" min="0" max="14" value="5"></div>
       <div class="ctrl"><label>Hour of day <span class="val" id="v-hour"></span></label><input type="range" id="c-hour" min="6" max="21" value="14"></div>
-      <div class="ctrl"><label>Tide</label><select id="c-tide"><option value="rising">Rising (incoming)</option><option value="falling">Falling</option></select></div>
+      <div class="ctrl" data-tide="1"><label>Tide</label><select id="c-tide"><option value="rising">Rising (incoming)</option><option value="falling">Falling</option></select></div>
       <div class="ctrl"><label>Day</label><select id="c-day"><option value="weekday">Weekday</option><option value="weekend">Weekend</option><option value="holiday">Public / school holiday</option></select></div>
       <div class="ctrl chk" data-fc="1"><input type="checkbox" id="c-sun" checked><label for="c-sun">Sunny</label></div>
       <div class="ctrl chk" data-fc="1"><input type="checkbox" id="c-rain"><label for="c-rain">Heavy rain last 1–2 days</label></div>
@@ -253,7 +253,7 @@
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.3 · live wind, air &amp; forecast · tide + water temp manual</div>
+    <div class="ver">PMYC-briefing.html · v0.5 · live wind, air, forecast &amp; observed tide · water temp manual</div>
   </div>
 </footer>
 
@@ -336,6 +336,43 @@ function applyForecast(){
     if(fc.sunny!=null){ S.sun=fc.sunny; const e=document.getElementById('c-sun'); if(e) e.checked=fc.sunny; }
     if(fc.rainRecent!=null){ S.rain=fc.rainRecent; const e=document.getElementById('c-rain'); if(e) e.checked=fc.rainRecent; }
   }
+}
+
+/* --- tide: the Bureau's OBSERVED gauge at St Kilda Marina, via the Worker ---
+   /tide.json (BoM IDV67204 / station 586166). Observed, not predicted, so it
+   carries the wind/pressure set-up the small bay tide hides. Height is Local
+   Gauge Height (m), zero near the lowest water (so ~0–0.6 m). The readings are
+   irregular telemetry, so we read level + direction + the last turn, not a
+   forecast turn. Needs Worker v1.13+ deployed; until then this falls back to
+   the manual Tide control.                                                     */
+const TIDE_URL = DATA_BASE + "/tide.json";
+const tide = { ok:false, heightNow:null, rising:null, lastKind:null, lastTime:null };
+function lastTurn(series){   // series: chronological [{wl,t}], latest last
+  const n=series.length; if(n<2) return {rising:true, kind:null, time:null};
+  const rising = series[n-1].wl >= series[n-2].wl;
+  for(let k=n-2;k>0;k--){ const up = series[k].wl >= series[k-1].wl; if(up!==rising) return {rising, kind: rising?'Low':'High', time:series[k].t}; }
+  return {rising, kind: rising?'Low':'High', time:series[0].t};
+}
+async function loadTide(){
+  try{
+    const r=await fetch(TIDE_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const d=(j.observations&&j.observations.data)||[]; if(!d.length) throw 0;
+    const series=d.map(o=>({wl:+o.water_level, t:parseFull(o.local_date_time_full)}))
+      .filter(x=>isFinite(x.wl)&&x.t).sort((a,b)=>a.t-b.t);     // oldest → newest
+    if(series.length<2) throw 0;
+    tide.heightNow = series[series.length-1].wl;
+    const lt=lastTurn(series); tide.rising=lt.rising; tide.lastKind=lt.kind;
+    tide.lastTime = lt.time ? (String(lt.time.getHours()).padStart(2,'0')+':'+String(lt.time.getMinutes()).padStart(2,'0')) : null;
+    tide.ok=true;
+  }catch(e){ tide.ok=false; }
+  applyTide(); render();
+}
+function applyTide(){
+  const c=document.querySelector('.ctrl[data-tide]');
+  if(c){ const inp=c.querySelector('select'); if(inp) inp.disabled=tide.ok; c.classList.toggle('islive', tide.ok);
+    let lk=c.querySelector('.lk'), lab=c.querySelector('label');
+    if(tide.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!tide.ok && lk) lk.remove(); }
+  if(tide.ok){ S.tide = tide.rising?'rising':'falling'; const e=document.getElementById('c-tide'); if(e) e.value=S.tide; }
 }
 
 /* --- thresholds (constants; TBD ones flagged for Gregor / research) -------- */
@@ -480,13 +517,15 @@ function render(){
   }
   const windStr = I.activeM!=null ? I.activeM : '—';
   const airStr  = I.airTemp!=null ? I.airTemp : '—';
-  const tideH = (I.north?1.0:0.8) + (S.tide==='rising'?0.4:-0.1);   // mock until the tide feed is wired
+  let tideH, tideSub;
+  if(tide.ok){ tideH=tide.heightNow; tideSub=(tide.rising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
+  else { tideH=(I.north?1.0:0.8)+(S.tide==='rising'?0.4:-0.1); tideSub=(S.tide==='rising'?'incoming':'falling'); }
   document.getElementById('lb-grid').innerHTML =
     fig('Wind', windStr, 'kt', cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:'')) +
     fig('Air', airStr, '\u00b0C', S.sun?'sunny':'cloud') +
     fig('Water', S.water, '\u00b0C', 'entered') +
     fig('UV', S.uv, '', fc.ok&&fc.uvMax!=null?('peaks '+fc.uvMax):(S.uv>=8?'very high':(S.uv>=3?'protect':'low'))) +
-    fig('Tide', tideH.toFixed(1), 'm', S.tide==='rising'?'incoming':'falling') +
+    fig('Tide', tideH!=null?tideH.toFixed(tide.ok?2:1):'—', 'm', tideSub) +
     fig('Rain', S.rain?'Recent':'None', '', fc.ok&&fc.rainChance!=null?(S.rain?('recent · '+fc.rainChance+'% later'):(fc.rainChance+'% later')):(S.rain?'after heavy rain':''));
   document.getElementById('flags-wind').innerHTML     = flagHTML(f.wind);
   const wflags = (fc.ok && fc.line) ? [{lvl:'info', t:'Rest of day', b:fc.line}].concat(f.weather) : f.weather;
@@ -552,8 +591,10 @@ tick(); setInterval(tick, 30000);
 render();                 // paint immediately from entered values
 load();                   // live wind + air (Bay Winds Worker)
 loadForecast();           // UV, sun/cloud, rain, rest-of-day (Open-Meteo)
+loadTide();               // height, trend, next turn (Open-Meteo marine)
 setInterval(load, REFRESH_MS);
 setInterval(loadForecast, REFRESH_MS);
+setInterval(loadTide, REFRESH_MS);
 </script>
 </body>
 </html>

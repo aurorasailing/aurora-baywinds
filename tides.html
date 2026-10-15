@@ -1,0 +1,113 @@
+<!-- Aurora Sailing · tides.html · v1.0 · 2026-10-14 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The tides at Port Melbourne · Aurora Sailing</title>
+<meta name="description" content="Why the tide at Port Melbourne is small, late, and often not what the table says — and what to trust instead. A short guide for sailors on Port Phillip.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--white:#fff;--ink:#1C2B3A}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--white);line-height:1.62}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0));border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:7px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  header a.back{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--slate);text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:22px 20px 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,7vw,42px);line-height:1.08;margin:6px 0 10px;color:var(--navy)}
+  .intro{font-size:17px;color:var(--slate);margin:0 0 8px}
+  section{border-top:1px solid var(--line);padding-top:18px;margin-top:24px}
+  h2{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin:0 0 6px;color:var(--navy)}
+  p{margin:9px 0} b{font-weight:700}
+  .fig{background:var(--seafoam);border:1px solid var(--line);border-radius:14px;padding:16px 14px;margin:14px 0;text-align:center}
+  .fig .cap{font-size:13px;color:var(--muted);margin-top:8px}
+  .fig .ax{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;fill:var(--muted)}
+  .fig .lab{font-family:'Syne',sans-serif;font-weight:700;font-size:12px}
+  .fig .slatec{fill:var(--slate)} .fig .greenc{fill:var(--green-b)}
+  .call{background:var(--seafoam);border-left:4px solid var(--green-b);border-radius:0 12px 12px 0;padding:13px 16px;margin:12px 0;font-size:15.5px;color:var(--slate)}
+  .call b{color:var(--navy)}
+  .back2{margin:26px 0 6px}.back2 a{font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:15px}
+  .refs{font-size:13px;color:var(--muted)} .refs a{color:var(--slate)}
+  footer{border-top:1px solid var(--line);padding:18px 20px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0));color:var(--muted);font-size:13px;text-align:center;margin-top:22px}
+  .credit{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--muted);margin-top:14px}
+  .credit a{color:var(--green-b);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="back" href="#" onclick="history.back();return false">← Back</a>
+</header>
+<main>
+  <span class="eyebrow">Reading the water</span>
+  <h1>The tides at Port Melbourne</h1>
+  <p class="intro">A tide is the sea breathing in and out as the moon and sun pull on it. At most beaches the table tells you just what the water will do. At Port Melbourne the water is less obedient — here is why, and what to trust instead.</p>
+
+  <section>
+    <h2>A small tide behind a narrow door</h2>
+    <p>Port Phillip is a huge bay joined to the sea by one narrow, shallow gap — the Rip, at the Heads. Only so much water can squeeze in and out through that gap each cycle, so the tide inside never gets to swing very far. The range at the top of the bay is often <b>under a metre</b>, where outside the Heads it is far bigger.</p>
+    <div class="fig"><svg viewBox="0 0 360 230" width="300" role="img" aria-label="Port Phillip is a large bay joined to the sea by a narrow entrance">
+  <path d="M60,30 C40,70 36,150 90,180 C150,212 230,210 285,180 C330,156 326,74 300,34 C250,8 110,6 60,30 Z" fill="#EAF2E8" stroke="var(--green-b)" stroke-width="2"/>
+  <text x="180" y="70" text-anchor="middle" class="lab slatec" style="font-size:13px">Port Phillip Bay</text>
+  <text x="180" y="90" text-anchor="middle" class="ax">Melbourne at the top</text>
+  <!-- the narrow neck -->
+  <path d="M150,192 C158,206 150,214 150,222 M210,192 C202,206 210,214 210,222" fill="none" stroke="var(--green-b)" stroke-width="2"/>
+  <line x1="180" y1="224" x2="180" y2="150" stroke="var(--slate)" stroke-width="2.4"/>
+  <path d="M180,150 l-6,12 h12 z" fill="var(--slate)"/>
+  <text x="180" y="244" text-anchor="middle" class="ax">The Rip — the narrow entrance</text>
+  <text x="300" y="214" text-anchor="middle" class="ax">Bass Strait</text>
+</svg><div class="cap">One narrow entrance throttles the whole bay's tide.</div></div>
+  </section>
+
+  <section>
+    <h2>And a late one</h2>
+    <p>The tide also has to travel. The rise enters through the Heads and works its way up the bay, so high water at Melbourne arrives <b>about two to three hours after</b> it is high at the Heads. Same tide — just smaller by the time it reaches us, and later.</p>
+    <div class="fig"><svg viewBox="0 0 580 250" width="100%" role="img" aria-label="The same tide at the Heads and inside the bay — smaller and later at Melbourne">
+  <line x1="34" y1="112" x2="548" y2="112" stroke="var(--line)" stroke-width="1.4" stroke-dasharray="3 4"/>
+  <text x="34" y="130" class="ax">mean level</text>
+  <polyline points="34,112.0 38,104.4 42,96.8 46,89.4 50,82.3 54,75.4 58,68.9 62,62.8 66,57.3 70,52.2 74,47.8 78,44.1 82,41.0 86,38.6 90,37.0 94,36.1 98,36.1 102,36.7 106,38.2 110,40.3 114,43.2 118,46.8 122,51.1 126,55.9 130,61.4 134,67.3 138,73.7 142,80.5 146,87.6 150,95.0 154,102.5 158,110.1 162,117.7 166,125.3 170,132.7 174,140.0 178,146.9 182,153.5 186,159.7 190,165.4 194,170.6 198,175.1 202,179.1 206,182.3 210,184.8 214,186.7 218,187.7 222,188.0 226,187.5 230,186.3 234,184.3 238,181.6 242,178.1 246,174.0 250,169.3 254,164.0 258,158.2 262,151.9 266,145.2 270,138.2 274,130.9 278,123.4 282,115.8 286,108.2 290,100.6 294,93.1 298,85.8 302,78.8 306,72.1 310,65.8 314,60.0 318,54.7 322,50.0 326,45.9 330,42.4 334,39.7 338,37.7 342,36.5 346,36.0 350,36.3 354,37.3 358,39.2 362,41.7 366,44.9 370,48.9 374,53.4 378,58.6 382,64.3 386,70.5 390,77.1 394,84.0 398,91.3 402,98.7 406,106.3 410,113.9 414,121.5 418,129.0 422,136.4 426,143.5 430,150.3 434,156.7 438,162.6 442,168.1 446,172.9 450,177.2 454,180.8 458,183.7 462,185.8 466,187.3 470,187.9 474,187.9 478,187.0 482,185.4 486,183.0 490,179.9 494,176.2 498,171.8 502,166.7 506,161.2 510,155.1 514,148.6 518,141.7 522,134.6 526,127.2 530,119.6 534,112.0 538,104.4 542,96.8 546,89.4" fill="none" stroke="var(--slate)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="34,131.6 38,129.8 42,127.8 46,125.7 50,123.4 54,121.0 58,118.5 62,115.9 66,113.3 70,110.7 74,108.1 78,105.5 82,103.0 86,100.6 90,98.3 94,96.2 98,94.2 102,92.4 106,90.8 110,89.4 114,88.2 118,87.3 122,86.6 126,86.2 130,86.0 134,86.1 138,86.5 142,87.1 146,87.9 150,89.1 154,90.4 158,92.0 162,93.7 166,95.7 170,97.8 174,100.1 178,102.4 182,104.9 186,107.4 190,110.0 194,112.7 198,115.3 202,117.8 206,120.3 210,122.8 214,125.1 218,127.3 222,129.3 226,131.2 230,132.8 234,134.3 238,135.5 242,136.5 246,137.3 250,137.8 254,138.0 258,137.9 262,137.7 266,137.1 270,136.3 274,135.2 278,134.0 282,132.4 286,130.7 290,128.8 294,126.7 298,124.5 302,122.2 306,119.7 310,117.2 314,114.6 318,112.0 322,109.4 326,106.8 330,104.3 334,101.8 338,99.5 342,97.3 346,95.2 350,93.3 354,91.6 358,90.0 362,88.8 366,87.7 370,86.9 374,86.3 378,86.1 382,86.0 386,86.2 390,86.7 394,87.5 398,88.5 402,89.7 406,91.2 410,92.8 414,94.7 418,96.7 422,98.9 426,101.2 430,103.7 434,106.2 438,108.7 442,111.3 446,114.0 450,116.6 454,119.1 458,121.6 462,123.9 466,126.2 470,128.3 474,130.3 478,132.0 482,133.6 486,134.9 490,136.1 494,136.9 498,137.5 502,137.9 506,138.0 510,137.8 514,137.4 518,136.7 522,135.8 526,134.6 530,133.2 534,131.6 538,129.8 542,127.8 546,125.7" fill="none" stroke="var(--green-b)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- lag arrow between first highs -->
+  <line x1="96" y1="22" x2="130" y2="22" stroke="var(--muted)" stroke-width="1.4"/>
+  <line x1="96" y1="18" x2="96" y2="36" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 3"/>
+  <line x1="130" y1="18" x2="130" y2="86" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 3"/>
+  <path d="M96,22 l6,-3 v6 z" fill="var(--muted)"/><path d="M130,22 l-6,-3 v6 z" fill="var(--muted)"/>
+  <text x="114" y="14" text-anchor="middle" class="ax">lag ~2–3 h</text>
+  <text x="544" y="38" text-anchor="end" class="lab slatec">Port Phillip Heads — big &amp; early</text>
+  <text x="544" y="158" text-anchor="end" class="lab greenc">Melbourne, inside the bay — small &amp; late</text>
+</svg><div class="cap">The same tide, damped and delayed by the time it reaches the top of the bay.</div></div>
+  </section>
+
+  <section>
+    <h2>Why the tables are often out</h2>
+    <p>Here is the part that catches people. Because the swing is so small, the <b>wind and the air pressure push the water about as much as the moon does.</b> A northerly blows water out of the bay and the level drops below the prediction; a southerly, or a high-pressure day, piles water in and it sits higher than the table says.</p>
+    <p>The neat part is what stays reliable: the <b>timing</b> of high and low is usually close — it is the <b>height</b> that wanders. So a Port Melbourne tide table is a fair guide to <i>when</i>, and a poor guide to <i>how much</i>.</p>
+  </section>
+
+  <section>
+    <h2>What to do about it</h2>
+    <p class="call">Read the water, not just the table.</p>
+    <p>Watch the sandbank: on a low it is barely covered and shows itself; on a windy high it can all but disappear. Leaving the beach against an incoming tide in light wind is hard going — the water keeps setting you back on, so wade the boat out past the bank and start from there.</p>
+    <p>And it is why the briefing page reads the Bureau's <b>observed gauge</b> at St Kilda Marina rather than a prediction. A real measurement already has the wind and the pressure baked in — it tells you what the water is actually doing now, which on this bay is a different thing from what the table said it would.</p>
+  </section>
+
+  <section class="refs">
+    <h2 style="font-size:16px">Where the numbers come from</h2>
+    <p>The Bureau of Meteorology's National Tide Centre keeps <a href="https://www.bom.gov.au/oceanography/projects/ntc/vic_tide_tables.shtml" target="_blank" rel="noopener">Melbourne (Williamstown)</a> as the official standard port for the city — there has been a tide gauge there since 1858. The live level on the briefing page is the Bureau's real-time observed gauge at <a href="https://www.bom.gov.au/fwo/IDV67204/IDV67204.586166.tbl.shtml" target="_blank" rel="noopener">Port Phillip Bay at St Kilda Marina</a>.</p>
+  </section>
+
+  <p class="back2"><a href="#" onclick="history.back();return false">← Back to the briefing</a></p>
+  <p style="margin:18px 0 4px;text-align:center"><a href="mailto:wind@aurorasailing.com.au?subject=Aurora%20tides%20page%20%E2%80%94%20feedback" style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:14px">Spotted something off, or have a correction? Tell us →</a></p>
+</main>
+<footer>
+  <b style="font-weight:700;color:var(--slate)">Aurora Sailing.</b> Why the Port Melbourne tide is small, late, and often not what the table says.
+  <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
+</footer>
+</body>
+</html>
