@@ -1,0 +1,135 @@
+<!-- Aurora Sailing · water-from-space.html · v1.1 · 2026-10-17 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How we read the water temperature from space · Aurora Sailing</title>
+<meta name="description" content="Our bay water temperature isn't measured in the water — it's read from orbit. How a satellite takes the sea's temperature, and how we pull the one 5 km square sitting over Port Melbourne.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--white:#fff;--ink:#1C2B3A}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--white);line-height:1.62}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0));border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:7px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  header a.back{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--slate);text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:22px 20px 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(27px,6.6vw,40px);line-height:1.08;margin:6px 0 10px;color:var(--navy)}
+  .intro{font-size:17px;color:var(--slate);margin:0 0 8px}
+  section{border-top:1px solid var(--line);padding-top:18px;margin-top:24px}
+  h2{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin:0 0 6px;color:var(--navy)}
+  p{margin:9px 0} b{font-weight:700}
+  .fig{background:var(--seafoam);border:1px solid var(--line);border-radius:14px;padding:16px 14px;margin:14px 0;text-align:center}
+  .fig .cap{font-size:13px;color:var(--muted);margin-top:10px}
+  .fig .ax{font-family:'Syne',sans-serif;font-weight:600;font-size:10.5px;fill:var(--muted)}
+  .fig .lab{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px}
+  .fig .cap2{font-family:'Lato',sans-serif;font-weight:400;font-size:12px;fill:var(--slate)}
+  .call{background:var(--seafoam);border-left:4px solid var(--green-b);border-radius:0 12px 12px 0;padding:13px 16px;margin:12px 0;font-size:15.5px;color:var(--slate)}
+  .call b{color:var(--navy)}
+  .back2{margin:26px 0 6px}.back2 a{font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:15px}
+  .refs{font-size:13px;color:var(--muted)} .refs a{color:var(--slate)}
+  footer{border-top:1px solid var(--line);padding:18px 20px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0));color:var(--muted);font-size:13px;text-align:center;margin-top:22px}
+  .credit{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--muted);margin-top:14px}
+  .credit a{color:var(--green-b);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="back" href="#" onclick="history.back();return false">← Back</a>
+</header>
+<main>
+  <span class="eyebrow">Reading the water</span>
+  <h1>How we read the water temperature from space</h1>
+  <p class="intro">The bay temperature on the briefing isn't measured in the water at all. It's read from orbit — a satellite, hundreds of kilometres up, taking the temperature of the sea without ever touching it.</p>
+
+  <section>
+    <h2>Everything warm glows</h2>
+    <p>Everything warm gives off <b>infrared</b> — a kind of light our eyes can't see, but an instrument can. The warmer something is, the more it glows. Warm water glows a little brighter than cold. A satellite carrying an infrared camera reads that faint glow coming off the sea and turns it into a temperature, accurate to a fraction of a degree.</p>
+    <p>It only reads the very top skin of the water — the top fraction of a millimetre — which is close enough to the water you'd capsize into.</p>
+  </section>
+
+  <section>
+    <h2>A temperature map of the whole sea</h2>
+    <p>NOAA, the American ocean and weather agency, runs a product called <b>CoralTemp</b>. It was built to watch coral reefs for dangerous heat, but to do that it turns the satellite readings into a daily temperature map of the <b>entire</b> ocean — cut into squares about <b>5&nbsp;km</b> across. Port Phillip is just a handful of those squares.</p>
+    <div class="fig">
+      <svg viewBox="0 0 580 292" width="100%" role="img" aria-label="A satellite reads the sea's infrared glow from orbit; we take the 5km square over the bay">
+        <!-- sun -->
+        <circle cx="48" cy="46" r="16" fill="#E8B84B"/>
+        <g stroke="#E8B84B" stroke-width="2.4" stroke-linecap="round">
+          <line x1="48" y1="18" x2="48" y2="26"/><line x1="48" y1="66" x2="48" y2="74"/>
+          <line x1="20" y1="46" x2="28" y2="46"/><line x1="68" y1="46" x2="76" y2="46"/>
+          <line x1="28" y1="26" x2="33" y2="31"/><line x1="63" y1="61" x2="68" y2="66"/>
+          <line x1="68" y1="26" x2="63" y2="31"/><line x1="33" y1="61" x2="28" y2="66"/>
+        </g>
+        <!-- satellite -->
+        <g>
+          <rect x="414" y="36" width="26" height="22" rx="2" fill="#2E4057"/>
+          <rect x="384" y="39" width="26" height="16" fill="#3A5370" stroke="#0A1628" stroke-width="0.8"/>
+          <rect x="444" y="39" width="26" height="16" fill="#3A5370" stroke="#0A1628" stroke-width="0.8"/>
+          <line x1="397" y1="47" x2="410" y2="47" stroke="#0A1628" stroke-width="0.6"/>
+          <line x1="444" y1="47" x2="457" y2="47" stroke="#0A1628" stroke-width="0.6"/>
+          <line x1="427" y1="36" x2="427" y2="27" stroke="#2E4057" stroke-width="1.6"/>
+          <circle cx="427" cy="26" r="2.4" fill="#39D455"/>
+        </g>
+        <!-- infrared reaching the satellite -->
+        <line x1="190" y1="180" x2="421" y2="58" stroke="#C08A2E" stroke-width="1.4" stroke-dasharray="4 4"/>
+        <text x="300" y="112" class="ax" transform="rotate(-28 300 112)" style="fill:#C08A2E">infrared glow →</text>
+        <!-- sea with 5 km grid -->
+        <rect x="20" y="180" width="540" height="72" fill="#E6EEF2"/>
+        <g stroke="#BBD0DA" stroke-width="1">
+          <line x1="88" y1="180" x2="88" y2="252"/><line x1="156" y1="180" x2="156" y2="252"/>
+          <line x1="224" y1="180" x2="224" y2="252"/><line x1="292" y1="180" x2="292" y2="252"/>
+          <line x1="360" y1="180" x2="360" y2="252"/><line x1="428" y1="180" x2="428" y2="252"/>
+          <line x1="496" y1="180" x2="496" y2="252"/><line x1="20" y1="216" x2="560" y2="216"/>
+        </g>
+        <line x1="20" y1="180" x2="560" y2="180" stroke="#9FB8C4" stroke-width="2"/>
+        <rect x="156" y="180" width="68" height="36" fill="#50E040" fill-opacity="0.22" stroke="#39D455" stroke-width="2.5"/>
+        <text x="190" y="203" text-anchor="middle" class="lab" style="fill:#0A1628">15.2°</text>
+        <rect x="428" y="216" width="68" height="36" fill="#9FB8C4" fill-opacity="0.22" stroke="#9FB8C4" stroke-width="2"/>
+        <text x="462" y="239" text-anchor="middle" class="lab" style="fill:#5E7280">14.4°</text>
+        <text x="300" y="170" text-anchor="middle" class="ax">NOAA 5 km satellite grid</text>
+        <text x="190" y="272" text-anchor="middle" class="cap2">the square over the bay</text>
+        <text x="462" y="272" text-anchor="middle" class="cap2">a square outside the Heads</text>
+      </svg>
+      <div class="cap">The satellite reads the sea's infrared glow from orbit; we take the one 5&nbsp;km square sitting over the bay.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>We take the square over Port Melbourne</h2>
+    <p>To get our number, we pick the square sitting on the water off the beach and read its temperature. Because that square is <b>inside the bay</b>, it reads bay water — which runs warmer in summer and cooler in winter than the Strait outside, as the shallow bay heats and cools faster. Pick a square out at the Heads and you'd be reading the ocean, and get the wrong season.</p>
+    <p class="call">It's the same satellite data the well-loved BayWx site uses — we just read the square nearest the club.</p>
+  </section>
+
+  <section>
+    <h2>What about clouds?</h2>
+    <p>Infrared can't see through cloud, so on an overcast day a square can come back blank. The map fills those gaps by blending the last few days and several satellites, so there is always a number, redrawn once a day. That's why the reading is a day or two old and a 5&nbsp;km average rather than this-minute, this-spot — which is enough to decide whether you want a wetsuit.</p>
+  </section>
+
+  <section>
+    <h2>From orbit to the slipway</h2>
+    <p>The sun warms the shallow bay. The water glows, faintly, in infrared. A satellite passing overhead reads the glow. NOAA turns it into a 5&nbsp;km map of the sea. We read the one square over Port Melbourne. And it tells a sailor whether to pull on a wetsuit before launching.</p>
+    <p>A number that has travelled from space to the slipway — to keep a crew warm.</p>
+  </section>
+
+  <section class="refs">
+    <h2 style="font-size:16px">Where this comes from</h2>
+    <p>The bay temperature is <a href="https://coralreefwatch.noaa.gov/product/5km/index.php" target="_blank" rel="noopener">NOAA Coral Reef Watch's daily 5&nbsp;km CoralTemp</a> sea-surface temperature, read at a satellite grid point off Port Melbourne — the same satellite product behind the <a href="https://www.baywx.com.au" target="_blank" rel="noopener">BayWx</a> bay graphs. For <i>why</i> the temperature matters, see the <a href="water-temp.html">water-temperature page</a>.</p>
+  </section>
+
+  <p class="back2"><a href="#" onclick="history.back();return false">← Back to the briefing</a></p>
+  <p style="margin:18px 0 4px;text-align:center"><a href="mailto:wind@aurorasailing.com.au?subject=Aurora%20water-from-space%20page%20%E2%80%94%20feedback" style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:14px">Spotted something off, or have a correction? Tell us →</a></p>
+</main>
+<footer>
+  <b style="font-weight:700;color:var(--slate)">Aurora Sailing.</b> How the bay's water temperature is read from a satellite in orbit.
+  <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
+</footer>
+</body>
+</html>

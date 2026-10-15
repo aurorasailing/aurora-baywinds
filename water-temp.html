@@ -1,0 +1,112 @@
+<!-- Aurora Sailing · water-temp.html · v1.2 · 2026-10-17 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why the Port measures the water temperature · Aurora Sailing</title>
+<meta name="description" content="The most accurate live water temperature for Port Phillip comes from the shipping port, not a weather site — because how warm the water is changes how deep a loaded ship sits. Here's why, and why we borrow it.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--white:#fff;--ink:#1C2B3A}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--white);line-height:1.62}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0));border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:7px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  header a.back{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--slate);text-decoration:none}
+  main{max-width:640px;margin:0 auto;padding:22px 20px 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(27px,6.6vw,40px);line-height:1.08;margin:6px 0 10px;color:var(--navy)}
+  .intro{font-size:17px;color:var(--slate);margin:0 0 8px}
+  section{border-top:1px solid var(--line);padding-top:18px;margin-top:24px}
+  h2{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin:0 0 6px;color:var(--navy)}
+  p{margin:9px 0} b{font-weight:700}
+  .fig{background:var(--seafoam);border:1px solid var(--line);border-radius:14px;padding:16px 14px;margin:14px 0;text-align:center}
+  .fig .cap{font-size:13px;color:var(--muted);margin-top:10px}
+  .fig .ax{font-family:'Syne',sans-serif;font-weight:600;font-size:10.5px;fill:var(--muted)}
+  .fig .lab{font-family:'Syne',sans-serif;font-weight:700;font-size:11.5px}
+  .fig .cap2{font-family:'Lato',sans-serif;font-weight:400;font-size:12px;fill:var(--slate)}
+  .call{background:var(--seafoam);border-left:4px solid var(--green-b);border-radius:0 12px 12px 0;padding:13px 16px;margin:12px 0;font-size:15.5px;color:var(--slate)}
+  .call b{color:var(--navy)}
+  .back2{margin:26px 0 6px}.back2 a{font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:15px}
+  .refs{font-size:13px;color:var(--muted)} .refs a{color:var(--slate)}
+  footer{border-top:1px solid var(--line);padding:18px 20px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0));color:var(--muted);font-size:13px;text-align:center;margin-top:22px}
+  .credit{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--muted);margin-top:14px}
+  .credit a{color:var(--green-b);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="back" href="#" onclick="history.back();return false">← Back</a>
+</header>
+<main>
+  <span class="eyebrow">Reading the water</span>
+  <h1>Why the Port measures the water temperature</h1>
+  <p class="intro">The most accurate live reading of how cold the bay is doesn't come from a weather site. It comes from the shipping port — because how warm the water is changes how deep a loaded ship sits. Odd, until you see why. And once they measure it, we can borrow it.</p>
+
+  <section>
+    <h2>Warm water floats less</h2>
+    <p>Water isn't always the same weight. Warm water is <b>lighter</b> than cold — less dense — and fresh water, like the river water that flows in at the top of the bay, is lighter than salty water. A ship floats at the depth where it pushes aside its own weight in water. In lighter water it has to sit a little <b>lower</b> to push aside enough. So the very same ship, loaded the same, rides deeper on a warm day than on a cold one.</p>
+    <div class="fig">
+      <svg viewBox="0 0 580 272" width="100%" role="img" aria-label="A ship sits deeper in warm, less-dense water, leaving less room under the keel; in cool, denser water it sits higher with more room">
+        <rect x="8" y="75" width="564" height="150" fill="#E6EEF2"/>
+        <path d="M8,224 C120,216 180,232 300,224 C420,216 480,232 572,226 L572,248 L8,248 Z" fill="#ECE4D6"/>
+        <line x1="8" y1="75" x2="572" y2="75" stroke="#9FB8C4" stroke-width="2"/>
+        <text x="14" y="91" class="ax">water surface</text>
+        <text x="528" y="243" class="ax">seabed</text>
+        <!-- warm ship, sits low -->
+        <rect x="135" y="47" width="30" height="18" fill="#2E4057"/>
+        <path d="M80,65 L220,65 L195,185 L105,185 Z" fill="#2E4057" stroke="#0A1628" stroke-width="1.4"/>
+        <line x1="150" y1="186" x2="150" y2="223" stroke="#C2521A" stroke-width="1.6"/>
+        <path d="M150,187 l-4,7 h8 z" fill="#C2521A"/><path d="M150,222 l-4,-7 h8 z" fill="#C2521A"/>
+        <text x="160" y="209" class="lab" style="fill:#C2521A">less room</text>
+        <text x="150" y="266" text-anchor="middle" class="cap2">Warm / fresher — less dense — sits deeper</text>
+        <!-- cool ship, sits higher -->
+        <rect x="415" y="27" width="30" height="18" fill="#3A5370"/>
+        <path d="M360,45 L500,45 L475,165 L385,165 Z" fill="#3A5370" stroke="#0A1628" stroke-width="1.4"/>
+        <line x1="430" y1="166" x2="430" y2="223" stroke="#227A2E" stroke-width="1.6"/>
+        <path d="M430,167 l-4,7 h8 z" fill="#227A2E"/><path d="M430,222 l-4,-7 h8 z" fill="#227A2E"/>
+        <text x="440" y="198" class="lab" style="fill:#227A2E">more room</text>
+        <text x="430" y="266" text-anchor="middle" class="cap2">Cool / saltier — denser — sits higher</text>
+      </svg>
+      <div class="cap">Same ship, same load: the water's density sets how deep it floats — and how much room is left under the keel.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The gap under the keel</h2>
+    <p>That gap has a name — <b>under-keel clearance</b>, the space between the bottom of the ship and the seabed. The big ships that come up the bay's dredged channels, the ones the briefing tells you to keep well clear of, run with very little water beneath them. Sometimes less than a metre.</p>
+    <p>To send each one through safely, the port has to know exactly how deep it is sitting right now — and, as we've just seen, that depends on the water's temperature and saltiness. Read the water wrong and a loaded ship touches the bottom.</p>
+  </section>
+
+  <section>
+    <h2>So the Port measures it — for its ships</h2>
+    <p>That is the reason the number exists. OMC International runs the Port of Melbourne's system, measuring the bay's temperature, salinity, tide, waves and currents continuously, to work out each ship's clearance to the centimetre and time its run to the tide.</p>
+    <p class="call">What matters to a loaded ship matters to a small boat too: how cold the water is.</p>
+    <p>Cold water, not cold air, is the real danger after a capsize, and it is what decides whether you want a wetsuit today. But the Port's reading lives inside its own shipping system, not on a feed we can read — so to put the bay's temperature on this page, we had to get it another way. It came from an unlikely place: space. <a href="water-from-space.html">How we read it from space →</a></p>
+  </section>
+
+  <section>
+    <h2>What it means for you</h2>
+    <p>Port Phillip is cold-temperate water — roughly <b>10&nbsp;°C in winter to under 20&nbsp;°C in late summer</b>. Cold enough to matter even on a warm day: it is the water temperature, not the air, that sets the risk if you end up in it. The briefing's water temperature is read from a satellite (<a href="water-from-space.html">how, here</a>); the <b>Cold &amp; Heat</b> page covers hypothermia — the signs to watch in a crewmate and in yourself, and what to do.</p>
+  </section>
+
+  <section class="refs">
+    <h2 style="font-size:16px">Where this comes from</h2>
+    <p>The bay's live water temperature is measured by <a href="https://www.omcinternational.com/" target="_blank" rel="noopener">OMC International</a>, who run the Port of Melbourne's PortWeather and under-keel-clearance systems for <a href="https://www.ports.vic.gov.au/" target="_blank" rel="noopener">Ports Victoria</a>. The cold-temperate range for Victorian onshore waters was first documented from continuous monitoring at Point Lonsdale in the 1960s.</p>
+  </section>
+
+  <p class="back2"><a href="#" onclick="history.back();return false">← Back to the briefing</a></p>
+  <p style="margin:18px 0 4px;text-align:center"><a href="mailto:wind@aurorasailing.com.au?subject=Aurora%20water-temperature%20page%20%E2%80%94%20feedback" style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green-b);text-decoration:none;font-size:14px">Spotted something off, or have a correction? Tell us →</a></p>
+</main>
+<footer>
+  <b style="font-weight:700;color:var(--slate)">Aurora Sailing.</b> Why the shipping port measures the bay's water temperature — and why we borrow it.
+  <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
+</footer>
+</body>
+</html>

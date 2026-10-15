@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-briefing.html · v0.9 (water temp now live — NOAA CRW satellite SST; all feeds live) · 2026-10-14 -->
+<!-- Aurora Explorer · PMYC-briefing.html · v0.13 (reading-the-water explainers linked at the foot) · 2026-10-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -129,7 +129,7 @@
 <main>
   <span class="eyebrow">Safety Briefing</span>
   <h1>Port Melbourne</h1>
-  <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader — read it, read the day, and decide.</p>
+  <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader and the sailor — read it, read the day, and decide.</p>
 
   <details class="proto">
     <summary>Today's inputs <span class="tag">all feeds live</span></summary>
@@ -230,7 +230,7 @@
       <h3>Buddy system &amp; counting</h3>
       <p>No one alone, ashore or afloat. The fleet looks after itself and stays together. X3s: small, orange stripe, 1–4 of them. Quest: bigger, white mast float, green accents, only one. Count before, count often, spot the gap — everyone's job.</p>
       <h3>Capsize drill</h3>
-      <p>Reviewed on land each time. The three that hold: <b>Stay calm · Is everyone OK · Hold on to the boat.</b> Then: bow to wind, weight on the centreboard, take control, collect crew, set lines, sail on. Several boats over at once — stay calm, stay out of the water if you can, wait; someone will come.</p>
+      <p>Reviewed on land each time. The three that stay with you: <b>Stay calm · Is everyone OK · Hold on to the boat.</b> Then: bow to wind, weight on the centreboard, take control, collect crew, set lines, sail on. Several boats over at once — stay calm, stay out of the water if you can, wait; someone will come.</p>
       <h3>First aid</h3>
       <p>Notify the safety boat first — it radios ahead. Kits: clubhouse upstairs by the tower stairs, and the boat shed by the sailing-school shed. Log what's used; incident report usually needed. Small cut, help yourself; anything real, get assistance.</p>
       <h3>Head knocks — concussion</h3>
@@ -247,13 +247,23 @@
       <a href="#"><span class="st">Water quality →</span><span class="ss">the EPA Beach Report &amp; what raises the count</span></a>
     </div>
   </section>
+
+  <!-- READING THE WATER -->
+  <section class="brief">
+    <h2>Reading the water</h2>
+    <div class="subpages">
+      <a href="tides.html"><span class="st">The tides →</span><span class="ss">why the bay tide is small, late, and often not what the table says</span></a>
+      <a href="water-temp.html"><span class="st">The water temperature →</span><span class="ss">why a shipping port measures it, and why it matters to a small boat</span></a>
+      <a href="water-from-space.html"><span class="st">Water temp from space →</span><span class="ss">how a satellite reads the bay's temperature from orbit</span></a>
+    </div>
+  </section>
 </main>
 
 <footer>
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.9 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
+    <div class="ver">PMYC-briefing.html · v0.13 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
   </div>
 </footer>
 
@@ -410,22 +420,27 @@ async function loadTidePred(){
    Daily value (~1-2 day latency); bay-representative, not beach-exact. Needs Worker
    v1.14+; until then the manual Water control stands.                            */
 const WATER_URL = DATA_BASE + "/watertemp.json";
-const water = { ok:false, temp:null, when:null };
+// state: 'loading' until the feed answers, then 'ok', or 'off' only on a real failure.
+// The satellite reading goes via NOAA ERDDAP, which can take a few seconds on a cold
+// cache — so we show "connecting" meanwhile rather than flashing the manual fallback.
+const water = { state:'loading', temp:null, when:null };
 function dayMon(f){ const d=parseFull(f); return d ? d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'satellite'; }
 async function loadWater(){
   try{
     const r=await fetch(WATER_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
     const d=(j.observations&&j.observations.data)||[]; if(!d.length || d[0].water_temp==null) throw 0;
-    water.temp=+d[0].water_temp; water.when=d[0].local_date_time_full||null; water.ok=isFinite(water.temp);
-  }catch(e){ water.ok=false; }
+    water.temp=+d[0].water_temp; water.when=d[0].local_date_time_full||null;
+    water.state = isFinite(water.temp) ? 'ok' : 'off';
+  }catch(e){ water.state='off'; }
   applyWater(); render();
 }
 function applyWater(){
+  const live = water.state==='ok';
   const c=document.querySelector('.ctrl[data-water]');
-  if(c){ const inp=c.querySelector('input'); if(inp) inp.disabled=water.ok; c.classList.toggle('islive', water.ok);
+  if(c){ const inp=c.querySelector('input'); if(inp) inp.disabled=live; c.classList.toggle('islive', live);
     let lk=c.querySelector('.lk'), lab=c.querySelector('label');
-    if(water.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!water.ok && lk) lk.remove(); }
-  if(water.ok){ S.water=Math.round(water.temp*10)/10; const e=document.getElementById('c-water'); if(e) e.value=Math.round(S.water); const v=document.getElementById('v-water'); if(v) v.textContent=Math.round(S.water)+'\u00b0C'; }
+    if(live && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!live && lk) lk.remove(); }
+  if(live){ S.water=Math.round(water.temp*10)/10; const e=document.getElementById('c-water'); if(e) e.value=Math.round(S.water); const v=document.getElementById('v-water'); if(v) v.textContent=Math.round(S.water)+'\u00b0C'; }
 }
 
 /* --- thresholds (constants; TBD ones flagged for Gregor / research) -------- */
@@ -456,12 +471,12 @@ function inSeason(m){ return (m>=10 || m<=3); }   // Nov–Apr (0-indexed)
 const S = { wind:11, gust:15, dir:200, air:22, water:17, uv:5, hour:14,
             tide:'rising', day:'weekday', sun:true, rain:false, jelly:false, ship:false };
 // live wind + air, populated by load()
-const live = { ok:false, obsTime:null, activeName:'', open:null, lee:null, airTemp:null };
+const live = { state:'loading', obsTime:null, activeName:'', open:null, lee:null, airTemp:null };
 
 /* --- resolve the working inputs: live wind/air when we have them ----------- */
 function resolve(){
   let open, lee, airTemp, dir;
-  if(live.ok){
+  if(live.state==='ok'){
     open = live.open; lee = live.lee || live.open; airTemp = (live.airTemp!=null?live.airTemp:S.air);
     dir  = (open.deg!=null ? open.deg : S.dir);
   } else {
@@ -559,17 +574,21 @@ function flagHTML(list){ return list.map(x=>`<div class="flag ${x.lvl}"><div cla
 function render(){
   const {I, f} = compute();
   const src = document.getElementById('lb-src'); const dot=document.getElementById('live');
-  if(live.ok){
+  if(live.state==='ok'){
     const age = live.obsTime ? Math.round((melbNow()-live.obsTime)/60000) : null;
     const stale = age!=null && age>25;
     src.className='lb-src'+(stale?' stale':''); dot.className='live'+(stale?' off':'');
     src.textContent = 'live · ' + live.activeName + (age!=null?` · ${age} min ago`:'');
+  } else if(live.state==='loading'){
+    src.className='lb-src'; dot.className='live off';
+    src.textContent = 'connecting…';
   } else {
     src.className='lb-src stale'; dot.className='live off';
     src.textContent = 'entered values — live wind offline';
   }
-  const windStr = I.activeM!=null ? I.activeM : '—';
-  const airStr  = I.airTemp!=null ? I.airTemp : '—';
+  const liveLoading = live.state==='loading';
+  const windStr = liveLoading ? '··' : (I.activeM!=null ? I.activeM : '—');
+  const airStr  = liveLoading ? '··' : (I.airTemp!=null ? I.airTemp : '—');
   // direction from the observed gauge (fallback: prediction slope, then manual)
   const tRising = tide.ok ? tide.rising : (tidePred.ok ? tidePred.risingNow : (S.tide==='rising'));
   const tArrow = `<span style="color:${tRising?'var(--green-b)':'var(--muted)'};font-size:.6em;vertical-align:middle;margin-right:4px">${tRising?'\u25B2':'\u25BC'}</span>`;
@@ -582,11 +601,12 @@ function render(){
   else { tideSub = (tRising?'incoming':'falling'); }
   const tideVal = (tideH!=null) ? (tArrow + tideH.toFixed(tide.ok?2:1)) : '—';
   let waterVal, waterSub;
-  if(water.ok){ waterVal=water.temp.toFixed(1); waterSub='bay · '+dayMon(water.when); }
+  if(water.state==='ok'){ waterVal=water.temp.toFixed(1); waterSub='bay · '+dayMon(water.when); }
+  else if(water.state==='loading'){ waterVal='··'; waterSub='connecting…'; }
   else { waterVal=S.water; waterSub='entered'; }
   document.getElementById('lb-grid').innerHTML =
-    fig('Wind', windStr, 'kt', cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:'')) +
-    fig('Air', airStr, '\u00b0C', S.sun?'sunny':'cloud') +
+    fig('Wind', windStr, 'kt', liveLoading?'connecting…':(cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:''))) +
+    fig('Air', airStr, '\u00b0C', liveLoading?'':(S.sun?'sunny':'cloud')) +
     fig('Water', waterVal, '\u00b0C', waterSub) +
     fig('UV', S.uv, '', fc.ok&&fc.uvMax!=null?('peaks '+fc.uvMax):(S.uv>=8?'very high':(S.uv>=3?'protect':'low'))) +
     fig('Tide', tideVal, 'm', tideSub) +
@@ -599,14 +619,15 @@ function render(){
 
 /* --- reflect live state onto the wind/air inputs (disable when live) ------- */
 function applyLiveUI(){
+  const isLive = live.state==='ok';
   document.querySelectorAll('.ctrl[data-live]').forEach(c=>{
-    const inp=c.querySelector('input'); if(inp) inp.disabled=live.ok;
-    c.classList.toggle('islive', live.ok);
+    const inp=c.querySelector('input'); if(inp) inp.disabled=isLive;
+    c.classList.toggle('islive', isLive);
     let lk=c.querySelector('.lk'); const lab=c.querySelector('label');
-    if(live.ok && !lk){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); }
-    if(!live.ok && lk) lk.remove();
+    if(isLive && !lk){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); }
+    if(!isLive && lk) lk.remove();
   });
-  if(live.ok){
+  if(isLive){
     const set=(id,v)=>{ const e=document.getElementById('c-'+id); if(e&&v!=null) e.value=v; };
     set('wind', live.open&&live.open.m); set('gust', live.open&&live.open.g);
     set('dir', live.open&&live.open.deg); set('air', live.airTemp);
@@ -616,7 +637,7 @@ function applyLiveUI(){
 /* --- load from the Worker -------------------------------------------------- */
 async function load(){
   const [fk, rm, op] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH), fetchOne(TEMP_ST)]);
-  if(!fk && !rm){ live.ok=false; applyLiveUI(); render(); return; }
+  if(!fk && !rm){ live.state='off'; applyLiveUI(); render(); return; }
   const fkDeg = degOf(fk);
   const north = fk ? (fkDeg!=null && (fkDeg>=315 || fkDeg<=45)) : !!rm;
   const active = north ? (rm||fk) : (fk||rm);
@@ -626,7 +647,7 @@ async function load(){
   live.airTemp = [op,rm,active].map(tOf).find(t=>t!=null); if(live.airTemp===undefined) live.airTemp=null;
   live.activeName = (active===rm) ? 'RMYS · St Kilda (lee)' : 'Fawkner Beacon (open bay)';
   live.obsTime = active ? parseFull(active.local_date_time_full) : null;
-  live.ok = !!live.open;
+  live.state = live.open ? 'ok' : 'off';
   applyLiveUI(); render();
 }
 
