@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-briefing.html · v0.8 (concussion line reworded for everyone; observed tide + next-turn + arrow) · 2026-10-14 -->
+<!-- Aurora Explorer · PMYC-briefing.html · v0.9 (water temp now live — NOAA CRW satellite SST; all feeds live) · 2026-10-14 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -132,14 +132,14 @@
   <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader — read it, read the day, and decide.</p>
 
   <details class="proto">
-    <summary>Today's inputs <span class="tag">wind, air, forecast &amp; tide live</span></summary>
+    <summary>Today's inputs <span class="tag">all feeds live</span></summary>
     <div class="ctrls">
-      <p class="ctrl-note">Wind, gust, direction and air temperature come from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide is the Bureau's observed gauge at St Kilda Marina, with the next turn predicted. Only water temp is entered by hand now.</p>
+      <p class="ctrl-note">Wind, gust, direction and air temperature from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide from the Bureau's observed gauge at St Kilda Marina (next turn predicted); water temp from NOAA satellite SST. Every field is live — the controls are fallbacks, and for testing.</p>
       <div class="ctrl" data-live="1"><label>Wind — open bay <span class="val" id="v-wind"></span></label><input type="range" id="c-wind" min="0" max="40" value="11"></div>
       <div class="ctrl" data-live="1"><label>Gust <span class="val" id="v-gust"></span></label><input type="range" id="c-gust" min="0" max="55" value="15"></div>
       <div class="ctrl" data-live="1"><label>Direction <span class="val" id="v-dir"></span></label><input type="range" id="c-dir" min="0" max="359" value="200"></div>
       <div class="ctrl" data-live="1"><label>Air temp <span class="val" id="v-air"></span></label><input type="range" id="c-air" min="5" max="44" value="22"></div>
-      <div class="ctrl"><label>Water temp <span class="val" id="v-water"></span></label><input type="range" id="c-water" min="8" max="26" value="17"></div>
+      <div class="ctrl" data-water="1"><label>Water temp <span class="val" id="v-water"></span></label><input type="range" id="c-water" min="8" max="26" value="17"></div>
       <div class="ctrl" data-fc="1"><label>UV index <span class="val" id="v-uv"></span></label><input type="range" id="c-uv" min="0" max="14" value="5"></div>
       <div class="ctrl"><label>Hour of day <span class="val" id="v-hour"></span></label><input type="range" id="c-hour" min="6" max="21" value="14"></div>
       <div class="ctrl" data-tide="1"><label>Tide</label><select id="c-tide"><option value="rising">Rising (incoming)</option><option value="falling">Falling</option></select></div>
@@ -253,7 +253,7 @@
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.8 · live wind, air, forecast &amp; observed tide · water temp manual</div>
+    <div class="ver">PMYC-briefing.html · v0.9 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
   </div>
 </footer>
 
@@ -403,6 +403,29 @@ async function loadTidePred(){
     tidePred.ok = !!(nextHigh||nextLow);
   }catch(e){ tidePred.ok=false; }
   render();
+}
+
+/* --- water temperature: NOAA Coral Reef Watch 5km satellite SST, via Worker ---
+   /watertemp.json — the same product BayWx uses, read at a pixel off Port Melbourne.
+   Daily value (~1-2 day latency); bay-representative, not beach-exact. Needs Worker
+   v1.14+; until then the manual Water control stands.                            */
+const WATER_URL = DATA_BASE + "/watertemp.json";
+const water = { ok:false, temp:null, when:null };
+function dayMon(f){ const d=parseFull(f); return d ? d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'satellite'; }
+async function loadWater(){
+  try{
+    const r=await fetch(WATER_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const d=(j.observations&&j.observations.data)||[]; if(!d.length || d[0].water_temp==null) throw 0;
+    water.temp=+d[0].water_temp; water.when=d[0].local_date_time_full||null; water.ok=isFinite(water.temp);
+  }catch(e){ water.ok=false; }
+  applyWater(); render();
+}
+function applyWater(){
+  const c=document.querySelector('.ctrl[data-water]');
+  if(c){ const inp=c.querySelector('input'); if(inp) inp.disabled=water.ok; c.classList.toggle('islive', water.ok);
+    let lk=c.querySelector('.lk'), lab=c.querySelector('label');
+    if(water.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!water.ok && lk) lk.remove(); }
+  if(water.ok){ S.water=Math.round(water.temp*10)/10; const e=document.getElementById('c-water'); if(e) e.value=Math.round(S.water); const v=document.getElementById('v-water'); if(v) v.textContent=Math.round(S.water)+'\u00b0C'; }
 }
 
 /* --- thresholds (constants; TBD ones flagged for Gregor / research) -------- */
@@ -558,10 +581,13 @@ function render(){
   else if(tide.ok){ tideSub = (tRising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
   else { tideSub = (tRising?'incoming':'falling'); }
   const tideVal = (tideH!=null) ? (tArrow + tideH.toFixed(tide.ok?2:1)) : '—';
+  let waterVal, waterSub;
+  if(water.ok){ waterVal=water.temp.toFixed(1); waterSub='bay · '+dayMon(water.when); }
+  else { waterVal=S.water; waterSub='entered'; }
   document.getElementById('lb-grid').innerHTML =
     fig('Wind', windStr, 'kt', cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:'')) +
     fig('Air', airStr, '\u00b0C', S.sun?'sunny':'cloud') +
-    fig('Water', S.water, '\u00b0C', 'entered') +
+    fig('Water', waterVal, '\u00b0C', waterSub) +
     fig('UV', S.uv, '', fc.ok&&fc.uvMax!=null?('peaks '+fc.uvMax):(S.uv>=8?'very high':(S.uv>=3?'protect':'low'))) +
     fig('Tide', tideVal, 'm', tideSub) +
     fig('Rain', S.rain?'Recent':'None', '', fc.ok&&fc.rainChance!=null?(S.rain?('recent · '+fc.rainChance+'% later'):(fc.rainChance+'% later')):(S.rain?'after heavy rain':''));
@@ -631,10 +657,12 @@ load();                   // live wind + air (Bay Winds Worker)
 loadForecast();           // UV, sun/cloud, rain, rest-of-day (Open-Meteo)
 loadTide();               // observed level + direction (BoM gauge via Worker)
 loadTidePred();           // next high/low TIME (tidal prediction)
+loadWater();              // bay water temp (NOAA CRW satellite SST via Worker)
 setInterval(load, REFRESH_MS);
 setInterval(loadForecast, REFRESH_MS);
 setInterval(loadTide, REFRESH_MS);
 setInterval(loadTidePred, REFRESH_MS);
+setInterval(loadWater, REFRESH_MS);
 </script>
 </body>
 </html>
