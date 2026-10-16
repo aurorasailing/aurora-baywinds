@@ -106,6 +106,46 @@
   .fixed p{margin:7px 0}
   .fixed b{font-weight:700}
   .fixed a{color:var(--green-b); font-weight:700; text-decoration:none}
+  .area-pick{display:flex; align-items:center; gap:10px; margin:2px 0 10px; flex-wrap:wrap}
+  .area-pick label{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--navy)}
+  .area-pick select{font:inherit; font-size:14px; padding:7px 9px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); flex:1; min-width:220px; max-width:400px}
+  .areamap{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; margin:0 0 14px}
+  .areamap svg{display:block; width:100%; height:auto}
+  .mapcap{font-size:12px; color:var(--muted); padding:9px 14px; border-top:1px solid var(--line); line-height:1.5}
+  .mlab{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; fill:var(--navy)}
+  .msub{font-family:'Lato',sans-serif; font-weight:400; font-size:11px; fill:var(--slate)}
+  .mkey{font-family:'Syne',sans-serif; font-weight:600; font-size:10.5px; fill:var(--muted)}
+  .areanote{background:var(--seafoam); border-left:4px solid var(--green-b); border-radius:0 12px 12px 0; padding:11px 15px; margin:0 0 14px; font-size:15px; color:var(--slate)}
+  .areanote b{color:var(--navy)}
+  header{flex-wrap:wrap; row-gap:8px}
+  .hdr-right{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end}
+  .modesw{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:#fff}
+  .modesw button{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--slate); background:transparent; border:0; padding:6px 13px; cursor:pointer}
+  .modesw button.on{background:var(--navy); color:#fff}
+  body.mode-present .upd{display:none}
+  body.mode-present main.facilitator{display:none}
+  .present-view{display:none; max-width:1080px; margin:0 auto; padding:18px var(--pad) 36px}
+  body.mode-present .present-view{display:block}
+  .pv-head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:6px 0 10px}
+  .pv-head h2{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(22px,4.2vw,32px); color:var(--navy); margin:0}
+  .pv-tools{display:flex; align-items:center; gap:14px}
+  .pv-count{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--slate)}
+  .pv-count b{color:var(--green-b)}
+  #pv-reset{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--slate); background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 14px; cursor:pointer}
+  .pv-group{margin-top:20px}
+  .pv-group h3{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+  .pv-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(144px,1fr)); gap:14px}
+  .pv-card{display:flex; flex-direction:column; align-items:center; gap:10px; border:1px solid var(--line); border-radius:18px; background:#fff; color:var(--navy); padding:20px 12px; cursor:pointer; position:relative; transition:transform .08s, box-shadow .15s, border-color .15s; font:inherit}
+  .pv-card:hover{box-shadow:0 4px 16px rgba(10,22,40,.08)}
+  .pv-card:active{transform:scale(.97)}
+  .pv-card svg{width:46px; height:46px}
+  .pv-card .pl{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy); line-height:1.25; text-align:center}
+  .pv-card .tick{position:absolute; top:8px; right:10px; font-weight:800; color:var(--green-b); opacity:0; font-size:17px}
+  .pv-card.done{border-color:var(--green-b); background:#F1FBF0}
+  .pv-card.done svg{color:var(--muted); opacity:.55}
+  .pv-card.done .pl{color:var(--muted)}
+  .pv-card.done .tick{opacity:1}
+  .pv-foot{font-size:13px; color:var(--muted); margin-top:20px}
 
   .subpages{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 2px}
   .subpages a{flex:1 1 180px; text-decoration:none; border:1px solid var(--line); border-radius:14px; background:#fff; padding:12px 14px}
@@ -124,10 +164,16 @@
 <body>
 <header>
   <a class="brand" href="https://wind.aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Explorer</span></a>
-  <div class="upd"><span class="live" id="live"></span><span id="clock">—</span></div>
+  <div class="hdr-right">
+    <div class="modesw" role="group" aria-label="View mode">
+      <button type="button" id="m-brief" class="on" aria-pressed="true">Brief</button>
+      <button type="button" id="m-present" aria-pressed="false">Present</button>
+    </div>
+    <div class="upd"><span class="live" id="live"></span><span id="clock">—</span></div>
+  </div>
 </header>
 
-<main>
+<main class="facilitator">
   <span class="eyebrow">Safety Briefing</span>
   <h1>Port Melbourne</h1>
   <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader and the sailor — read it, read the day, and decide.</p>
@@ -181,6 +227,86 @@
   <section class="brief">
     <h2>Location</h2>
     <p class="lead">The area, the piers, the sandbank, the traffic.</p>
+
+    <div class="area-pick">
+      <label for="c-area">Sailing area</label>
+      <select id="c-area" aria-label="Sailing area">
+        <option value="pmyc" selected>PMYC — the triangle</option>
+        <option disabled>St Kilda — down to RMYS &amp; St Kilda Pier (soon)</option>
+        <option disabled>Williamstown — across the shipping channel (soon)</option>
+        <option disabled>Brighton — to Brighton Pier &amp; RBYC (soon)</option>
+        <option disabled>Black Rock — Black Rock YC, Half Moon Bay, HMAS Cerberus (soon)</option>
+        <option disabled>Sandringham — SYC, GSWAC &amp; the breakwater (soon)</option>
+      </select>
+      <label for="c-maptime">Map</label>
+      <select id="c-maptime" aria-label="Map day or night" style="flex:0 1 auto; min-width:110px; max-width:280px">
+        <option value="day" selected>Day</option>
+        <option disabled>Night — lights for the twilight penguin sail (soon)</option>
+      </select>
+    </div>
+    <div class="areamap">
+<svg viewBox="0 -18 620 440" width="100%" role="img" aria-label="Schematic map of the PMYC sailing area, with the shipping channel, swing basin, nav marks and swim zone">
+<rect x="0" y="58" width="620" height="364" fill="#E6EEF2"/>
+<path d="M0,-18 H620 V58 C470,66 360,52 250,62 C150,68 70,54 0,64 Z" fill="#EFF3EC"/>
+<path d="M150,62 C230,67 330,60 420,66 L420,73 C330,67 230,74 150,69 Z" fill="#ECE4D6"/>
+<path d="M146,64 L166,226 L156,266 L120,304 L78,350 L44,400 L16,400 L20,352 L48,306 L88,262 L112,220 L110,70 Z" fill="#CFDFEA" opacity="0.6"/>
+<path d="M16,400 L20,352 L48,306 L88,262 L112,220 L110,70" fill="none" stroke="#9FB8C4" stroke-width="1" stroke-dasharray="2 5"/>
+<circle cx="80" cy="300" r="34" fill="#CFDFEA" opacity="0.6"/>
+<circle cx="80" cy="300" r="34" fill="none" stroke="#9FB8C4" stroke-width="1.2" stroke-dasharray="3 4"/>
+<text x="80" y="303" text-anchor="middle" class="mkey">SB</text>
+<text x="84" y="348" text-anchor="middle" class="msub">swing basin</text>
+<rect x="113" y="116" width="15" height="62" rx="7" fill="#AEB9C2" stroke="#7E8C96" stroke-width="1"/>
+<polygon points="146,64 166,226 320,342 452,240 452,64" fill="#50E040" fill-opacity="0.10" stroke="#39D455" stroke-width="1.6" stroke-dasharray="6 5"/>
+<line x1="256" y1="16" x2="166" y2="226" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<line x1="256" y1="16" x2="452" y2="240" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<line x1="256" y1="16" x2="320" y2="342" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<path d="M198,100 C256,95 322,102 384,97" fill="none" stroke="#C9B79A" stroke-width="2" stroke-dasharray="2 5"/>
+<text x="300" y="115" text-anchor="middle" class="msub">sandbank</text>
+<rect x="95" y="56" width="10" height="124" rx="3" fill="#2E4057"/>
+<rect x="481" y="56" width="10" height="140" rx="3" fill="#2E4057"/>
+<text x="100" y="196" text-anchor="middle" class="mlab">Station Pier</text>
+<text x="486" y="212" text-anchor="middle" class="mlab">Lagoon Pier</text>
+<circle cx="100" cy="180" r="5" fill="#fff" stroke="#333" stroke-width="1.4"/><circle cx="100" cy="180" r="2" fill="#333"/>
+<text x="92" y="182" text-anchor="end" class="msub">F.</text>
+<circle cx="486" cy="196" r="3.6" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/>
+<text x="495" y="198" class="msub">F.G</text>
+<line x1="155" y1="140" x2="155" y2="128" stroke="#0c5e22" stroke-width="2"/><path d="M155,115 l6.5,13 h-13 z" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/><circle cx="155" cy="140" r="5" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1.2"/>
+<line x1="164" y1="212" x2="164" y2="200" stroke="#0c5e22" stroke-width="2"/><path d="M164,187 l6.5,13 h-13 z" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/><circle cx="164" cy="212" r="5" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1.2"/>
+<text x="182" y="108" class="msub">green marks</text>
+<text x="182" y="120" class="msub">Fl.(2)G.4s</text>
+<text x="92" y="130" text-anchor="end" class="msub">cruise /</text>
+<text x="92" y="142" text-anchor="end" class="msub">ferry berth</text>
+<text x="40" y="396" text-anchor="middle" class="msub">shipping</text>
+<text x="40" y="408" text-anchor="middle" class="msub">channel</text>
+<line x1="34" y1="372" x2="34" y2="360" stroke="#7a1010" stroke-width="2"/><rect x="28" y="347" width="12" height="12" fill="#C21020" stroke="#7a1010" stroke-width="1"/><circle cx="34" cy="372" r="5.5" fill="#C21020" stroke="#7a1010" stroke-width="1.2"/>
+<rect x="448" y="57" width="8" height="12" fill="#6FA8C0"/>
+<text x="444" y="120" text-anchor="end" class="msub">stormwater drain</text>
+<text x="444" y="132" text-anchor="end" class="msub">= turn-back line</text>
+<text x="334" y="76" text-anchor="middle" class="mlab" style="fill:#8a6a3a">Launch / Dog Beach</text>
+<text x="236" y="76" text-anchor="middle" class="msub">swim beach</text>
+<circle cx="540" cy="54" r="3" fill="#C21020"/>
+<text x="540" y="48" text-anchor="middle" class="mlab" style="fill:#8a2020">PMSLSC →</text>
+<text x="540" y="72" text-anchor="middle" class="msub">E of Lagoon Pier</text>
+<rect x="244" y="45" width="24" height="13" rx="2" fill="#0A1628"/>
+<path d="M242,45 L256,38 L270,45 Z" fill="#0A1628"/>
+<rect x="252.5" y="22" width="7" height="23" fill="#0A1628"/>
+<rect x="249" y="15" width="14" height="8" rx="1.5" fill="#0A1628"/>
+<line x1="256" y1="15" x2="256" y2="7" stroke="#0A1628" stroke-width="1.5"/>
+<circle cx="256" cy="6" r="2.4" fill="#39D455"/>
+<text x="256" y="0" text-anchor="middle" class="mlab">PMYC Tower</text>
+<circle cx="256" cy="58" r="3" fill="#39D455"/>
+<line x1="256" y1="150" x2="256" y2="133" stroke="#8a6a00" stroke-width="2"/><path d="M256,124 v12 M250,130 h12" stroke="#F2C200" stroke-width="2.6" stroke-linecap="round"/><circle cx="256" cy="150" r="2.6" fill="#F2C200" stroke="#8a6a00" stroke-width="1"/>
+<text x="256" y="168" text-anchor="middle" class="msub">swim zone (200 m)</text>
+<g transform="rotate(13 320 342)"><rect x="315" y="336" width="10" height="13" rx="3.5" fill="#F2C200" stroke="#8a6a00" stroke-width="1.3"/><line x1="315" y1="342" x2="325" y2="342" stroke="#8a6a00" stroke-width="1"/><line x1="320" y1="336" x2="320" y2="329" stroke="#8a6a00" stroke-width="1.6"/><path d="M315,322 l10,10 M325,322 l-10,10" stroke="#B89200" stroke-width="2.6" stroke-linecap="round"/></g>
+<text x="320" y="364" text-anchor="middle" class="mlab">G marker (RMYS)</text>
+<text x="320" y="377" text-anchor="middle" class="msub">yellow special mark · Fl(4)Y.10s</text>
+<text x="348" y="250" text-anchor="middle" class="mlab" style="fill:#2b7a2b">the sailing area</text>
+<text x="348" y="264" text-anchor="middle" class="msub" style="fill:#2b7a2b">PMYC</text>
+<g transform="translate(590,86)"><line x1="0" y1="14" x2="0" y2="-10" stroke="#2E4057" stroke-width="2"/><path d="M0,-14 l5,10 h-10 z" fill="#2E4057"/><text x="0" y="28" text-anchor="middle" class="mkey">N</text></g>
+</svg>
+      <div class="mapcap">Schematic for the briefing — approximate, not for navigation (traced from the Parks Victoria boating guide, Hobsons Bay chart). The western edge runs along the green channel marks (Fl.(2)G.4s), which edge the shipping channel where it splits off at the swing basin (SB). The fixed white light (F.) sits at the end of Station Pier, the green F.G at Lagoon Pier's seaward end. The eastern edge is the stormwater-drain turn-back line, held clear of Lagoon Pier. The G mark is the yellow Fl.(4)Y.10s; the cruise/ferry berth is west of the green line. The faint rays are the Tower's sight lines. More areas to come.</div>
+    </div>
+    <p class="areanote"><b>The guiding line for the PMYC area: stay in direct sight of the PMYC Tower.</b> If the Tower can't see you, you've gone too far.</p>
     <div class="flags" id="flags-location"></div>
     <div class="fixed">
       <h3>The area &amp; the launch</h3>
@@ -192,7 +318,7 @@
       <h3>The piers</h3>
       <ul>
         <li><b>Lagoon Pier (ESE):</b> wide berth. The stormwater drain ~100 m short is the turn-back line. Fishing lines; kids jumping.</li>
-        <li><b>Station Pier (W):</b> keep 50 m and well clear of a berthed ship.</li>
+        <li><b>Station Pier (W):</b> keep 50 m and well clear of a berthed ship — check today against the <a href="https://ports.vic.gov.au/cruise-shipping/cruise-ship-schedules-2026-27/" target="_blank" rel="noopener">cruise-ship schedule</a> (the east berth is &ldquo;OESP&rdquo;).</li>
       </ul>
       <h3>Traffic, marks &amp; wildlife</h3>
       <ul>
@@ -237,7 +363,7 @@
       <h3>Buddy system &amp; counting</h3>
       <p>No one alone, ashore or afloat. The fleet looks after itself and stays together. X3s: small, orange stripe, 1–4 of them. Quest: bigger, white mast float, green accents, only one. Count before, count often, spot the gap — everyone's job.</p>
       <h3>Capsize drill</h3>
-      <p>Reviewed on land each time. The three that stay with you:</p>
+      <p>Reviewed on land each time. The three to remember:</p>
       <ul>
         <li><b>Stay calm.</b></li>
         <li><b>Is everyone OK?</b></li>
@@ -278,11 +404,47 @@
   </section>
 </main>
 
+  <section class="present-view" aria-label="Presentation — topics to cover">
+    <div class="pv-head"><h2>Safety briefing — topics to cover</h2><div class="pv-tools"><span class="pv-count"><b id="pv-n">0</b> / 20 covered</span><button type="button" id="pv-reset">Reset</button></div></div>
+    <p class="areanote" style="margin:0 0 16px"><b>Stay in direct sight of the PMYC Tower.</b> If the Tower can't see you, you've gone too far.</p>
+    <div class="pv-group"><h3>Weather</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="wind"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h20a5 5 0 1 0-5-6"/><path d="M4 30h28a5 5 0 1 1-5 6"/><path d="M4 24h14"/></svg><span class="pl">Wind</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="tide"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18c3-4 7-4 10 0s7 4 10 0 7-4 10 0"/><path d="M24 26v14"/><path d="M19 31l5-5 5 5"/><path d="M19 35l5 5 5-5"/></svg><span class="pl">Tide</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="temp"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a4 4 0 0 1 8 0v18a7 7 0 1 1-8 0z"/><line x1="24" y1="20" x2="24" y2="33"/><circle cx="24" cy="35" r="3" fill="currentColor" stroke="none"/></svg><span class="pl">Temperature</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="sun"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="8"/><path d="M24 6v4M24 38v4M6 24h4M38 24h4M11 11l3 3M34 34l3 3M37 11l-3 3M14 34l-3 3"/></svg><span class="pl">Sun / UV</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="coldheat"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 11v18M8 16l12 8M8 24l12-8"/><path d="M34 11c5 4 5 10 0 15-5-5-1-8-3-11-3 4-2 8 3 11"/></svg><span class="pl">Cold &amp; heat</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="waterq"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 8c7 9 10 13 10 18a10 10 0 1 1-20 0c0-5 3-9 10-18z"/></svg><span class="pl">Water quality</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Location</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="tower"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 42l4-24M31 42l-4-24M21 18h6l-1-6h-4zM19 30h10M20 24h8"/><circle cx="24" cy="9" r="2.4"/></svg><span class="pl">Area &amp; Tower sight line</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="piers"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 38h40M8 22v16M16 22v16M24 22v16M32 22v16M40 22v16M6 22h36"/></svg><span class="pl">The piers</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="launch"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 36h36"/><path d="M24 30V10M24 14l-9 16h9M24 14l9 16h-9"/></svg><span class="pl">Sandbank &amp; launch</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="traffic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30c7 4 15 5 23 3 6-1.5 10-4 13-9l-9 2-6-5H17l-4 7-7 2z"/><circle cx="20" cy="17" r="2.2"/></svg><span class="pl">Traffic</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="wildlife"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 26c8-11 22-14 34-9-5 1-7 5-7 10 0 5-5 9-12 9-8 0-11-4-15-10z"/><path d="M30 17c3-3 7-3 10-1"/></svg><span class="pl">Wildlife</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Time</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="time"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="15"/><path d="M24 15v9l7 4"/></svg><span class="pl">Start · end · plan</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="boats"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 7v23M24 11l-9 19h9M24 11l9 19h-9M10 34h28l-5 6H15z"/></svg><span class="pl">Boats &amp; roles</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Communication</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="signals"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="13" r="5"/><path d="M24 19v13M24 23l-8-5M24 23l8-5"/></svg><span class="pl">Hand signals</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="flag"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6v36M14 9h20v13H14z"/><path d="M14 9h6.6v6.5H14zM20.6 15.5h6.8V22h-6.8zM27.4 9H34v6.5h-6.6z" fill="currentColor" stroke="none"/></svg><span class="pl">Return to shore</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="radio"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="15" y="12" width="18" height="28" rx="2"/><path d="M24 12V6M24 6l-3-2M24 6l3-2"/><rect x="19" y="16" width="10" height="7"/><circle cx="22" cy="31" r="1.6"/><circle cx="26" cy="31" r="1.6"/></svg><span class="pl">Radio CH 73</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Safety</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="buddy"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="16" r="4.5"/><circle cx="31" cy="16" r="4.5"/><path d="M9 37v-3a7 7 0 0 1 14 0M25 37v-3a7 7 0 0 1 14 0"/></svg><span class="pl">Buddy system</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="capsize"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 35h38"/><path d="M12 35l19-9 3 6-19 9z"/><path d="M28 30l9-13M37 17l-11 2"/></svg><span class="pl">Capsize drill</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="firstaid"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="30" height="30" rx="6"/><path d="M24 17v14M17 24h14"/></svg><span class="pl">First aid</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="head"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="28" r="11"/><path d="M18 11l2.5 4.5L25 12l1.5 5 4-2.5-1.5 5.5"/></svg><span class="pl">Head knocks</span><span class="tick">✓</span></button>
+    </div></div>
+    <p class="pv-foot">Tap a topic as you cover it. For a review, tap through and name what you'd do — the pictograms prompt the topic, not the answer.</p>
+  </section>
+
 <footer>
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.15 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
+    <div class="ver">PMYC-briefing.html · v0.30 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
   </div>
 </footer>
 
@@ -329,7 +491,7 @@ const RAIN_RECENT_MM = 10;                        // mm over the last ~36 h to c
 const fc = { ok:false, uv:null, uvMax:null, sunny:null, rainRecent:null, rainChance:null, line:null, change:null };
 
 function fcHourIdx(h){
-  const n=melbNow(), key=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")+"T"+String(n.getHours()).padStart(2,"0");
+  const key=melbKey();
   let idx=h.time.findIndex(t=>t.slice(0,13)===key);
   return idx<0 ? Math.max(0, h.time.length-25) : idx;   // fallback: ~start of today in a past_days=2 array
 }
@@ -377,21 +539,21 @@ function applyForecast(){
 const TIDE_URL = DATA_BASE + "/tide.json";
 const tide = { ok:false, heightNow:null, rising:null, lastKind:null, lastTime:null };
 function lastTurn(series){   // series: chronological [{wl,t}], latest last
-  const n=series.length; if(n<2) return {rising:true, kind:null, time:null};
-  const rising = series[n-1].wl >= series[n-2].wl;
-  for(let k=n-2;k>0;k--){ const up = series[k].wl >= series[k-1].wl; if(up!==rising) return {rising, kind: rising?'Low':'High', time:series[k].t}; }
-  return {rising, kind: rising?'Low':'High', time:series[0].t};
+  const n=series.length; if(n<2) return {rising:true, kind:null, time:null, tf:null};
+  const rising = series[n-1].wl >= series[Math.max(0,n-4)].wl;   // smoothed over ~last hour
+  for(let k=n-2;k>0;k--){ const up = series[k].wl >= series[k-1].wl; if(up!==rising) return {rising, kind: rising?'Low':'High', time:series[k].t, tf:series[k].tf}; }
+  return {rising, kind: rising?'Low':'High', time:series[0].t, tf:series[0].tf};
 }
 async function loadTide(){
   try{
     const r=await fetch(TIDE_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
     const d=(j.observations&&j.observations.data)||[]; if(!d.length) throw 0;
-    const series=d.map(o=>({wl:+o.water_level, t:parseFull(o.local_date_time_full)}))
+    const series=d.map(o=>({wl:+o.water_level, t:parseFull(o.local_date_time_full), tf:o.local_date_time_full}))
       .filter(x=>isFinite(x.wl)&&x.t).sort((a,b)=>a.t-b.t);     // oldest → newest
     if(series.length<2) throw 0;
     tide.heightNow = series[series.length-1].wl;
     const lt=lastTurn(series); tide.rising=lt.rising; tide.lastKind=lt.kind;
-    tide.lastTime = lt.time ? (String(lt.time.getHours()).padStart(2,'0')+':'+String(lt.time.getMinutes()).padStart(2,'0')) : null;
+    tide.lastTime = lt.tf ? (lt.tf.slice(8,10)+':'+lt.tf.slice(10,12)) : null;
     tide.ok=true;
   }catch(e){ tide.ok=false; }
   applyTide(); render();
@@ -413,19 +575,25 @@ function applyTide(){
 const TIDEPRED_URL = "https://marine-api.open-meteo.com/v1/marine?latitude=-37.86&longitude=144.92"
   + "&hourly=sea_level_height_msl&forecast_days=2&timezone=Australia%2FMelbourne";
 const tidePred = { ok:false, risingNow:null, levelNow:null, nextHigh:null, nextLow:null };
+function interpTurn(v,t,k){   // sub-hour turn time: parabolic fit around the hourly extremum
+  const a=v[k-1], b=v[k], c=v[k+1], den=a-2*b+c;
+  let off=den ? 0.5*(a-c)/den : 0; off=Math.max(-0.5,Math.min(0.5,off));
+  const tot=(((+t[k].slice(11,13))*60 + (+t[k].slice(14,16)) + Math.round(off*60))%1440+1440)%1440;
+  return String(Math.floor(tot/60)).padStart(2,'0')+':'+String(tot%60).padStart(2,'0');
+}
 async function loadTidePred(){
   try{
     const r=await fetch(TIDEPRED_URL,{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
     const h=j.hourly||{}, v=h.sea_level_height_msl, t=h.time; if(!v||!t||v.length<3) throw 0;
-    const n=melbNow(), key=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")+"T"+String(n.getHours()).padStart(2,"0");
+    const key=melbKey();
     let i=t.findIndex(x=>x.slice(0,13)===key); if(i<0) i=0;
     tidePred.levelNow = v[i];
     tidePred.risingNow = (v[i+1]!=null&&v[i]!=null) ? v[i+1]>=v[i] : (v[i]>=v[i-1]);
     let nextHigh=null, nextLow=null;
     for(let k=i+1;k<v.length-1;k++){
       if(v[k]==null||v[k-1]==null||v[k+1]==null) continue;
-      if(!nextHigh && v[k]>=v[k-1] && v[k]>v[k+1]) nextHigh={time:t[k].slice(11,16), h:v[k]};
-      if(!nextLow  && v[k]<=v[k-1] && v[k]<v[k+1]) nextLow ={time:t[k].slice(11,16), h:v[k]};
+      if(!nextHigh && v[k]>=v[k-1] && v[k]>v[k+1]) nextHigh={time:interpTurn(v,t,k), h:v[k], k};
+      if(!nextLow  && v[k]<=v[k-1] && v[k]<v[k+1]) nextLow ={time:interpTurn(v,t,k), h:v[k], k};
       if(nextHigh && nextLow) break;
     }
     tidePred.nextHigh=nextHigh; tidePred.nextLow=nextLow;
@@ -481,8 +649,21 @@ function bandIdx(k){ if(k==null) return -1; for(let i=0;i<BANDS.length;i++){ if(
 /* --- compass + clock ------------------------------------------------------- */
 const PTS16=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 function cardinal(d){ return d==null?"—":PTS16[Math.round(((d%360)+360)%360/22.5)%16]; }
-function melbNow(){ try{ return new Date(new Date().toLocaleString('en-US',{timeZone:'Australia/Melbourne'})); }catch(e){ return new Date(); } }
-function fmtClock(d){ return d.toLocaleString('en-AU',{weekday:'short', hour:'numeric', minute:'2-digit', hour12:true}); }
+/* --- Melbourne time — robust across device timezone and the AEDT/AEST switch */
+const MELB_TZ='Australia/Melbourne';
+const _MELB_DOW={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+function melbParts(date){ const o={};
+  for(const p of new Intl.DateTimeFormat('en-GB',{timeZone:MELB_TZ,year:'numeric',month:'2-digit',
+      day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,weekday:'short'}).formatToParts(date||new Date()))
+    o[p.type]=p.value;
+  if(o.hour==='24') o.hour='00'; return o; }                 // {year,month,day,hour,minute,weekday}
+function melbKey(date){ const p=melbParts(date); return p.year+'-'+p.month+'-'+p.day+'T'+p.hour; }
+function melbWallMin(p){ return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)/60000; }
+function melbMonth(date){ return +melbParts(date).month-1; }   // 0-based
+function melbHour(date){ return +melbParts(date).hour; }
+function melbDay(date){ const d=_MELB_DOW[melbParts(date).weekday]; return d==null?new Date().getDay():d; }
+function bomParts(f){ return {year:f.slice(0,4),month:f.slice(4,6),day:f.slice(6,8),hour:f.slice(8,10),minute:f.slice(10,12)}; }
+function fmtClock(){ return new Date().toLocaleString('en-AU',{timeZone:MELB_TZ,weekday:'short',hour:'numeric',minute:'2-digit',hour12:true}); }
 function inSeason(m){ return (m>=10 || m<=3); }   // Nov–Apr (0-indexed)
 
 /* --- state ----------------------------------------------------------------- */
@@ -550,7 +731,7 @@ function compute(){
     b:`UV <b>${S.uv}.</b> Sunscreen and hats, reapplied; shade between sessions.`});
   else if(TH.uvProtect(S.uv)) f.weather.push({lvl:'info', t:'Sun protection',
     b:`UV <b>${S.uv}.</b> Sunscreen and hats on.`});
-  if(S.rain && inSeason(melbNow().getMonth())) f.weather.push({lvl:'amber', t:'Water quality — after rain',
+  if(S.rain && inSeason(melbMonth())) f.weather.push({lvl:'amber', t:'Water quality — after rain',
     b:`Heavy rain lifts the bacteria count. Avoid swallowing water, hold off immersion, keep clear of drains. Check the EPA Beach Report for Port Melbourne.`});
 
   /* location */
@@ -594,7 +775,7 @@ function render(){
   const {I, f} = compute();
   const src = document.getElementById('lb-src'); const dot=document.getElementById('live');
   if(live.state==='ok'){
-    const age = live.obsTime ? Math.round((melbNow()-live.obsTime)/60000) : null;
+    const age = live.obsFull ? Math.max(0, Math.round(melbWallMin(melbParts()) - melbWallMin(bomParts(live.obsFull)))) : null;
     const stale = age!=null && age>25;
     src.className='lb-src'+(stale?' stale':''); dot.className='live'+(stale?' off':'');
     src.textContent = 'live · ' + live.activeName + (age!=null?` · ${age} min ago`:'');
@@ -608,14 +789,25 @@ function render(){
   const liveLoading = live.state==='loading';
   const windStr = liveLoading ? '··' : (I.activeM!=null ? I.activeM : '—');
   const airStr  = liveLoading ? '··' : (I.airTemp!=null ? I.airTemp : '—');
-  // direction from the observed gauge (fallback: prediction slope, then manual)
-  const tRising = tide.ok ? tide.rising : (tidePred.ok ? tidePred.risingNow : (S.tide==='rising'));
+  // Next turn + direction come from the SOONEST predicted extremum — reliable timing, and the arrow
+  // and the next-turn line can never disagree. The observed gauge gives the height now; its last-
+  // reading slope is too noisy to pick High vs Low, so it's only a fallback when there's no prediction.
+  let nextTurn=null, predRising=null;
+  if(tidePred.ok){
+    const nowMin=(+melbParts().hour)*60+(+melbParts().minute);
+    const tmin=x=>(+x.time.slice(0,2))*60+(+x.time.slice(3,5));
+    const cands=[]; const H=tidePred.nextHigh, L=tidePred.nextLow;
+    if(H) cands.push({turn:H,rising:true}); if(L) cands.push({turn:L,rising:false});
+    cands.sort((a,b)=>a.turn.k-b.turn.k);
+    const pick=cands.find(c=>tmin(c.turn)>=nowMin-8) || cands[cands.length-1] || null;
+    if(pick){ nextTurn=pick.turn; predRising=pick.rising; }
+  }
+  const tRising = (predRising!=null) ? predRising : (tide.ok ? tide.rising : (S.tide==='rising'));
   const tArrow = `<span style="color:${tRising?'var(--green-b)':'var(--muted)'};font-size:.6em;vertical-align:middle;margin-right:4px">${tRising?'\u25B2':'\u25BC'}</span>`;
   let tideH;
   if(tide.ok) tideH=tide.heightNow; else if(tidePred.ok) tideH=tidePred.levelNow; else tideH=(I.north?1.0:0.8)+(S.tide==='rising'?0.4:-0.1);
   let tideSub;
-  if(tidePred.ok){ const nt = tRising?tidePred.nextHigh:tidePred.nextLow;
-    tideSub = (nt&&nt.time) ? ('next '+(tRising?'High':'Low')+' '+nt.time) : (tRising?'rising':'falling'); }
+  if(nextTurn&&nextTurn.time){ tideSub = 'next '+(predRising?'High':'Low')+' '+nextTurn.time; }
   else if(tide.ok){ tideSub = (tRising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
   else { tideSub = (tRising?'incoming':'falling'); }
   const tideVal = (tideH!=null) ? (tArrow + tideH.toFixed(tide.ok?2:1)) : '—';
@@ -665,7 +857,7 @@ async function load(){
   const tOf = x => (x && x.air_temp!=null && isFinite(x.air_temp)) ? Math.round(x.air_temp) : null;
   live.airTemp = [op,rm,active].map(tOf).find(t=>t!=null); if(live.airTemp===undefined) live.airTemp=null;
   live.activeName = (active===rm) ? 'RMYS · St Kilda (lee)' : 'Fawkner Beacon (open bay)';
-  live.obsTime = active ? parseFull(active.local_date_time_full) : null;
+  live.obsFull = active ? active.local_date_time_full : null;
   live.state = live.open ? 'ok' : 'off';
   applyLiveUI(); render();
 }
@@ -680,7 +872,7 @@ function bindS(id,key){ const el=document.getElementById('c-'+id); el.addEventLi
 function bindC(id,key){ const el=document.getElementById('c-'+id); el.addEventListener('change',()=>{S[key]=el.checked; render();}); }
 
 // seed hour + weekday/weekend from the real Melbourne clock before binding
-(function seedFromClock(){ const now=melbNow(), h=now.getHours(), dow=now.getDay();
+(function seedFromClock(){ const h=melbHour(), dow=melbDay();
   if(h>=6&&h<=21) document.getElementById('c-hour').value=h;
   document.getElementById('c-day').value=(dow===0||dow===6)?'weekend':'weekday';
 })();
@@ -690,7 +882,7 @@ bindR('air','air','\u00b0C'); bindR('water','water','\u00b0C'); bindR('uv','uv')
 bindS('tide','tide'); bindS('day','day');
 bindC('sun','sun'); bindC('rain','rain'); bindC('jelly','jelly'); bindC('ship','ship');
 
-function tick(){ document.getElementById('clock').textContent = fmtClock(melbNow()); }
+function tick(){ document.getElementById('clock').textContent = fmtClock(); }
 tick(); setInterval(tick, 30000);
 render();                 // paint immediately from entered values
 load();                   // live wind + air (Bay Winds Worker)
@@ -703,6 +895,22 @@ setInterval(loadForecast, REFRESH_MS);
 setInterval(loadTide, REFRESH_MS);
 setInterval(loadTidePred, REFRESH_MS);
 setInterval(loadWater, REFRESH_MS);
+
+/* --- view mode (Brief / Present) + the topic checklist --------------------- */
+(function(){
+  const mb=document.getElementById('m-brief'), mp=document.getElementById('m-present');
+  function setMode(present){ document.body.classList.toggle('mode-present',present);
+    mb.classList.toggle('on',!present); mp.classList.toggle('on',present);
+    mb.setAttribute('aria-pressed',String(!present)); mp.setAttribute('aria-pressed',String(present));
+    window.scrollTo(0,0); }
+  mb.addEventListener('click',()=>setMode(false));
+  mp.addEventListener('click',()=>setMode(true));
+  const cards=[...document.querySelectorAll('.pv-card')], n=document.getElementById('pv-n');
+  const count=()=>{ n.textContent=document.querySelectorAll('.pv-card.done').length; };
+  cards.forEach(c=>c.addEventListener('click',()=>{ c.classList.toggle('done'); count(); }));
+  const r=document.getElementById('pv-reset');
+  if(r) r.addEventListener('click',()=>{ cards.forEach(c=>c.classList.remove('done')); count(); });
+})();
 </script>
 </body>
 </html>
