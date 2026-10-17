@@ -161,6 +161,37 @@
   .ver{margin-top:12px; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
   .windcta{display:block;box-sizing:border-box;max-width:440px;margin:22px 0 2px;padding:12px 16px;background:var(--green);color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:15px;text-align:center;text-decoration:none;border-radius:14px;box-shadow:0 4px 14px rgba(80,224,64,.26)}
   .windcta:hover{filter:brightness(1.04)}
+  /* --- PDF export: button + print-only header/footer --- */
+  .expbtn{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .expbtn:hover{border-color:var(--green-b);color:var(--navy)}
+  .print-top,.print-foot{display:none}
+  @media print{
+    @page{size:A4;margin:13mm 13mm 15mm}
+    html,body{background:#fff !important}
+    body{color:#15202b;font-size:10.5pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    header,.proto,.present-view,.windcta,.subpages,.brief:has(.subpages),.area-pick,.expbtn,footer,.eyebrow,main.facilitator>h1{display:none !important}
+    main.facilitator{display:block !important;max-width:none;margin:0;padding:0}
+    .print-top,.print-foot{display:block !important}
+    .brief,.flag,.areamap,.print-top,.print-foot{break-inside:avoid;page-break-inside:avoid}
+    a{color:inherit !important;text-decoration:none}
+    h2{font-size:13.5pt}
+    .principle{font-size:10pt}
+    .print-top{border-bottom:2px solid #0A1628;padding-bottom:8px;margin-bottom:12px}
+    .pt-brand{font-family:'Syne',sans-serif;font-size:9.5pt;letter-spacing:.05em;color:#2E4057;text-transform:uppercase}
+    .pt-brand b{color:#0A1628}
+    .pt-title{font-family:'Syne',sans-serif;font-weight:800;font-size:19pt;color:#0A1628;margin:3px 0 5px}
+    .pt-stamp{font-family:'Syne',sans-serif;font-weight:700;font-size:11pt;color:#2E4057}
+    .pt-cond{font-size:10.5pt;color:#2E4057;margin-top:3px}
+    .print-foot{border-top:1.5px solid #0A1628;margin-top:18px;padding-top:9px}
+    .pf-sign{font-family:'Syne',sans-serif;font-weight:600;font-size:11pt;color:#0A1628}
+    .pf-note{font-size:8.5pt;color:#2E4057;margin:7px 0 0}
+    .print-log{margin-top:16px}
+    .pl-h{font-family:'Syne',sans-serif;font-weight:700;font-size:11pt;color:#0A1628;margin:0 0 6px}
+    .pl-t{width:100%;border-collapse:collapse;font-size:8.8pt;table-layout:fixed}
+    .pl-t td{border:1px solid #CBD4CD;padding:3px 7px;vertical-align:top;word-wrap:break-word;overflow-wrap:anywhere}
+    .pl-k{font-family:'Syne',sans-serif;font-weight:700;color:#2E4057;width:16%;background:#F2F6F1}
+    .pl-v{color:#15202b;width:34%}
+  }
 </style>
 </head>
 <body>
@@ -172,10 +203,18 @@
       <button type="button" id="m-present" aria-pressed="false">Present</button>
     </div>
     <div class="upd"><span class="live" id="live"></span><span id="clock">—</span></div>
+    <button type="button" id="exportpdf" class="expbtn" title="Save this briefing as a PDF">⤓ PDF</button>
+    <button type="button" id="copyrow" class="expbtn" title="Copy a log row to paste into a spreadsheet">⎘ Copy row</button>
   </div>
 </header>
 
 <main class="facilitator">
+  <div class="print-top" aria-hidden="true">
+    <div class="pt-brand"><b>Aurora Explorer</b> · Port Melbourne Yacht Club</div>
+    <div class="pt-title">Safety Briefing — Port Melbourne</div>
+    <div class="pt-stamp" id="pt-stamp"></div>
+    <div class="pt-cond" id="pt-cond"></div>
+  </div>
   <span class="eyebrow">Safety Briefing</span>
   <h1>Port Melbourne</h1>
   <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader and the sailor — read it, read the day, and decide.</p>
@@ -408,6 +447,10 @@
   </section>
 
   <a class="windcta" href="rs-quest.html">Rigging for today's wind &rarr; RS&nbsp;Quest reef guide</a>
+  <div class="print-foot" aria-hidden="true">
+    <div class="print-log" id="print-log"></div>
+    <p class="pf-note">This page assembles what to cover; the on-water risk assessment and the go / no-go rest with the activity leader and the sailor. Conditions shown are live at the time of export. Approximate — not for navigation.</p>
+  </div>
 </main>
 
   <section class="present-view" aria-label="Presentation — topics to cover">
@@ -450,7 +493,7 @@
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.37 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
+    <div class="ver">PMYC-briefing.html · v0.39 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
   </div>
 </footer>
 
@@ -949,6 +992,83 @@ tick(); setInterval(tick, 30000);
 render();                 // paint immediately from entered values
 load();                   // live wind + air (Bay Winds Worker)
 loadForecast();           // UV, sun/cloud, rain, rest-of-day (Open-Meteo)
+
+/* --- Export & log: PDF print + copy-a-row, from one shared data builder ----- */
+function _condLine(){
+  const liveOn=(typeof live!=='undefined' && live && live.state==='ok' && live.open);
+  const w=liveOn?live.open.m:S.wind, g=liveOn?live.open.g:S.gust;
+  const dd=(liveOn && live.open.deg!=null)?live.open.deg:S.dir;
+  const air=(liveOn && live.airTemp!=null)?live.airTemp:S.air;
+  const P=[];
+  if(w!=null) P.push('Wind '+w+' kt'+(g!=null?(' gusting '+g):''));
+  if(dd!=null) P.push('from '+cardinal(dd));
+  if(air!=null) P.push('air '+air+'°C');
+  if(S.water!=null) P.push('water '+S.water+'°C');
+  if(S.uv!=null) P.push('UV '+S.uv);
+  return P.join('  ·  ');
+}
+function _tideSummary(){
+  try{
+    if(typeof tidePred!=='undefined' && tidePred.ok){
+      const p=melbParts(), nowMin=(+p.hour)*60+(+p.minute), tmin=x=>(+x.time.slice(0,2))*60+(+x.time.slice(3,5));
+      const c=[]; if(tidePred.nextHigh)c.push({t:tidePred.nextHigh,r:true}); if(tidePred.nextLow)c.push({t:tidePred.nextLow,r:false});
+      c.sort((a,b)=>a.t.k-b.t.k);
+      const pk=c.find(x=>tmin(x.t)>=nowMin-8)||c[c.length-1];
+      if(pk) return (pk.r?'rising':'falling')+', next '+(pk.r?'High':'Low')+' '+pk.t.time;
+    }
+    if(typeof tide!=='undefined' && tide && tide.ok) return tide.rising?'rising':'falling';
+  }catch(e){}
+  return S.tide;
+}
+function briefingLog(){
+  const p=melbParts();
+  const liveOn=(typeof live!=='undefined' && live && live.state==='ok' && live.open);
+  const wind=liveOn?live.open.m:S.wind, gust=liveOn?live.open.g:S.gust;
+  const dd=(liveOn && live.open.deg!=null)?live.open.deg:S.dir;
+  const air=(liveOn && live.airTemp!=null)?live.airTemp:S.air;
+  const dt=dayType(), dayStr=dt.type+(dt.why?(' ('+dt.why+')'):'');
+  let traf=''; try{ traf=traffic({airTemp:air, dir:dd, open:{m:wind}}); }catch(e){}
+  const flags=[].slice.call(document.querySelectorAll('.flags .flag .t')).map(e=>e.textContent.replace(/\s+/g,' ').trim()).join('; ');
+  const topics=(document.getElementById('pv-n')?document.getElementById('pv-n').textContent:'0')+'/20';
+  return [
+    ['Date', p.year+'-'+p.month+'-'+p.day],
+    ['Time', p.hour+':'+p.minute],
+    ['Wind (kt)', wind], ['Gust (kt)', gust],
+    ['Direction', dd!=null?(cardinal(dd)+' '+dd+'°'):''],
+    ['Air (°C)', air], ['Water (°C)', S.water], ['UV', S.uv],
+    ['Tide', _tideSummary()], ['Rain', S.rain?'yes':'none'],
+    ['Day-type', dayStr], ['Traffic', traf], ['Topics covered', topics],
+    ['Flags', flags], ['Briefed by', ''], ['Crew', ''], ['Notes', '']
+  ];
+}
+function _esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function populateExport(){
+  const now=new Date();
+  const stamp=now.toLocaleString('en-AU',{timeZone:MELB_TZ,weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  let tz='Melbourne'; try{ const m=now.toLocaleTimeString('en-AU',{timeZone:MELB_TZ,timeZoneName:'short'}).match(/[A-Z]{3,4}$/); if(m) tz=m[0]; }catch(e){}
+  const st=document.getElementById('pt-stamp'); if(st) st.textContent='As at '+stamp+' ('+tz+')';
+  const co=document.getElementById('pt-cond'); if(co) co.textContent=_condLine();
+  const host=document.getElementById('print-log'); if(!host) return;
+  const data=briefingLog(), cell=v=>(v==null||v==='')?'&nbsp;':_esc(v);
+  const pairs=data.filter(r=>r[0]!=='Flags' && r[0]!=='Notes');
+  let h='<h3 class="pl-h">Briefing data — for the logbook</h3><table class="pl-t"><tbody>';
+  for(let i=0;i<pairs.length;i+=2){ const a=pairs[i], b=pairs[i+1];
+    h+='<tr><td class="pl-k">'+_esc(a[0])+'</td><td class="pl-v">'+cell(a[1])+'</td>'
+      +(b?('<td class="pl-k">'+_esc(b[0])+'</td><td class="pl-v">'+cell(b[1])+'</td>'):'<td></td><td></td>')+'</tr>'; }
+  const fl=data.find(r=>r[0]==='Flags'); if(fl) h+='<tr><td class="pl-k">Flags</td><td class="pl-v" colspan="3">'+cell(fl[1])+'</td></tr>';
+  h+='<tr><td class="pl-k">Notes</td><td class="pl-v" colspan="3">&nbsp;</td></tr></tbody></table>';
+  host.innerHTML=h;
+}
+function exportBriefingPDF(){ populateExport(); window.print(); }
+function _copyText(t){
+  if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  return new Promise((res,rej)=>{ try{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }catch(e){ rej(e); } });
+}
+function _flash(btn,msg){ if(!btn) return; if(!btn.dataset.o) btn.dataset.o=btn.textContent; btn.textContent=msg; setTimeout(()=>{ btn.textContent=btn.dataset.o; },1500); }
+function copyLogRow(){ const tsv=briefingLog().map(r=>String(r[1]==null?'':r[1])).join(String.fromCharCode(9)); const btn=document.getElementById('copyrow'); _copyText(tsv).then(()=>_flash(btn,'Copied ✓')).catch(()=>_flash(btn,'Copy failed')); }
+window.addEventListener('beforeprint', populateExport);
+(function(){ const e=document.getElementById('exportpdf'); if(e) e.addEventListener('click',exportBriefingPDF);
+             const c=document.getElementById('copyrow'); if(c) c.addEventListener('click',copyLogRow); })();
 loadTide();               // observed level + direction (BoM gauge via Worker)
 loadTidePred();           // next high/low TIME (tidal prediction)
 loadWater();              // bay water temp (NOAA CRW satellite SST via Worker)
