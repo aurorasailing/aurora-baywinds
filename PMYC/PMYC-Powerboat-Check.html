@@ -1,3 +1,4 @@
+<!-- PMYC-Powerboat-Check.html · v1.1 · 2026-10-19 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,6 +80,9 @@
   footer{ margin-top:26px; padding-top:12px; border-top:2px solid #50E040; color:var(--sub); font-size:12px;
     display:flex; justify-content:space-between; }
   .hidden{ display:none; }
+  .hubbar{display:block;box-sizing:border-box;width:calc(100% - 32px);max-width:440px;margin:16px auto 8px;padding:15px 18px;background:#0A1628;color:#fff;font-family:'Syne',system-ui,sans-serif;font-weight:700;font-size:15.5px;text-align:center;text-decoration:none;border-radius:16px;box-shadow:0 4px 14px rgba(10,22,40,.18)}
+  .hubbar:active{transform:scale(.99)} .hubbar:hover{filter:brightness(1.12)}
+  .ver{ text-align:center; color:var(--sub); font-size:12px; padding:8px 0 14px; letter-spacing:.01em }
 </style>
 </head>
 <body>
@@ -114,7 +118,9 @@
   <h2>Recent on this device <button class="ghost" id="syncNow" style="float:right;margin-top:-4px">Sync now</button></h2>
   <div class="recent" id="recent"><div style="color:var(--sub);font-size:14px;padding:8px 4px">No check-ins yet.</div></div>
 
-  <footer><span>Aurora Sailing</span><span>PMYC · Pre-Session Check</span></footer>
+    <a href="index.html" class="hubbar">← PMYC hub</a>
+<footer><span>Aurora Sailing</span><span>PMYC · Pre-Session Check</span></footer>
+  <div class="ver">PMYC-Powerboat-Check.html · v1.1</div>
 </div>
 
 <script>
