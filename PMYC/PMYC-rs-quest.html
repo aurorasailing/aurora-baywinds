@@ -197,7 +197,7 @@
 
   </div>
     <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
-    <div class="ver">PMYC-rs-quest.html · v1.19</div>
+    <div class="ver">PMYC-rs-quest.html · v1.20</div>
   </footer>
 
 <script>
@@ -210,13 +210,13 @@ const REFRESH_MS = 2 * 60 * 1000;
 
 // wind strength → picture (knots)
 const LEVELS = [
-  {max:4,   img:"quest-calm.jpg",     word:"Calm",           sub:"not enough to sail",        c:"#C4C9C5", t:"#586059"},
-  {max:7,   img:"quest-smooth.jpg",   word:"Smooth", sub:"full main and jib — gentle",           c:"#7BD877", t:"#3B9743"},
-  {max:12,  img:"quest-cruisy.jpg",   word:"Cruisy", sub:"a lovely working breeze — full sail",   c:"#5BC94A", t:"#227A2E"},
-  {max:17,  img:"quest-sporty.jpg",   word:"Sporty", sub:"fun and exciting — ease the gnav as it builds", c:"#2E9E3D", t:"#1B7A29"},
-  {max:25,  img:"quest-reef.jpg",     word:"Reef!",          sub:"reef in and depower — ease the gnav", c:"#FFBB44", t:"#B37400"},
-  {max:35,  img:"quest-mainonly.jpg", word:"Reefed main sail only",     sub:"caught out? reefed, sail flat, hold on — get in",  c:"#F0792E", t:"#C2521A"},
-  {max:999, img:"quest-shore.jpg",    word:"Stay on shore",  sub:"don’t launch — stay in port",             c:"#F90D24", t:"#C21020"},
+  {max:4,   img:"../quest-calm.jpg",     word:"Calm",           sub:"not enough to sail",        c:"#C4C9C5", t:"#586059"},
+  {max:7,   img:"../quest-smooth.jpg",   word:"Smooth", sub:"full main and jib — gentle",           c:"#7BD877", t:"#3B9743"},
+  {max:12,  img:"../quest-cruisy.jpg",   word:"Cruisy", sub:"a lovely working breeze — full sail",   c:"#5BC94A", t:"#227A2E"},
+  {max:17,  img:"../quest-sporty.jpg",   word:"Sporty", sub:"fun and exciting — ease the gnav as it builds", c:"#2E9E3D", t:"#1B7A29"},
+  {max:25,  img:"../quest-reef.jpg",     word:"Reef!",          sub:"reef in and depower — ease the gnav", c:"#FFBB44", t:"#B37400"},
+  {max:35,  img:"../quest-mainonly.jpg", word:"Reefed main sail only",     sub:"caught out? reefed, sail flat, hold on — get in",  c:"#F0792E", t:"#C2521A"},
+  {max:999, img:"../quest-shore.jpg",    word:"Stay on shore",  sub:"don’t launch — stay in port",             c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
 
