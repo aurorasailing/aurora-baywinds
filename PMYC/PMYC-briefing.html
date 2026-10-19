@@ -169,7 +169,7 @@
     @page{size:A4;margin:13mm 13mm 15mm}
     html,body{background:#fff !important}
     body{color:#15202b;font-size:10.5pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    header,.hubbar,.proto,.present-view,.windcta,.subpages,.brief:has(.subpages),.area-pick,.expbtn,footer,.eyebrow,main.facilitator>h1{display:none !important}
+    header,.hubbar,.proto,.present-view,.deliver-view,.windcta,.subpages,.brief:has(.subpages),.area-pick,.expbtn,footer,.eyebrow,main.facilitator>h1{display:none !important}
     main.facilitator{display:block !important;max-width:none;margin:0;padding:0}
     .print-top,.print-foot{display:block !important}
     .brief,.flag,.areamap,.print-top,.print-foot{break-inside:avoid;page-break-inside:avoid}
@@ -194,6 +194,44 @@
   }
   .hubbar{display:block;box-sizing:border-box;width:calc(100% - 32px);max-width:440px;margin:16px auto 8px;padding:15px 18px;background:#0A1628;color:#fff;font-family:'Syne',system-ui,sans-serif;font-weight:700;font-size:15.5px;text-align:center;text-decoration:none;border-radius:16px;box-shadow:0 4px 14px rgba(10,22,40,.18)}
   .hubbar:active{transform:scale(.99)} .hubbar:hover{filter:brightness(1.12)}
+  /* --- Deliver & log view --- */
+  .deliver-view{display:none; max-width:560px; margin:0 auto; padding:16px var(--pad) 40px}
+  body.mode-deliver main.facilitator{display:none}
+  body.mode-deliver .upd{display:none}
+  body.mode-deliver .deliver-view{display:block}
+  .dv-h{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(22px,5vw,30px);color:var(--navy);margin:4px 0 4px}
+  .dv-sub{font-size:14px;color:var(--muted);margin:0 0 14px}
+  .dv-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;font-size:13.5px;font-weight:600;margin:0 0 14px;background:#EEF1EC;color:var(--slate)}
+  .dv-status .dot{width:9px;height:9px;border-radius:50%;background:#9aa;flex:0 0 auto}
+  .dv-status.s-ok{background:#EAF8EA;color:#227A2E} .dv-status.s-ok .dot{background:var(--green-b)}
+  .dv-status.s-wait{background:#FFF6E6;color:#9A6700} .dv-status.s-wait .dot{background:#E7B84B}
+  .dv-status.s-off{background:#EDEAE4;color:var(--muted)} .dv-status.s-off .dot{background:#9aa}
+  .dv-fld{display:block;font-size:13px;font-weight:700;color:var(--slate);margin:12px 0 0}
+  .dv-fld .req{color:#C21020}
+  .dv-fld input,.dv-fld textarea{width:100%;box-sizing:border-box;padding:12px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);margin-top:5px}
+  .dv-cond{background:var(--seafoam);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:15px 0;font-size:14px;color:var(--slate);line-height:1.5}
+  .dv-cond b{color:var(--navy)}
+  .dv-list{margin:8px 0 2px}
+  .dv-sec{display:flex;align-items:flex-start;gap:13px;padding:14px 4px;border-top:1px solid var(--line);cursor:pointer;user-select:none}
+  .dv-sec:last-child{border-bottom:1px solid var(--line)}
+  .dv-sec .box{flex:0 0 26px;width:26px;height:26px;border:2px solid #C4CCC5;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .dv-sec.on .box{background:var(--green-b);border-color:var(--green-b)}
+  .dv-sec .box svg{opacity:0} .dv-sec.on .box svg{opacity:1}
+  .dv-sec .tx{flex:1;min-width:0}
+  .dv-sec .st{display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--navy)}
+  .dv-sec .si{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .dv-log{display:block;width:100%;margin:18px 0 2px;padding:15px;background:var(--green);color:var(--navy);font-family:'Syne',sans-serif;font-weight:800;font-size:16px;border:none;border-radius:14px;cursor:pointer;box-shadow:0 4px 14px rgba(80,224,64,.28)}
+  .dv-log:active{transform:scale(.99)}
+  .dv-warn{background:#FDECEC;border-left:4px solid #C21020;border-radius:0 10px 10px 0;padding:11px 14px;margin:10px 0;font-size:14px;color:#8f1f14}
+  .dv-warn.hidden{display:none}
+  .dv-devrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 4px;font-size:13px;color:var(--muted)}
+  .dv-ghost{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+  .dv-recent{margin:2px 0 8px}
+  .dv-rec{display:flex;align-items:center;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13.5px}
+  .dv-rec .who{flex:1;color:var(--navy);font-weight:600;min-width:0}
+  .dv-rec .when{color:var(--muted);font-size:12px;white-space:nowrap}
+  .dv-rec .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .dv-rec .chip.sy{background:#EAF8EA;color:#227A2E} .dv-rec .chip.pe{background:#FFF6E6;color:#9A6700}
 </style>
 </head>
 <body>
@@ -203,6 +241,7 @@
     <div class="modesw" role="group" aria-label="View mode">
       <button type="button" id="m-brief" class="on" aria-pressed="true">Brief</button>
       <button type="button" id="m-present" aria-pressed="false">Present</button>
+      <button type="button" id="m-deliver" aria-pressed="false">Log</button>
     </div>
     <div class="upd"><span class="live" id="live"></span><span id="clock">—</span></div>
     <button type="button" id="exportpdf" class="expbtn" title="Save this briefing as a PDF">⤓ PDF</button>
@@ -491,12 +530,28 @@
     </div></div>
     <p class="pv-foot">Tap a topic as you cover it. For a review, tap through and name what you'd do — the pictograms prompt the topic, not the answer.</p>
   </section>
+  <section class="deliver-view" aria-label="Deliver and log the briefing">
+    <h2 class="dv-h">Deliver &amp; log</h2>
+    <p class="dv-sub">Tick each section as you cover it, then log who gave the briefing. The live conditions and the time are captured automatically and sent to the sheet.</p>
+    <div class="dv-status" id="dv-status"><span class="dot"></span><span id="dv-statusText">Starting…</span></div>
+    <label class="dv-fld">Briefed by <span class="req">*</span><input type="text" id="dv-by" placeholder="Your name" autocomplete="name"></label>
+    <label class="dv-fld">Crew / group<input type="text" id="dv-crew" placeholder="e.g. Thursday squad, 6 sailors"></label>
+    <div class="dv-cond" id="dv-cond">Conditions will be captured when you log.</div>
+    <div class="dv-list" id="dv-list"></div>
+    <label class="dv-fld">Notes<textarea id="dv-notes" rows="2" placeholder="anything worth recording"></textarea></label>
+    <button type="button" class="dv-log" id="dv-log">Log briefing</button>
+    <div class="dv-warn hidden" id="dv-warn"></div>
+    <div class="dv-devrow"><span>This device: <b id="dv-dev">—</b></span><button type="button" class="dv-ghost" id="dv-rename">Rename</button></div>
+    <div class="dv-recent" id="dv-recent"></div>
+    <a href="index.html" class="hubbar">← PMYC hub</a>
+  </section>
+
 
 <footer>
   <div class="foot-in">
     <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
     <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
-    <div class="ver">PMYC-briefing.html · v0.43 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
+    <div class="ver">PMYC-briefing.html · v0.44 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
   </div>
 </footer>
 
@@ -1083,19 +1138,130 @@ setInterval(loadWater, REFRESH_MS);
 
 /* --- view mode (Brief / Present) + the topic checklist --------------------- */
 (function(){
-  const mb=document.getElementById('m-brief'), mp=document.getElementById('m-present');
-  function setMode(present){ document.body.classList.toggle('mode-present',present);
-    mb.classList.toggle('on',!present); mp.classList.toggle('on',present);
-    mb.setAttribute('aria-pressed',String(!present)); mp.setAttribute('aria-pressed',String(present));
+  const mb=document.getElementById('m-brief'), mp=document.getElementById('m-present'), md=document.getElementById('m-deliver');
+  function setView(v){ document.body.classList.toggle('mode-present',v==='present'); document.body.classList.toggle('mode-deliver',v==='deliver');
+    mb.classList.toggle('on',v==='brief'); mp.classList.toggle('on',v==='present'); md.classList.toggle('on',v==='deliver');
+    mb.setAttribute('aria-pressed',String(v==='brief')); mp.setAttribute('aria-pressed',String(v==='present')); md.setAttribute('aria-pressed',String(v==='deliver'));
     window.scrollTo(0,0); }
-  mb.addEventListener('click',()=>setMode(false));
-  mp.addEventListener('click',()=>setMode(true));
+  mb.addEventListener('click',()=>setView('brief'));
+  mp.addEventListener('click',()=>setView('present'));
+  md.addEventListener('click',()=>setView('deliver'));
   const cards=[...document.querySelectorAll('.pv-card')], n=document.getElementById('pv-n');
   const count=()=>{ n.textContent=document.querySelectorAll('.pv-card.done').length; };
   cards.forEach(c=>c.addEventListener('click',()=>{ c.classList.toggle('done'); count(); }));
   const r=document.getElementById('pv-reset');
   if(r) r.addEventListener('click',()=>{ cards.forEach(c=>c.classList.remove('done')); count(); });
 })();
+</script>
+<script>
+/* ===== Deliver & log view — offline-first, logs to the sheet (same pattern as the powerboat check) ===== */
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxdSuHSRk1RM6qy-qt5h3K7UjHDpu55TWn5kVOy6qtPJAENU2xOPmzA7ma19ORC_vZrvQ/exec"; // same deployment; routes by type
+  var DV_SECTIONS = [
+    {k:'weather',  t:'Weather',       items:'Wind · tide · temperature · sun / UV · cold & heat · water quality'},
+    {k:'location', t:'Location',      items:'Area & Tower sight line · piers · sandbank & launch · traffic · wildlife'},
+    {k:'time',     t:'Time',          items:'Start · end · plan · boats & roles'},
+    {k:'comms',    t:'Communication', items:'Hand signals · return to shore · radio CH 73'},
+    {k:'safety',   t:'Safety',        items:'Buddy system · capsize drill · first aid · head knocks'}
+  ];
+  var TICK = '<svg width="15" height="15" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
+  function load(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+  var queue = load('pmyc_brief_queue', []);
+  function save(){ localStorage.setItem('pmyc_brief_queue', JSON.stringify(queue)); }
+  var device = localStorage.getItem('pmyc_device');
+  if(!device){ device = 'Device-' + Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device', device); }
+  var sec = {}, syncing = false;
+
+  var listEl = document.getElementById('dv-list');
+  DV_SECTIONS.forEach(function(s){
+    var row=document.createElement('div'); row.className='dv-sec'; row.setAttribute('data-k',s.k);
+    row.innerHTML='<span class="box">'+TICK+'</span><span class="tx"><span class="st"></span><span class="si"></span></span>';
+    row.querySelector('.st').textContent=s.t; row.querySelector('.si').textContent=s.items;
+    row.addEventListener('click',function(){ sec[s.k]=!sec[s.k]; row.classList.toggle('on',!!sec[s.k]); });
+    listEl.appendChild(row);
+  });
+
+  document.getElementById('dv-dev').textContent = device;
+  document.getElementById('dv-rename').addEventListener('click',function(){
+    var n=prompt('Name for this device (shows in the sheet):', device);
+    if(n){ device=n.trim().slice(0,40); localStorage.setItem('pmyc_device',device); document.getElementById('dv-dev').textContent=device; }
+  });
+  document.getElementById('dv-log').addEventListener('click', submit);
+
+  function snap(){ try{ if(typeof briefingLog==='function'){ var m={}; briefingLog().forEach(function(r){ m[r[0]]=r[1]; }); return m; } }catch(e){} return {}; }
+  function fillCond(){
+    var m=snap(), el=document.getElementById('dv-cond');
+    if(!m.Date){ el.textContent='Conditions will be captured when you log.'; return; }
+    el.innerHTML='<b>Conditions now</b> — captured with the log: Wind '+(m['Wind (kt)']||'—')+' kt'
+      +(m['Gust (kt)']?(' gusting '+m['Gust (kt)']):'')+', '+(m.Direction||'')
+      +' · Air '+(m['Air (\u00b0C)']||'—')+'\u00b0C · Water '+(m['Water (\u00b0C)']||'—')+'\u00b0C · UV '+(m.UV||'—')
+      +' · Tide '+(m.Tide||'—')+' · '+(m['Day-type']||'')+' · traffic '+(m.Traffic||'—')+'.';
+  }
+
+  function submit(){
+    var warn=document.getElementById('dv-warn'); warn.classList.add('hidden');
+    var by=document.getElementById('dv-by').value.trim();
+    if(!by){ warn.textContent='Please enter who gave the briefing.'; warn.classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    var covered=DV_SECTIONS.filter(function(s){ return sec[s.k]; });
+    if(covered.length<DV_SECTIONS.length){
+      if(!confirm((DV_SECTIONS.length-covered.length)+' section'+((DV_SECTIONS.length-covered.length)>1?'s':'')+' not ticked. Log the briefing anyway?')) return;
+    }
+    var m=snap();
+    var rec={
+      id:uuid(), type:'briefing', device:device, deviceTime:new Date().toLocaleString(),
+      date:m.Date||'', time:m.Time||'', briefedBy:by, crew:document.getElementById('dv-crew').value.trim(),
+      wind:m['Wind (kt)']||'', gust:m['Gust (kt)']||'', dir:m.Direction||'', air:m['Air (\u00b0C)']||'',
+      water:m['Water (\u00b0C)']||'', uv:m.UV||'', tide:m.Tide||'', rain:m.Rain||'',
+      dayType:m['Day-type']||'', traffic:m.Traffic||'', flags:m.Flags||'',
+      sectionsCovered:covered.map(function(s){ return s.t; }).join('; '),
+      sectionsCount:covered.length+'/'+DV_SECTIONS.length,
+      notes:document.getElementById('dv-notes').value.trim(), status:'pending'
+    };
+    queue.unshift(rec); save(); resetForm(); render(); syncAll();
+  }
+  function resetForm(){ sec={}; document.querySelectorAll('.dv-sec').forEach(function(r){ r.classList.remove('on'); }); document.getElementById('dv-notes').value=''; }
+
+  function syncOne(rec){
+    return fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+      .then(function(r){ return r.json(); }).then(function(d){ if(d&&d.ok) return true; throw 0; })
+      .catch(function(){ return fetch(WEBAPP_URL+'?verify='+encodeURIComponent(rec.id)).then(function(r){ return r.json(); }).then(function(d){ return !!(d&&d.exists); }).catch(function(){ return false; }); });
+  }
+  function syncAll(){
+    if(!WEBAPP_URL || !navigator.onLine || syncing){ render(); return; }
+    var pend=queue.filter(function(r){ return r.status!=='synced'; });
+    if(!pend.length){ render(); return; }
+    syncing=true; render();
+    (function next(i){ if(i>=pend.length){ syncing=false; render(); return; }
+      syncOne(pend[i]).then(function(ok){ if(ok){ pend[i].status='synced'; save(); } render(); next(i+1); }); })(0);
+  }
+  function render(){
+    fillCond();
+    var pend=queue.filter(function(r){ return r.status!=='synced'; }).length;
+    var s=document.getElementById('dv-status'), t=document.getElementById('dv-statusText'); s.className='dv-status';
+    if(!navigator.onLine){ s.classList.add('s-off'); t.textContent= pend?('Offline — '+pend+' briefing'+(pend>1?'s':'')+' waiting, will sync when back online.'):'Offline — all saved.'; }
+    else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
+    else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' briefing'+(pend>1?'s':'')+' waiting to sync.'; }
+    else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
+    else { t.textContent='Nothing logged yet on this device.'; }
+    var rec=document.getElementById('dv-recent');
+    if(!queue.length){ rec.innerHTML=''; return; }
+    rec.innerHTML='';
+    queue.slice(0,8).forEach(function(r){
+      var row=document.createElement('div'); row.className='dv-rec'; var synced=r.status==='synced';
+      row.innerHTML='<span class="who"></span><span class="when"></span><span class="chip '+(synced?'sy':'pe')+'">'+(synced?'\u2713 Synced':'\u29D6 Pending')+'</span>';
+      row.querySelector('.who').textContent=r.briefedBy+' \u00b7 '+r.sectionsCount+' sections';
+      row.querySelector('.when').textContent=r.deviceTime;
+      rec.appendChild(row);
+    });
+  }
+  window.addEventListener('online', syncAll);
+  window.addEventListener('offline', render);
+  setInterval(syncAll, 15000);
+  setInterval(function(){ if(document.body.classList.contains('mode-deliver')) fillCond(); }, 30000);
+  render(); syncAll();
+})();
+
 </script>
 </body>
 </html>
