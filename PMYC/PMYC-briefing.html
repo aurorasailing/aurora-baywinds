@@ -1,0 +1,1098 @@
+<!-- Aurora Explorer · PMYC-briefing.html · v0.15 (cold/heat, concussion & capsize bulleted in text; EPA link inline) · 2026-10-14 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Safety Briefing — Port Melbourne · Aurora Explorer</title>
+<meta name="description" content="Pre-flight safety briefing for Port Melbourne sailing — today's conditions, the fixed local hazards, and condition-triggered flags. Assembles the briefing; the leader makes the call.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --navy:#0A1628; --green:#50E040; --green-b:#39D455; --slate:#2E4057; --ink:#1C2B3A;
+    --muted:#7A8A7E; --line:#E1E6E0; --seafoam:#E8EDE6; --harbour:#F5F7F4; --white:#fff;
+    --amber-t:#B37400; --amber-bg:#FFF6E6; --amber-bd:#FFBB44;
+    --red-t:#C2521A; --red-bg:#FDECEC; --red-bd:#F0792E;
+    --pad: 20px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  html{scroll-padding-top: env(safe-area-inset-top,0px)}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif; color:var(--ink);
+    background:var(--harbour); -webkit-font-smoothing:antialiased; line-height:1.6}
+  :root{box-sizing:border-box}
+
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px var(--pad);
+    padding-top:calc(12px + env(safe-area-inset-top,0)); background:var(--white); border-bottom:1px solid var(--line)}
+  .brand{display:flex; align-items:baseline; gap:9px; text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif; font-weight:800; font-size:17px; letter-spacing:.02em; text-transform:uppercase; color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+  .upd{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:7px; white-space:nowrap}
+  .live{width:8px; height:8px; border-radius:50%; background:var(--green-b); flex:none;
+    box-shadow:0 0 0 0 rgba(57,212,85,.6); animation:pulse 2.6s infinite}
+  .live.off{background:var(--muted); animation:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(57,212,85,.5)}70%{box-shadow:0 0 0 9px rgba(57,212,85,0)}100%{box-shadow:0 0 0 0 rgba(57,212,85,0)}}
+  @media (prefers-reduced-motion:reduce){.live{animation:none}}
+
+  main{max-width:680px; margin:0 auto; padding:18px var(--pad) 8px}
+
+  .eyebrow{font-family:'Syne',sans-serif; font-weight:600; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(30px,8vw,44px); line-height:1.05; margin:6px 0 10px; color:var(--navy)}
+  .principle{background:var(--seafoam); border-left:4px solid var(--green-b); border-radius:0 12px 12px 0;
+    padding:13px 16px; margin:4px 0 2px; font-size:15.5px; color:var(--slate)}
+  .principle b{color:var(--navy); font-weight:700}
+
+  /* inputs panel */
+  .proto{margin:16px 0 6px; border:1px dashed var(--muted); border-radius:14px; background:#fff}
+  .proto>summary{list-style:none; cursor:pointer; padding:11px 15px; font-family:'Syne',sans-serif;
+    font-weight:700; font-size:13px; color:var(--slate); display:flex; align-items:center; gap:8px}
+  .proto>summary::-webkit-details-marker{display:none}
+  .proto>summary::after{content:"▾"; color:var(--muted); margin-left:auto; font-weight:400}
+  .proto[open]>summary::after{content:"▴"}
+  .proto .tag{font-family:'Syne',sans-serif; font-weight:700; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:2px 7px}
+  .ctrl-note{grid-column:1/-1; margin:0 0 2px; font-size:12px; color:var(--muted)}
+  .ctrls{padding:4px 15px 16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px 16px}
+  .ctrl{display:flex; flex-direction:column; gap:3px; font-size:12.5px; color:var(--slate)}
+  .ctrl.islive{opacity:.5}
+  .ctrl label{font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px; color:var(--navy)}
+  .ctrl .val{font-weight:700; color:var(--green-b)}
+  .ctrl .lk{font-weight:700; color:var(--muted); font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+  .ctrl input[type=range]{width:100%; accent-color:var(--green-b)}
+  .ctrl input[disabled]{cursor:not-allowed}
+  .ctrl select, .ctrl input[type=number]{font:inherit; padding:5px 7px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink)}
+  .ctrl.chk{flex-direction:row; align-items:center; gap:8px}
+  .ctrl.chk input{width:17px; height:17px; accent-color:var(--green-b)}
+  .ctrl.chk label{font-weight:600; color:var(--slate)}
+
+  /* live block */
+  .live-block{margin:16px 0 6px; border:1px solid var(--line); border-radius:18px; background:#fff; overflow:hidden}
+  .lb-hd{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line)}
+  .lb-hd h2{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--slate); margin:0}
+  .lb-src{font-size:12px; color:var(--muted); text-align:right}
+  .lb-src.stale{color:var(--amber-t)}
+  .lb-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr))}
+  .fig{padding:13px 16px; border-right:1px solid var(--line); border-top:1px solid var(--line)}
+  .fig:nth-child(-n+4){border-top:none}
+  .fig .k{font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+  .fig .v{font-family:'Lato',sans-serif; font-weight:300; font-size:28px; line-height:1.15; color:var(--navy); margin-top:2px}
+  .fig .v b{font-family:'Syne',sans-serif; font-weight:600; font-size:.42em; color:var(--muted); margin-left:3px}
+  .fig .s{font-size:12px; color:var(--slate); margin-top:2px}
+
+  /* flags */
+  .flags{display:flex; flex-direction:column; gap:9px; margin:10px 0 2px}
+  .flag{border-radius:14px; padding:12px 15px; border:2px solid; font-size:14px}
+  .flag .t{font-family:'Syne',sans-serif; font-weight:800; font-size:14.5px; margin-bottom:3px}
+  .flag .b{color:var(--slate); line-height:1.45}
+  .flag .b b{color:var(--ink)}
+  .flag.amber{background:var(--amber-bg); border-color:var(--amber-bd)} .flag.amber .t{color:var(--amber-t)}
+  .flag.red{background:var(--red-bg); border-color:var(--red-bd)} .flag.red .t{color:var(--red-t)}
+  .flag.info{background:var(--seafoam); border-color:var(--green-b)} .flag.info .t{color:var(--navy)}
+  .pill{display:inline-block; font-family:'Syne',sans-serif; font-weight:800; font-size:12px; border-radius:999px; padding:3px 11px; vertical-align:middle}
+  .pill.low{background:#E7F5E6; color:#227A2E} .pill.med{background:var(--amber-bg); color:var(--amber-t)} .pill.high{background:var(--red-bg); color:var(--red-t)}
+
+  /* sections */
+  section.brief{border-top:1px solid var(--line); padding-top:18px; margin-top:26px}
+  section.brief>h2{font-family:'Syne',sans-serif; font-weight:800; font-size:22px; color:var(--navy); margin:0 0 4px}
+  section.brief>.lead{font-size:14px; color:var(--muted); margin:0 0 10px}
+  .fixed{font-size:14.5px}
+  .fixed h3{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--slate); margin:14px 0 4px}
+  .fixed ul{margin:6px 0; padding-left:18px} .fixed li{margin:4px 0}
+  .fixed p{margin:7px 0}
+  .fixed b{font-weight:700}
+  .fixed a{color:var(--green-b); font-weight:700; text-decoration:none}
+  .area-pick{display:flex; align-items:center; gap:10px; margin:2px 0 10px; flex-wrap:wrap}
+  .area-pick label{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--navy)}
+  .area-pick select{font:inherit; font-size:14px; padding:7px 9px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); flex:1; min-width:220px; max-width:400px}
+  .areamap{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; margin:0 0 14px}
+  .areamap svg{display:block; width:100%; height:auto}
+  .mapcap{font-size:12px; color:var(--muted); padding:9px 14px; border-top:1px solid var(--line); line-height:1.5}
+  .mlab{font-family:'Syne',sans-serif; font-weight:700; font-size:12px; fill:var(--navy)}
+  .msub{font-family:'Lato',sans-serif; font-weight:400; font-size:11px; fill:var(--slate)}
+  .mkey{font-family:'Syne',sans-serif; font-weight:600; font-size:10.5px; fill:var(--muted)}
+  .areanote{background:var(--seafoam); border-left:4px solid var(--green-b); border-radius:0 12px 12px 0; padding:11px 15px; margin:0 0 14px; font-size:15px; color:var(--slate)}
+  .areanote b{color:var(--navy)}
+  header{flex-wrap:wrap; row-gap:8px}
+  .hdr-right{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:flex-end}
+  .modesw{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:#fff}
+  .modesw button{font-family:'Syne',sans-serif; font-weight:700; font-size:12.5px; color:var(--slate); background:transparent; border:0; padding:6px 13px; cursor:pointer}
+  .modesw button.on{background:var(--navy); color:#fff}
+  body.mode-present .upd{display:none}
+  body.mode-present main.facilitator{display:none}
+  .present-view{display:none; max-width:1080px; margin:0 auto; padding:18px var(--pad) 36px}
+  body.mode-present .present-view{display:block}
+  .pv-head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:6px 0 10px}
+  .pv-head h2{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(22px,4.2vw,32px); color:var(--navy); margin:0}
+  .pv-tools{display:flex; align-items:center; gap:14px}
+  .pv-count{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--slate)}
+  .pv-count b{color:var(--green-b)}
+  #pv-reset{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--slate); background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 14px; cursor:pointer}
+  .pv-group{margin-top:20px}
+  .pv-group h3{font-family:'Syne',sans-serif; font-weight:700; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+  .pv-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(144px,1fr)); gap:14px}
+  .pv-card{display:flex; flex-direction:column; align-items:center; gap:10px; border:1px solid var(--line); border-radius:18px; background:#fff; color:var(--navy); padding:20px 12px; cursor:pointer; position:relative; transition:transform .08s, box-shadow .15s, border-color .15s; font:inherit}
+  .pv-card:hover{box-shadow:0 4px 16px rgba(10,22,40,.08)}
+  .pv-card:active{transform:scale(.97)}
+  .pv-card svg{width:46px; height:46px}
+  .pv-card .pl{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy); line-height:1.25; text-align:center}
+  .pv-card .tick{position:absolute; top:8px; right:10px; font-weight:800; color:var(--green-b); opacity:0; font-size:17px}
+  .pv-card.done{border-color:var(--green-b); background:#F1FBF0}
+  .pv-card.done svg{color:var(--muted); opacity:.55}
+  .pv-card.done .pl{color:var(--muted)}
+  .pv-card.done .tick{opacity:1}
+  .pv-foot{font-size:13px; color:var(--muted); margin-top:20px}
+
+  .subpages{display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 2px}
+  .subpages a{flex:1 1 180px; text-decoration:none; border:1px solid var(--line); border-radius:14px; background:#fff; padding:12px 14px}
+  .subpages a .st{font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--navy); display:block}
+  .subpages a .ss{font-size:12.5px; color:var(--muted)}
+
+  footer{border-top:1px solid var(--line); padding:20px var(--pad);
+    padding-bottom:calc(20px + env(safe-area-inset-bottom,0)); color:var(--muted); font-size:13px; background:var(--white); margin-top:28px}
+  .foot-in{max-width:680px; margin:0 auto}
+  .foot-in .fp{color:var(--slate); font-size:13.5px}
+  .foot-in .fp b{color:var(--navy)}
+  .foot-in a{color:var(--green-b); text-decoration:none; font-weight:700}
+  .ver{margin-top:12px; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
+  .windcta{display:block;box-sizing:border-box;max-width:440px;margin:22px 0 2px;padding:12px 16px;background:var(--green);color:var(--navy);font-family:'Syne',sans-serif;font-weight:700;font-size:15px;text-align:center;text-decoration:none;border-radius:14px;box-shadow:0 4px 14px rgba(80,224,64,.26)}
+  .windcta:hover{filter:brightness(1.04)}
+  /* --- PDF export: button + print-only header/footer --- */
+  .expbtn{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .expbtn:hover{border-color:var(--green-b);color:var(--navy)}
+  .print-top,.print-foot{display:none}
+  @media print{
+    @page{size:A4;margin:13mm 13mm 15mm}
+    html,body{background:#fff !important}
+    body{color:#15202b;font-size:10.5pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    header,.proto,.present-view,.windcta,.subpages,.brief:has(.subpages),.area-pick,.expbtn,footer,.eyebrow,main.facilitator>h1{display:none !important}
+    main.facilitator{display:block !important;max-width:none;margin:0;padding:0}
+    .print-top,.print-foot{display:block !important}
+    .brief,.flag,.areamap,.print-top,.print-foot{break-inside:avoid;page-break-inside:avoid}
+    a{color:inherit !important;text-decoration:none}
+    h2{font-size:13.5pt}
+    .principle{font-size:10pt}
+    .print-top{border-bottom:2px solid #0A1628;padding-bottom:8px;margin-bottom:12px}
+    .pt-brand{font-family:'Syne',sans-serif;font-size:9.5pt;letter-spacing:.05em;color:#2E4057;text-transform:uppercase}
+    .pt-brand b{color:#0A1628}
+    .pt-title{font-family:'Syne',sans-serif;font-weight:800;font-size:19pt;color:#0A1628;margin:3px 0 5px}
+    .pt-stamp{font-family:'Syne',sans-serif;font-weight:700;font-size:11pt;color:#2E4057}
+    .pt-cond{font-size:10.5pt;color:#2E4057;margin-top:3px}
+    .print-foot{border-top:1.5px solid #0A1628;margin-top:18px;padding-top:9px}
+    .pf-sign{font-family:'Syne',sans-serif;font-weight:600;font-size:11pt;color:#0A1628}
+    .pf-note{font-size:8.5pt;color:#2E4057;margin:7px 0 0}
+    .print-log{margin-top:16px}
+    .pl-h{font-family:'Syne',sans-serif;font-weight:700;font-size:11pt;color:#0A1628;margin:0 0 6px}
+    .pl-t{width:100%;border-collapse:collapse;font-size:8.8pt;table-layout:fixed}
+    .pl-t td{border:1px solid #CBD4CD;padding:3px 7px;vertical-align:top;word-wrap:break-word;overflow-wrap:anywhere}
+    .pl-k{font-family:'Syne',sans-serif;font-weight:700;color:#2E4057;width:16%;background:#F2F6F1}
+    .pl-v{color:#15202b;width:34%}
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="https://wind.aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Explorer</span></a>
+  <div class="hdr-right">
+    <div class="modesw" role="group" aria-label="View mode">
+      <button type="button" id="m-brief" class="on" aria-pressed="true">Brief</button>
+      <button type="button" id="m-present" aria-pressed="false">Present</button>
+    </div>
+    <div class="upd"><span class="live" id="live"></span><span id="clock">—</span></div>
+    <button type="button" id="exportpdf" class="expbtn" title="Save this briefing as a PDF">⤓ PDF</button>
+    <button type="button" id="copyrow" class="expbtn" title="Copy a log row to paste into a spreadsheet">⎘ Copy row</button>
+  </div>
+</header>
+
+<main class="facilitator">
+  <div class="print-top" aria-hidden="true">
+    <div class="pt-brand"><b>Aurora Explorer</b> · Port Melbourne Yacht Club</div>
+    <div class="pt-title">Safety Briefing — Port Melbourne</div>
+    <div class="pt-stamp" id="pt-stamp"></div>
+    <div class="pt-cond" id="pt-cond"></div>
+  </div>
+  <span class="eyebrow">Safety Briefing</span>
+  <h1>Port Melbourne</h1>
+  <p class="principle"><b>This page assembles the briefing. It doesn't make the call.</b> The on-water risk assessment and the go / no-go rest with the activity leader and the sailor — read it, read the day, and decide.</p>
+
+  <details class="proto">
+    <summary>Today's inputs <span class="tag">all feeds live</span></summary>
+    <div class="ctrls">
+      <p class="ctrl-note">Wind, gust, direction and air temperature from the Bay Winds stations; UV, sun/cloud, rain and forecast from Open-Meteo; tide from the Bureau's observed gauge at St Kilda Marina (next turn predicted); water temp from NOAA satellite SST. Every field is live — the controls are fallbacks, and for testing.</p>
+      <div class="ctrl" data-live="1"><label>Wind — open bay <span class="val" id="v-wind"></span></label><input type="range" id="c-wind" min="0" max="40" value="11"></div>
+      <div class="ctrl" data-live="1"><label>Gust <span class="val" id="v-gust"></span></label><input type="range" id="c-gust" min="0" max="55" value="15"></div>
+      <div class="ctrl" data-live="1"><label>Direction <span class="val" id="v-dir"></span></label><input type="range" id="c-dir" min="0" max="359" value="200"></div>
+      <div class="ctrl" data-live="1"><label>Air temp <span class="val" id="v-air"></span></label><input type="range" id="c-air" min="5" max="44" value="22"></div>
+      <div class="ctrl" data-water="1"><label>Water temp <span class="val" id="v-water"></span></label><input type="range" id="c-water" min="8" max="26" value="17"></div>
+      <div class="ctrl" data-fc="1"><label>UV index <span class="val" id="v-uv"></span></label><input type="range" id="c-uv" min="0" max="14" value="5"></div>
+      <div class="ctrl"><label>Hour of day <span class="val" id="v-hour"></span></label><input type="range" id="c-hour" min="6" max="21" value="14"></div>
+      <div class="ctrl" data-tide="1"><label>Tide</label><select id="c-tide"><option value="rising">Rising (incoming)</option><option value="falling">Falling</option></select></div>
+      <div class="ctrl"><label>Day</label><select id="c-day"><option value="weekday">Weekday</option><option value="schoolhol">School-holiday weekday</option><option value="weekend">Weekend</option><option value="bridge">Bridge day (long weekend)</option><option value="holiday">Public holiday</option></select></div>
+      <div class="ctrl chk" data-fc="1"><input type="checkbox" id="c-sun" checked><label for="c-sun">Sunny</label></div>
+      <div class="ctrl chk" data-fc="1"><input type="checkbox" id="c-rain"><label for="c-rain">Heavy rain last 1–2 days</label></div>
+      <div class="ctrl chk"><input type="checkbox" id="c-jelly"><label for="c-jelly">Jellyfish season</label></div>
+      <div class="ctrl chk"><input type="checkbox" id="c-ship"><label for="c-ship">Ship berthed at Station Pier</label></div>
+    </div>
+  </details>
+
+  <!-- LIVE BLOCK -->
+  <div class="live-block">
+    <div class="lb-hd"><h2>Today, on the water</h2><span class="lb-src" id="lb-src">connecting…</span></div>
+    <div class="lb-grid" id="lb-grid"></div>
+  </div>
+  <div class="flags" id="flags-wind"></div>
+
+  <!-- WEATHER -->
+  <section class="brief">
+    <h2>Weather</h2>
+    <p class="lead">Temperature, wind, tide and what they mean for the crew.</p>
+    <div class="flags" id="flags-weather"></div>
+    <div class="fixed">
+      <p>Read the wind, the tide and the change before you launch. Match clothing, sun cover and wetsuits to the day.</p>
+      <p><b>Cold and heat:</b> the crew check each other, not only the instructor — the one affected is the last to notice.</p>
+      <ul>
+        <li>Cold: shivering that won't stop → off the water and warm up. Shivering <i>stopping</i> while still cold is worse, not better.</li>
+        <li>Heat: confusion, stumbling, or skin that's stopped sweating → <b>Triple Zero (000)</b> and cool fast.</li>
+        <li>In doubt either way, head in.</li>
+      </ul>
+      <p>Full signs and steps on the <a href="cold-and-heat.html">Cold &amp; Heat page</a>.</p>
+      <p><b>Water quality:</b> stormwater after rain lifts the bacteria count — hold off immersion a day or two after heavy rain, worse near drains and the pier outfalls. Check EPA's <a href="https://www.epa.vic.gov.au/check-air-and-water-quality?type=incident%2Cwater&amp;lat=-37.829806&amp;lon=144.918044&amp;z=13" target="_blank" rel="noopener">water-quality and incident map</a> for Port Melbourne.</p>
+    </div>
+  </section>
+
+  <!-- LOCATION -->
+  <section class="brief">
+    <h2>Location</h2>
+    <p class="lead">The area, the piers, the sandbank, the traffic.</p>
+
+    <div class="area-pick">
+      <label for="c-area">Sailing area</label>
+      <select id="c-area" aria-label="Sailing area">
+        <option value="pmyc" selected>PMYC — the triangle</option>
+        <option disabled>St Kilda — down to RMYS &amp; St Kilda Pier (soon)</option>
+        <option disabled>Williamstown — across the shipping channel (soon)</option>
+        <option disabled>Brighton — to Brighton Pier &amp; RBYC (soon)</option>
+        <option disabled>Black Rock — Black Rock YC, Half Moon Bay, HMAS Cerberus (soon)</option>
+        <option disabled>Sandringham — SYC, GSWAC &amp; the breakwater (soon)</option>
+      </select>
+      <label for="c-maptime">Map</label>
+      <select id="c-maptime" aria-label="Map day or night" style="flex:0 1 auto; min-width:110px; max-width:280px">
+        <option value="day" selected>Day</option>
+        <option disabled>Night — lights for the twilight penguin sail (soon)</option>
+      </select>
+    </div>
+    <div class="areamap">
+<svg viewBox="0 -18 620 440" width="100%" role="img" aria-label="Schematic map of the PMYC sailing area, with the shipping channel, swing basin, nav marks and swim zone">
+<rect x="0" y="58" width="620" height="364" fill="#E6EEF2"/>
+<path d="M0,-18 H620 V58 C470,66 360,52 250,62 C150,68 70,54 0,64 Z" fill="#EFF3EC"/>
+<path d="M150,62 C230,67 330,60 420,66 L420,73 C330,67 230,74 150,69 Z" fill="#ECE4D6"/>
+<path d="M146,64 L166,226 L156,266 L120,304 L78,350 L44,400 L16,400 L20,352 L48,306 L88,262 L112,220 L110,70 Z" fill="#CFDFEA" opacity="0.6"/>
+<path d="M16,400 L20,352 L48,306 L88,262 L112,220 L110,70" fill="none" stroke="#9FB8C4" stroke-width="1" stroke-dasharray="2 5"/>
+<circle cx="80" cy="300" r="34" fill="#CFDFEA" opacity="0.6"/>
+<circle cx="80" cy="300" r="34" fill="none" stroke="#9FB8C4" stroke-width="1.2" stroke-dasharray="3 4"/>
+<text x="80" y="303" text-anchor="middle" class="mkey">SB</text>
+<text x="84" y="348" text-anchor="middle" class="msub">swing basin</text>
+<path d="M50,66 L54,240 Q62,280 94,262 L90,200 L88,66 Z" fill="#CFDFEA" opacity="0.6"/>
+<rect x="113" y="116" width="15" height="62" rx="7" fill="#AEB9C2" stroke="#7E8C96" stroke-width="1"/>
+<rect x="60" y="114" width="13" height="56" rx="6.5" fill="#AEB9C2" stroke="#7E8C96" stroke-width="1"/>
+<polygon points="146,64 166,226 320,342 452,240 452,64" fill="#50E040" fill-opacity="0.10" stroke="#39D455" stroke-width="1.6" stroke-dasharray="6 5"/>
+<line x1="256" y1="16" x2="166" y2="226" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<line x1="256" y1="16" x2="452" y2="240" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<line x1="256" y1="16" x2="320" y2="342" stroke="#39D455" stroke-width="1" stroke-dasharray="1 5" opacity="0.45"/>
+<path d="M198,100 C256,95 322,102 384,97" fill="none" stroke="#C9B79A" stroke-width="2" stroke-dasharray="2 5"/>
+<text x="300" y="115" text-anchor="middle" class="msub">sandbank</text>
+<rect x="95" y="56" width="10" height="124" rx="3" fill="#2E4057"/>
+<rect x="481" y="56" width="10" height="140" rx="3" fill="#2E4057"/>
+<text x="100" y="196" text-anchor="middle" class="mlab">Station Pier</text>
+<text x="486" y="212" text-anchor="middle" class="mlab">Lagoon Pier</text>
+<circle cx="100" cy="180" r="5" fill="#fff" stroke="#333" stroke-width="1.4"/><circle cx="100" cy="180" r="2" fill="#333"/>
+<text x="92" y="182" text-anchor="end" class="msub">F.</text>
+<circle cx="486" cy="196" r="3.6" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/>
+<text x="495" y="198" class="msub">F.G</text>
+<line x1="155" y1="140" x2="155" y2="128" stroke="#0c5e22" stroke-width="2"/><path d="M155,115 l6.5,13 h-13 z" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/><circle cx="155" cy="140" r="5" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1.2"/>
+<line x1="164" y1="212" x2="164" y2="200" stroke="#0c5e22" stroke-width="2"/><path d="M164,187 l6.5,13 h-13 z" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1"/><circle cx="164" cy="212" r="5" fill="#1A9E3B" stroke="#0c5e22" stroke-width="1.2"/>
+<text x="182" y="108" class="msub">green marks</text>
+<text x="182" y="120" class="msub">Fl.(2)G.4s</text>
+<text x="96" y="250" text-anchor="middle" class="msub">cruise / ferry berths</text>
+<text x="40" y="396" text-anchor="middle" class="msub">shipping</text>
+<text x="40" y="408" text-anchor="middle" class="msub">channel</text>
+<line x1="34" y1="372" x2="34" y2="360" stroke="#7a1010" stroke-width="2"/><rect x="28" y="347" width="12" height="12" fill="#C21020" stroke="#7a1010" stroke-width="1"/><circle cx="34" cy="372" r="5.5" fill="#C21020" stroke="#7a1010" stroke-width="1.2"/>
+<rect x="448" y="57" width="8" height="12" fill="#6FA8C0"/>
+<text x="444" y="120" text-anchor="end" class="msub">stormwater drain</text>
+<text x="444" y="132" text-anchor="end" class="msub">= turn-back line</text>
+<text x="334" y="76" text-anchor="middle" class="mlab" style="fill:#8a6a3a">Launch / Dog Beach</text>
+<text x="236" y="76" text-anchor="middle" class="msub">swim beach</text>
+<circle cx="540" cy="54" r="3" fill="#C21020"/>
+<text x="540" y="48" text-anchor="middle" class="mlab" style="fill:#8a2020">PMSLSC →</text>
+<text x="540" y="72" text-anchor="middle" class="msub">E of Lagoon Pier</text>
+<rect x="244" y="45" width="24" height="13" rx="2" fill="#0A1628"/>
+<path d="M242,45 L256,38 L270,45 Z" fill="#0A1628"/>
+<rect x="252.5" y="22" width="7" height="23" fill="#0A1628"/>
+<rect x="249" y="15" width="14" height="8" rx="1.5" fill="#0A1628"/>
+<line x1="256" y1="15" x2="256" y2="7" stroke="#0A1628" stroke-width="1.5"/>
+<circle cx="256" cy="6" r="2.4" fill="#39D455"/>
+<text x="256" y="0" text-anchor="middle" class="mlab">PMYC Tower</text>
+<circle cx="256" cy="58" r="3" fill="#39D455"/>
+<line x1="256" y1="150" x2="256" y2="133" stroke="#8a6a00" stroke-width="2"/><path d="M256,124 v12 M250,130 h12" stroke="#F2C200" stroke-width="2.6" stroke-linecap="round"/><circle cx="256" cy="150" r="2.6" fill="#F2C200" stroke="#8a6a00" stroke-width="1"/>
+<text x="256" y="168" text-anchor="middle" class="msub">swim zone (200 m)</text>
+<g transform="rotate(13 320 342)"><rect x="315" y="336" width="10" height="13" rx="3.5" fill="#F2C200" stroke="#8a6a00" stroke-width="1.3"/><line x1="315" y1="342" x2="325" y2="342" stroke="#8a6a00" stroke-width="1"/><line x1="320" y1="336" x2="320" y2="329" stroke="#8a6a00" stroke-width="1.6"/><path d="M315,322 l10,10 M325,322 l-10,10" stroke="#B89200" stroke-width="2.6" stroke-linecap="round"/></g>
+<text x="320" y="364" text-anchor="middle" class="mlab">G marker (RMYS)</text>
+<text x="320" y="377" text-anchor="middle" class="msub">yellow special mark · Fl(4)Y.10s</text>
+<text x="348" y="250" text-anchor="middle" class="mlab" style="fill:#2b7a2b">the sailing area</text>
+<text x="348" y="264" text-anchor="middle" class="msub" style="fill:#2b7a2b">PMYC</text>
+<g transform="translate(590,86)"><line x1="0" y1="14" x2="0" y2="-10" stroke="#2E4057" stroke-width="2"/><path d="M0,-14 l5,10 h-10 z" fill="#2E4057"/><text x="0" y="28" text-anchor="middle" class="mkey">N</text></g>
+</svg>
+      <div class="mapcap">Schematic for the briefing — approximate, not for navigation (traced from the Parks Victoria boating guide, Hobsons Bay chart). The western edge runs along the green channel marks (Fl.(2)G.4s), which edge the shipping channel where it splits at the swing basin (SB) and wraps both faces of Station Pier — ships berth each side. The fixed white light (F.) sits at the end of Station Pier, the green F.G at Lagoon Pier's seaward end. The eastern edge is the stormwater-drain turn-back line, held clear of Lagoon Pier. The G mark is the yellow Fl.(4)Y.10s. The faint rays are the Tower's sight lines. More areas to come.</div>
+    </div>
+    <p class="areanote"><b>The guiding line for the PMYC area: stay in direct sight of the PMYC Tower.</b> If the Tower can't see you, you've gone too far.</p>
+    <div class="flags" id="flags-location"></div>
+    <div class="fixed">
+      <h3>The area &amp; the launch</h3>
+      <ul>
+        <li>The triangle: Station Pier — Lagoon Pier — the G marker. Depth about 2–5 m.</li>
+        <li>Launch from the east beach by the club (the Dog Beach) — the shared <b>5-knot</b> zone, and no access lane, so 5 knots the whole way to 200 m. Stay clear of the Port Melbourne lifesaving-club swim-only zone.</li>
+        <li>Sandbank 20–30 m out: seen at high tide, barely covered at low. Wade the boat onto / past it to launch; head into the wind just short of it to land. Don't copy the cat sailors up the sand.</li>
+      </ul>
+      <h3>The piers</h3>
+      <ul>
+        <li><b>Lagoon Pier (ESE):</b> wide berth. The stormwater drain ~100 m short is the turn-back line. Fishing lines; kids jumping.</li>
+        <li><b>Station Pier (W):</b> keep 50 m and well clear of a berthed ship — check today against the <a href="https://ports.vic.gov.au/cruise-shipping/cruise-ship-schedules-2026-27/" target="_blank" rel="noopener">cruise-ship schedule</a> (the east berth is &ldquo;OESP&rdquo;).</li>
+      </ul>
+      <h3>Traffic, marks &amp; wildlife</h3>
+      <ul>
+        <li>Jet skis are the number-one hazard, even in the 5-knot band. Swimmers, SUPs, dogs on the Dog Beach, anchored fishing boats between club and G marker, water police.</li>
+        <li>The G marker is a race mark for the big clubs — leave it when a yacht fleet is heading for it.</li>
+        <li>Dolphins on flat northerly mornings; jellyfish in season.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- TIME -->
+  <section class="brief">
+    <h2>Time</h2>
+    <p class="lead">Set and spoken on the day.</p>
+    <div class="fixed">
+      <ul><li>Start and end.</li><li>Plan summary.</li><li>Boat allocations and roles.</li></ul>
+      <p class="lead" style="margin-top:6px">Current time is in the header.</p>
+    </div>
+  </section>
+
+  <!-- COMMUNICATION -->
+  <section class="brief">
+    <h2>Communication</h2>
+    <p class="lead">Signals, and the one that overrides everything.</p>
+    <div class="fixed">
+      <ul>
+        <li><b>Help</b> — one fist overhead, or two fists overhead.</li>
+        <li><b>Attention, come closer</b> — a low one-hand wave.</li>
+        <li><b>Fun</b> — any other wave, with a happy face.</li>
+      </ul>
+      <h3>Return To Shore (RTS)</h3>
+      <p>From the power boat: whistle, shout, November flag. Every boat returns on its own — shortest and <b>safest</b> way the captain judges. Don't wait for a further signal. Any beach will do, through a swim zone or beyond Lagoon Pier if needed; ideally the club launch. Regroup on the beach.</p>
+      <p>Radio: VHF generally <b>CH 73</b>.</p>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section class="brief">
+    <h2>Safety</h2>
+    <p class="lead">Buddy system, capsize, first aid, head knocks.</p>
+    <div class="fixed">
+      <h3>Buddy system &amp; counting</h3>
+      <p>No one alone, ashore or afloat. The fleet looks after itself and stays together. X3s: small, orange stripe, 1–4 of them. Quest: bigger, white mast float, green accents, only one. Count before, count often, spot the gap — everyone's job.</p>
+      <h3>Capsize drill</h3>
+      <p>Reviewed on land each time. The three to remember:</p>
+      <ul>
+        <li><b>Stay calm.</b></li>
+        <li><b>Is everyone OK?</b></li>
+        <li><b>Hold on to the boat.</b></li>
+      </ul>
+      <p>Then: bow to wind, weight on the centreboard, take control, collect crew, set lines, sail on. Several boats over at once — stay calm, stay out of the water if you can, wait; someone will come.</p>
+      <h3>First aid</h3>
+      <p>Notify the safety boat first — it radios ahead. Kits: clubhouse upstairs by the tower stairs, and the boat shed by the sailing-school shed. Log what's used; incident report usually needed. Small cut, help yourself; anything real, get assistance.</p>
+      <h3>Head knocks — concussion</h3>
+      <p>A knock to the head doesn't always show at once, and the one hit is the worst judge of it — so the crew watches.</p>
+      <ul>
+        <li>Knocked out, even for a second → <b>Triple Zero (000)</b>; treat the neck as injured too.</li>
+        <li>A hard knock → come in and sit it out; don't sail on to test it.</li>
+        <li>A light bump → keep an eye out; it can come on over hours.</li>
+      </ul>
+      <p><b>If in doubt, stay ashore or head back in — rest, and keep watching.</b> The graded response and signs are on the <a href="concussion.html">Concussion page</a>.</p>
+    </div>
+  </section>
+
+  <!-- SUBPAGES -->
+  <section class="brief">
+    <h2>The detail</h2>
+    <div class="subpages">
+      <a href="cold-and-heat.html"><span class="st">Cold &amp; heat →</span><span class="ss">hypothermia, heat stress, heat stroke — signs &amp; actions</span></a>
+      <a href="concussion.html"><span class="st">Concussion →</span><span class="ss">head knocks — the graded response</span></a>
+      <a href="https://www.epa.vic.gov.au/check-air-and-water-quality?type=incident%2Cwater&amp;lat=-37.829806&amp;lon=144.918044&amp;z=13" target="_blank" rel="noopener"><span class="st">Water quality →</span><span class="ss">EPA's live water &amp; incident map, Port Melbourne</span></a>
+      <a href="jellyfish.html"><span class="st">Jellyfish →</span><span class="ss">the blubber, the lion's mane now blooming in summer, and stings</span></a>
+    </div>
+  </section>
+
+  <!-- READING THE WATER -->
+  <section class="brief">
+    <h2>Reading the water</h2>
+    <div class="subpages">
+      <a href="tides.html"><span class="st">The tides →</span><span class="ss">why the bay tide is small, late, and often not what the table says</span></a>
+      <a href="water-temp.html"><span class="st">The water temperature →</span><span class="ss">why it matters to a small boat, and where the number comes from</span></a>
+      <a href="water-from-space.html"><span class="st">Water temp from space →</span><span class="ss">how a satellite reads the bay's temperature from orbit</span></a>
+    </div>
+  </section>
+
+  <a class="windcta" href="rs-quest.html">Rigging for today's wind &rarr; RS&nbsp;Quest reef guide</a>
+  <div class="print-foot" aria-hidden="true">
+    <div class="print-log" id="print-log"></div>
+    <p class="pf-note">This page assembles what to cover; the on-water risk assessment and the go / no-go rest with the activity leader and the sailor. Conditions shown are live at the time of export. Approximate — not for navigation.</p>
+  </div>
+</main>
+
+  <section class="present-view" aria-label="Presentation — topics to cover">
+    <div class="pv-head"><h2>Safety briefing — topics to cover</h2><div class="pv-tools"><span class="pv-count"><b id="pv-n">0</b> / 20 covered</span><button type="button" id="pv-reset">Reset</button></div></div>
+    <p class="areanote" style="margin:0 0 16px"><b>Stay in direct sight of the PMYC Tower.</b> If the Tower can't see you, you've gone too far.</p>
+    <div class="pv-group"><h3>Weather</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="wind"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h20a5 5 0 1 0-5-6"/><path d="M4 30h28a5 5 0 1 1-5 6"/><path d="M4 24h14"/></svg><span class="pl">Wind</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="tide"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18c3-4 7-4 10 0s7 4 10 0 7-4 10 0"/><path d="M24 26v14"/><path d="M19 31l5-5 5 5"/><path d="M19 35l5 5 5-5"/></svg><span class="pl">Tide</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="temp"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a4 4 0 0 1 8 0v18a7 7 0 1 1-8 0z"/><line x1="24" y1="20" x2="24" y2="33"/><circle cx="24" cy="35" r="3" fill="currentColor" stroke="none"/></svg><span class="pl">Temperature</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="sun"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="8"/><path d="M24 6v4M24 38v4M6 24h4M38 24h4M11 11l3 3M34 34l3 3M37 11l-3 3M14 34l-3 3"/></svg><span class="pl">Sun / UV</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="coldheat"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 11v18M8 16l12 8M8 24l12-8"/><path d="M34 11c5 4 5 10 0 15-5-5-1-8-3-11-3 4-2 8 3 11"/></svg><span class="pl">Cold &amp; heat</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="waterq"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 8c7 9 10 13 10 18a10 10 0 1 1-20 0c0-5 3-9 10-18z"/></svg><span class="pl">Water quality</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Location</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="tower"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 42l4-24M31 42l-4-24M21 18h6l-1-6h-4zM19 30h10M20 24h8"/><circle cx="24" cy="9" r="2.4"/></svg><span class="pl">Area &amp; Tower sight line</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="piers"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 38h40M8 22v16M16 22v16M24 22v16M32 22v16M40 22v16M6 22h36"/></svg><span class="pl">The piers</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="launch"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 36h36"/><path d="M24 30V10M24 14l-9 16h9M24 14l9 16h-9"/></svg><span class="pl">Sandbank &amp; launch</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="traffic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 30c7 4 15 5 23 3 6-1.5 10-4 13-9l-9 2-6-5H17l-4 7-7 2z"/><circle cx="20" cy="17" r="2.2"/></svg><span class="pl">Traffic</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="wildlife"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 26c8-11 22-14 34-9-5 1-7 5-7 10 0 5-5 9-12 9-8 0-11-4-15-10z"/><path d="M30 17c3-3 7-3 10-1"/></svg><span class="pl">Wildlife</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Time</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="time"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="15"/><path d="M24 15v9l7 4"/></svg><span class="pl">Start · end · plan</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="boats"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 7v23M24 11l-9 19h9M24 11l9 19h-9M10 34h28l-5 6H15z"/></svg><span class="pl">Boats &amp; roles</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Communication</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="signals"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="13" r="5"/><path d="M24 19v13M24 23l-8-5M24 23l8-5"/></svg><span class="pl">Hand signals</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="flag"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6v36M14 9h20v13H14z"/><path d="M14 9h6.6v6.5H14zM20.6 15.5h6.8V22h-6.8zM27.4 9H34v6.5h-6.6z" fill="currentColor" stroke="none"/></svg><span class="pl">Return to shore</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="radio"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="15" y="12" width="18" height="28" rx="2"/><path d="M24 12V6M24 6l-3-2M24 6l3-2"/><rect x="19" y="16" width="10" height="7"/><circle cx="22" cy="31" r="1.6"/><circle cx="26" cy="31" r="1.6"/></svg><span class="pl">Radio CH 73</span><span class="tick">✓</span></button>
+    </div></div>
+    <div class="pv-group"><h3>Safety</h3><div class="pv-grid">
+      <button type="button" class="pv-card" data-k="buddy"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="16" r="4.5"/><circle cx="31" cy="16" r="4.5"/><path d="M9 37v-3a7 7 0 0 1 14 0M25 37v-3a7 7 0 0 1 14 0"/></svg><span class="pl">Buddy system</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="capsize"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 35h38"/><path d="M12 35l19-9 3 6-19 9z"/><path d="M28 30l9-13M37 17l-11 2"/></svg><span class="pl">Capsize drill</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="firstaid"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="30" height="30" rx="6"/><path d="M24 17v14M17 24h14"/></svg><span class="pl">First aid</span><span class="tick">✓</span></button>
+      <button type="button" class="pv-card" data-k="head"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="28" r="11"/><path d="M18 11l2.5 4.5L25 12l1.5 5 4-2.5-1.5 5.5"/></svg><span class="pl">Head knocks</span><span class="tick">✓</span></button>
+    </div></div>
+    <p class="pv-foot">Tap a topic as you cover it. For a review, tap through and name what you'd do — the pictograms prompt the topic, not the answer.</p>
+  </section>
+
+<footer>
+  <div class="foot-in">
+    <p class="fp"><b>Aurora Explorer.</b> This briefing assembles what to cover. The leader judges the day and makes the call — there is no go / no-go on this page.</p>
+    <p style="margin:10px 0 0"><a href="mailto:wind@aurorasailing.com.au">Spotted something off, or have a correction? Tell us →</a></p>
+    <div class="ver">PMYC-briefing.html · v0.39 · all feeds live — wind, air, forecast, observed tide, satellite water temp</div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================================
+   LIVE: wind, gust, direction, air temp come from the Bay Winds Worker
+   (same source + auto-switch as rs-quest.html). Still to wire: tide, UV,
+   forecast/precip, water temp — those stay manual inputs for now. If the feed
+   is unreachable, the page falls back to the entered values and says so.
+   ========================================================================== */
+
+/* --- data source ----------------------------------------------------------- */
+const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
+const ST_SOUTH = 95872;   // Fawkner Beacon — leads the southerly change (open bay)
+const ST_NORTH = 95864;   // RMYS / St Kilda — reads truer on northerlies (the lee)
+const TEMP_ST  = 95936;   // Olympic Park — air temperature near Port Melbourne
+const REFRESH_MS = 2 * 60 * 1000;
+
+const DIR_DEG={N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
+function pickReading(j){ const d=(j&&(j.observations?j.observations.data:j.data))||[]; return d.length?d[0]:null; }
+async function fetchOne(wmo){
+  try{ const r=await fetch(DATA_BASE+"/"+wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) return null; return pickReading(await r.json()); }
+  catch(e){ return null; }
+}
+function ktOf(o){ return o&&o.wind_spd_kt!=null&&isFinite(o.wind_spd_kt)?Math.round(o.wind_spd_kt):null; }
+function gustOf(o){ return o&&o.gust_kt!=null&&isFinite(o.gust_kt)?Math.round(o.gust_kt):null; }
+function degOf(o){
+  if(!o) return null;
+  if(o.wind_dir_deg!=null && isFinite(o.wind_dir_deg)) return (((+o.wind_dir_deg)%360)+360)%360;
+  if(o.wind_dir && (o.wind_dir in DIR_DEG)) return DIR_DEG[o.wind_dir];
+  return null;
+}
+function parseFull(f){ if(!f||f.length<12) return null; return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
+
+/* --- forecast: Open-Meteo (UV, sun/cloud, rain, rest-of-day) ---------------
+   CORS-enabled and key-free, so fetched straight from the page. To route it
+   through the Worker later for caching, change FC_URL to a Worker path.      */
+const FC_LAT=-37.840, FC_LON=144.945;            // Port Melbourne / PMYC
+const FC_URL = "https://api.open-meteo.com/v1/forecast?latitude="+FC_LAT+"&longitude="+FC_LON
+  + "&current=temperature_2m,precipitation,weather_code,uv_index"
+  + "&hourly=precipitation,precipitation_probability,uv_index,wind_speed_10m,wind_direction_10m"
+  + "&daily=uv_index_max&past_days=2&forecast_days=1&wind_speed_unit=kn&timezone=Australia%2FMelbourne";
+const RAIN_RECENT_MM = 10;                        // mm over the last ~36 h to call it "heavy rain" — TBD
+const fc = { ok:false, uv:null, uvMax:null, sunny:null, rainRecent:null, rainChance:null, line:null, change:null };
+
+function fcHourIdx(h){
+  const key=melbKey();
+  let idx=h.time.findIndex(t=>t.slice(0,13)===key);
+  return idx<0 ? Math.max(0, h.time.length-25) : idx;   // fallback: ~start of today in a past_days=2 array
+}
+function fcRainMM(h,i){ let s=0; for(let k=Math.max(0,i-36);k<=i;k++){ const v=h.precipitation&&h.precipitation[k]; if(v!=null&&isFinite(v)) s+=v; } return s; }
+function fcRainChance(h,i){ let m=0; for(let k=i;k<h.time.length;k++){ const v=h.precipitation_probability&&h.precipitation_probability[k]; if(v!=null&&v>m) m=v; } return m; }
+function fcChange(h,i){ let wasN=false; for(let k=i;k<h.time.length;k++){ const d=h.wind_direction_10m&&h.wind_direction_10m[k]; if(d==null) continue;
+  if(d>=315||d<=45) wasN=true; if(wasN && d>=135 && d<=225) return h.time[k].slice(11,16); } return null; }
+function fcLine(o){ const b=[];
+  if(o.rainChance!=null) b.push(o.rainChance>=40?("rain likely, to "+o.rainChance+"%"):(o.rainChance>=15?("chance of rain "+o.rainChance+"%"):"little rain about"));
+  if(o.uvMax!=null) b.push("UV peaks "+o.uvMax);
+  if(o.change) b.push("southerly change ~"+o.change);
+  return b.length?b.join(" \u00b7 "):null; }
+async function loadForecast(){
+  try{
+    const r=await fetch(FC_URL,{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const cur=j.current||{}, h=j.hourly||{}; const i=h.time?fcHourIdx(h):0;
+    fc.uv = cur.uv_index!=null?Math.round(cur.uv_index):null;
+    fc.uvMax = (j.daily&&j.daily.uv_index_max)?Math.round(j.daily.uv_index_max[0]):null;
+    fc.sunny = cur.weather_code!=null?(cur.weather_code<=2):null;
+    fc.rainRecent = h.time?(fcRainMM(h,i)>=RAIN_RECENT_MM):null;
+    fc.rainChance = h.time?fcRainChance(h,i):null;
+    fc.change = h.time?fcChange(h,i):null;
+    fc.line = fcLine(fc); fc.ok=true;
+  }catch(e){ fc.ok=false; }
+  applyForecast(); render();
+}
+function applyForecast(){
+  document.querySelectorAll('.ctrl[data-fc]').forEach(c=>{ const inp=c.querySelector('input'); if(inp) inp.disabled=fc.ok; c.classList.toggle('islive', fc.ok);
+    let lk=c.querySelector('.lk'), lab=c.querySelector('label');
+    if(fc.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!fc.ok && lk) lk.remove(); });
+  if(fc.ok){
+    if(fc.uv!=null){ S.uv=fc.uv; const e=document.getElementById('c-uv'); if(e) e.value=fc.uv; const v=document.getElementById('v-uv'); if(v) v.textContent=fc.uv; }
+    if(fc.sunny!=null){ S.sun=fc.sunny; const e=document.getElementById('c-sun'); if(e) e.checked=fc.sunny; }
+    if(fc.rainRecent!=null){ S.rain=fc.rainRecent; const e=document.getElementById('c-rain'); if(e) e.checked=fc.rainRecent; }
+  }
+}
+
+/* --- tide: the Bureau's OBSERVED gauge at St Kilda Marina, via the Worker ---
+   /tide.json (BoM IDV67204 / station 586166). Observed, not predicted, so it
+   carries the wind/pressure set-up the small bay tide hides. Height is Local
+   Gauge Height (m), zero near the lowest water (so ~0–0.6 m). The readings are
+   irregular telemetry, so we read level + direction + the last turn, not a
+   forecast turn. Needs Worker v1.13+ deployed; until then this falls back to
+   the manual Tide control.                                                     */
+const TIDE_URL = DATA_BASE + "/tide.json";
+const tide = { ok:false, heightNow:null, rising:null, lastKind:null, lastTime:null };
+function lastTurn(series){   // series: chronological [{wl,t}], latest last
+  const n=series.length; if(n<2) return {rising:true, kind:null, time:null, tf:null};
+  const rising = series[n-1].wl >= series[Math.max(0,n-4)].wl;   // smoothed over ~last hour
+  for(let k=n-2;k>0;k--){ const up = series[k].wl >= series[k-1].wl; if(up!==rising) return {rising, kind: rising?'Low':'High', time:series[k].t, tf:series[k].tf}; }
+  return {rising, kind: rising?'Low':'High', time:series[0].t, tf:series[0].tf};
+}
+async function loadTide(){
+  try{
+    const r=await fetch(TIDE_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const d=(j.observations&&j.observations.data)||[]; if(!d.length) throw 0;
+    const series=d.map(o=>({wl:+o.water_level, t:parseFull(o.local_date_time_full), tf:o.local_date_time_full}))
+      .filter(x=>isFinite(x.wl)&&x.t).sort((a,b)=>a.t-b.t);     // oldest → newest
+    if(series.length<2) throw 0;
+    tide.heightNow = series[series.length-1].wl;
+    const lt=lastTurn(series); tide.rising=lt.rising; tide.lastKind=lt.kind;
+    tide.lastTime = lt.tf ? (lt.tf.slice(8,10)+':'+lt.tf.slice(10,12)) : null;
+    tide.ok=true;
+  }catch(e){ tide.ok=false; }
+  applyTide(); render();
+}
+function applyTide(){
+  const c=document.querySelector('.ctrl[data-tide]');
+  if(c){ const inp=c.querySelector('select'); if(inp) inp.disabled=tide.ok; c.classList.toggle('islive', tide.ok);
+    let lk=c.querySelector('.lk'), lab=c.querySelector('label');
+    if(tide.ok && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!tide.ok && lk) lk.remove(); }
+  if(tide.ok){ S.tide = tide.rising?'rising':'falling'; const e=document.getElementById('c-tide'); if(e) e.value=S.tide; }
+}
+
+/* --- tide prediction: next turn TIME only (the reliable part) --------------
+   The observed gauge gives the level and direction now; a tidal prediction gives
+   when the next high/low falls. We use Open-Meteo marine for the timing and
+   ignore its height (the bay's height is what wanders — see the tides page).
+   If the model has no coverage for the bay point, the next-turn line just drops;
+   Williamstown astronomical predictions could replace it for a sharper time.   */
+const TIDEPRED_URL = "https://marine-api.open-meteo.com/v1/marine?latitude=-37.86&longitude=144.92"
+  + "&hourly=sea_level_height_msl&forecast_days=2&timezone=Australia%2FMelbourne";
+const tidePred = { ok:false, risingNow:null, levelNow:null, nextHigh:null, nextLow:null };
+function interpTurn(v,t,k){   // sub-hour turn time: parabolic fit around the hourly extremum
+  const a=v[k-1], b=v[k], c=v[k+1], den=a-2*b+c;
+  let off=den ? 0.5*(a-c)/den : 0; off=Math.max(-0.5,Math.min(0.5,off));
+  const tot=(((+t[k].slice(11,13))*60 + (+t[k].slice(14,16)) + Math.round(off*60))%1440+1440)%1440;
+  return String(Math.floor(tot/60)).padStart(2,'0')+':'+String(tot%60).padStart(2,'0');
+}
+async function loadTidePred(){
+  try{
+    const r=await fetch(TIDEPRED_URL,{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const h=j.hourly||{}, v=h.sea_level_height_msl, t=h.time; if(!v||!t||v.length<3) throw 0;
+    const key=melbKey();
+    let i=t.findIndex(x=>x.slice(0,13)===key); if(i<0) i=0;
+    tidePred.levelNow = v[i];
+    tidePred.risingNow = (v[i+1]!=null&&v[i]!=null) ? v[i+1]>=v[i] : (v[i]>=v[i-1]);
+    let nextHigh=null, nextLow=null;
+    for(let k=i+1;k<v.length-1;k++){
+      if(v[k]==null||v[k-1]==null||v[k+1]==null) continue;
+      if(!nextHigh && v[k]>=v[k-1] && v[k]>v[k+1]) nextHigh={time:interpTurn(v,t,k), h:v[k], k};
+      if(!nextLow  && v[k]<=v[k-1] && v[k]<v[k+1]) nextLow ={time:interpTurn(v,t,k), h:v[k], k};
+      if(nextHigh && nextLow) break;
+    }
+    tidePred.nextHigh=nextHigh; tidePred.nextLow=nextLow;
+    tidePred.ok = !!(nextHigh||nextLow);
+  }catch(e){ tidePred.ok=false; }
+  render();
+}
+
+/* --- water temperature: NOAA Coral Reef Watch 5km satellite SST, via Worker ---
+   /watertemp.json — NOAA satellite SST, read at a pixel off Port Melbourne.
+   Daily value (~1-2 day latency); bay-representative, not beach-exact. Needs Worker
+   v1.14+; until then the manual Water control stands.                            */
+const WATER_URL = DATA_BASE + "/watertemp.json";
+// state: 'loading' until the feed answers, then 'ok', or 'off' only on a real failure.
+// The satellite reading goes via NOAA ERDDAP, which can take a few seconds on a cold
+// cache — so we show "connecting" meanwhile rather than flashing the manual fallback.
+const water = { state:'loading', temp:null, when:null };
+function dayMon(f){ const d=parseFull(f); return d ? d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}) : 'satellite'; }
+async function loadWater(){
+  try{
+    const r=await fetch(WATER_URL+"?_="+Date.now(),{cache:"no-store"}); if(!r.ok) throw 0; const j=await r.json();
+    const d=(j.observations&&j.observations.data)||[]; if(!d.length || d[0].water_temp==null) throw 0;
+    water.temp=+d[0].water_temp; water.when=d[0].local_date_time_full||null;
+    water.state = isFinite(water.temp) ? 'ok' : 'off';
+  }catch(e){ water.state='off'; }
+  applyWater(); render();
+}
+function applyWater(){
+  const live = water.state==='ok';
+  const c=document.querySelector('.ctrl[data-water]');
+  if(c){ const inp=c.querySelector('input'); if(inp) inp.disabled=live; c.classList.toggle('islive', live);
+    let lk=c.querySelector('.lk'), lab=c.querySelector('label');
+    if(live && !lk && lab){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); } if(!live && lk) lk.remove(); }
+  if(live){ S.water=Math.round(water.temp*10)/10; const e=document.getElementById('c-water'); if(e) e.value=Math.round(S.water); const v=document.getElementById('v-water'); if(v) v.textContent=Math.round(S.water)+'\u00b0C'; }
+}
+
+/* --- thresholds (constants; TBD ones flagged for Gregor / research) -------- */
+const TH = {
+  northerly: d => d!=null && (d>=315 || d<=45),
+  swDrift:   d => d!=null && d>=180 && d<=247,
+  building:  (d,m) => d!=null && (d>=135 && d<=225) && m>=14,
+  lowTide:   (m,tide) => m<=6 && tide==='rising',
+  waterHypo: w => w < 14,            // °C — TBD (SLSA/ARC/RLSSA research)
+  uvProtect: u => u >= 3,            // ARPANSA / SunSmart — settled
+  uvExtreme: u => u >= 8,
+  heatStress:t => t >= 35,           // °C — TBD (SMA)
+  heatStroke:t => t >= 40,           // °C — TBD
+  windChill: (t,m) => t<=12 && m>=12,
+};
+const BANDS=[5,15,23,30,999];
+function bandIdx(k){ if(k==null) return -1; for(let i=0;i<BANDS.length;i++){ if(k<=BANDS[i]) return i; } return BANDS.length-1; }
+
+/* --- compass + clock ------------------------------------------------------- */
+const PTS16=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+function cardinal(d){ return d==null?"—":PTS16[Math.round(((d%360)+360)%360/22.5)%16]; }
+/* --- Melbourne time — robust across device timezone and the AEDT/AEST switch */
+const MELB_TZ='Australia/Melbourne';
+const _MELB_DOW={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+function melbParts(date){ const o={};
+  for(const p of new Intl.DateTimeFormat('en-GB',{timeZone:MELB_TZ,year:'numeric',month:'2-digit',
+      day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false,weekday:'short'}).formatToParts(date||new Date()))
+    o[p.type]=p.value;
+  if(o.hour==='24') o.hour='00'; return o; }                 // {year,month,day,hour,minute,weekday}
+function melbKey(date){ const p=melbParts(date); return p.year+'-'+p.month+'-'+p.day+'T'+p.hour; }
+function melbWallMin(p){ return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)/60000; }
+function melbMonth(date){ return +melbParts(date).month-1; }   // 0-based
+function melbHour(date){ return +melbParts(date).hour; }
+function melbDay(date){ const d=_MELB_DOW[melbParts(date).weekday]; return d==null?new Date().getDay():d; }
+function bomParts(f){ return {year:f.slice(0,4),month:f.slice(4,6),day:f.slice(6,8),hour:f.slice(8,10),minute:f.slice(10,12)}; }
+function fmtClock(){ return new Date().toLocaleString('en-AU',{timeZone:MELB_TZ,weekday:'short',hour:'numeric',minute:'2-digit',hour12:true}); }
+
+/* --- Victorian public & school holidays — drives the traffic day-type ------- */
+const VIC_PUBLIC_HOLIDAYS = {
+  '2026-01-01':"New Year's Day",'2026-01-26':'Australia Day','2026-03-09':'Labour Day',
+  '2026-04-03':'Good Friday','2026-04-04':'Easter Saturday','2026-04-05':'Easter Sunday','2026-04-06':'Easter Monday',
+  '2026-04-25':'ANZAC Day','2026-06-08':"King's Birthday",'2026-09-25':'AFL Grand Final Friday',
+  '2026-11-03':'Melbourne Cup Day','2026-12-25':'Christmas Day','2026-12-26':'Boxing Day','2026-12-28':'Boxing Day holiday',
+  '2027-01-01':"New Year's Day",'2027-01-26':'Australia Day','2027-03-08':'Labour Day',
+  '2027-03-26':'Good Friday','2027-03-27':'Easter Saturday','2027-03-28':'Easter Sunday','2027-03-29':'Easter Monday',
+  '2027-04-25':'ANZAC Day','2027-06-14':"King's Birthday",'2027-09-24':'AFL Grand Final Friday',
+  '2027-11-02':'Melbourne Cup Day','2027-12-25':'Christmas Day','2027-12-26':'Boxing Day',
+  '2027-12-27':'Christmas Day holiday','2027-12-28':'Boxing Day holiday'
+};   // AFL Grand Final Friday is subject to the AFL schedule
+const VIC_SCHOOL_HOLIDAYS = [   // Victorian government-school term breaks (inclusive)
+  ['2026-09-19','2026-10-04'],['2026-12-19','2027-01-27'],
+  ['2027-03-26','2027-04-11'],['2027-06-26','2027-07-11'],['2027-09-18','2027-10-03'],['2027-12-18','2028-01-27']
+];
+function ymdShift(d,n){ const t=new Date(d+'T00:00:00Z'); t.setUTCDate(t.getUTCDate()+n); return t.toISOString().slice(0,10); }
+function ymdDow(d){ return new Date(d+'T00:00:00Z').getUTCDay(); }          // 0=Sun … 6=Sat
+function inSchoolHoliday(d){ return VIC_SCHOOL_HOLIDAYS.some(r=> d>=r[0] && d<=r[1]); }
+// Bridge day: a public holiday on a Tuesday makes the Monday before a long weekend; on a Thursday, the Friday after.
+function bridgeInfo(d){
+  if(ymdDow(d)===1){ const nx=ymdShift(d,1); if(VIC_PUBLIC_HOLIDAYS[nx] && ymdDow(nx)===2) return VIC_PUBLIC_HOLIDAYS[nx]; }
+  if(ymdDow(d)===5){ const pv=ymdShift(d,-1); if(VIC_PUBLIC_HOLIDAYS[pv] && ymdDow(pv)===4) return VIC_PUBLIC_HOLIDAYS[pv]; }
+  return null;
+}
+function dayType(parts){
+  const p=parts||melbParts(); const d=p.year+'-'+p.month+'-'+p.day, dow=ymdDow(d);
+  if(VIC_PUBLIC_HOLIDAYS[d]) return {type:'holiday', why:VIC_PUBLIC_HOLIDAYS[d]};
+  const br=bridgeInfo(d); if(br) return {type:'bridge', why:br};
+  if(dow===0||dow===6) return {type:'weekend', why:null};
+  if(inSchoolHoliday(d)) return {type:'schoolhol', why:null};
+  return {type:'weekday', why:null};
+}
+/* --- Beach-traffic "High" fires only in the warm season: Melbourne Cup long weekend → end March */
+const BEACH_HIGH_END = '03-31';   // set to '03-15' to stop mid-March instead
+function cupDate(year){
+  for(const d in VIC_PUBLIC_HOLIDAYS){ if(d.slice(0,4)===year && VIC_PUBLIC_HOLIDAYS[d]==='Melbourne Cup Day') return d; }
+  return year+'-11-03';
+}
+function beachHighSeason(parts){
+  const p=parts||melbParts(); const d=p.year+'-'+p.month+'-'+p.day, mo=+p.month;
+  const yStart = mo>=4 ? +p.year : +p.year-1;             // Jan–Mar belongs to the previous spring's season
+  const cupSat = ymdShift(cupDate(String(yStart)), -3);  // the Saturday the Cup long weekend opens
+  const nov1 = yStart+'-11-01';
+  const start = cupSat < nov1 ? cupSat : nov1;            // Cup long weekend if it opens before Nov 1
+  const end = (yStart+1)+'-'+BEACH_HIGH_END;
+  return d>=start && d<=end;
+}
+function inSeason(m){ return (m>=10 || m<=3); }   // Nov–Apr (0-indexed)
+
+/* --- state ----------------------------------------------------------------- */
+// manual / mock inputs (wind/gust/dir/air used only when live is unavailable)
+const S = { wind:11, gust:15, dir:200, air:22, water:17, uv:5, hour:14,
+            tide:'rising', day:'weekday', sun:true, rain:false, jelly:false, ship:false };
+// live wind + air, populated by load()
+const live = { state:'loading', obsTime:null, activeName:'', open:null, lee:null, airTemp:null };
+
+/* --- resolve the working inputs: live wind/air when we have them ----------- */
+function resolve(){
+  let open, lee, airTemp, dir;
+  if(live.state==='ok'){
+    open = live.open; lee = live.lee || live.open; airTemp = (live.airTemp!=null?live.airTemp:S.air);
+    dir  = (open.deg!=null ? open.deg : S.dir);
+  } else {
+    dir = S.dir; const north = TH.northerly(dir);
+    open = {m:S.wind, g:S.gust, deg:dir};
+    lee  = north ? {m:Math.round(S.wind*0.6), g:Math.round(S.gust*0.6), deg:dir} : {m:S.wind, g:S.gust, deg:dir};
+    airTemp = S.air;
+  }
+  const north = TH.northerly(dir);
+  const activeM = north ? lee.m : open.m;
+  const activeG = north ? lee.g : open.g;
+  return {open, lee, dir, north, airTemp, activeM, activeG};
+}
+
+/* --- compute all flags ----------------------------------------------------- */
+function compute(){
+  const I = resolve();
+  const f = { wind:[], weather:[], location:[] };
+  const oM=I.open.m, oG=I.open.g, iM=I.north?I.lee.m:I.open.m, iG=I.north?I.lee.g:I.open.g;
+
+  /* wind-reading alerts */
+  if(I.north && oM!=null && iM!=null){
+    const diverge = (bandIdx(oM)-bandIdx(iM)>=1) || (oM-iM>=8);
+    const strongBay = (oM>=21) || (oG!=null && oG>=25);
+    if(diverge || strongBay){
+      const openPeak=Math.max(oM, oG||0), red=(openPeak>=24 || (oG!=null&&oG>=30));
+      if(diverge) f.wind.push({lvl:red?'red':'amber', t: red?'Sheltered here — but it\u2019s blowing in the bay':'Calmer inshore than out in the bay',
+        b:`Launch reads <b>${iM} kt</b> in the lee. Out in the open, Fawkner is <b>${oM} kt${oG!=null?` gusting ${oG}`:''}</b>. Rig for the bigger number before you clear the lee.`});
+      else f.wind.push({lvl:red?'red':'amber', t:'Strong and gusty out in the bay',
+        b:`Sheltered reads <b>${iM} kt</b>; the open bay is <b>${oM} kt${oG!=null?` gusting ${oG}`:''}</b>. Livelier once you clear the lee — rig to depower.`});
+    }
+  } else if((oM!=null&&oM>=21) || (oG!=null&&oG>=25)){
+    f.wind.push({lvl:(oG!=null&&oG>=30)?'red':'amber', t:'Strong and gusty',
+      b:`Open bay <b>${oM} kt${oG!=null?` gusting ${oG}`:''}</b>. Rig to depower and be ready for the gusts.`});
+  }
+  if(iM!=null && iG!=null && (iG-iM>=10 || (iM>=6 && iG>=1.5*iM))){
+    f.wind.push({lvl:iG>=30?'red':'amber', t:'Very gusty',
+      b:`Mean <b>${iM} kt</b>, gusting <b>${iG} kt</b> — sudden hits between lulls. Keep the sail flat, ease early, ready to dump the mainsheet.`});
+  }
+
+  /* weather / health */
+  const t=I.airTemp;
+  if(t!=null && TH.heatStroke(t)) f.weather.push({lvl:'red', t:'Extreme heat — heat-stroke risk',
+    b:`<b>${t} \u00b0C.</b> Shade and water ashore, short sessions; watch every crew for confusion, stopping sweating, stumbling. (Threshold 40 \u00b0C — TBD.)`});
+  else if(t!=null && TH.heatStress(t)) f.weather.push({lvl:'amber', t:'Hot — watch for heat stress',
+    b:`<b>${t} \u00b0C.</b> Hats, sunscreen, water; keep an eye on anyone flagging. (Threshold 35 \u00b0C — TBD.)`});
+  if(TH.waterHypo(S.water)) f.weather.push({lvl:'amber', t:'Cold water — hypothermia watch',
+    b:`Water <b>${S.water} \u00b0C.</b> Wetsuits; shivering that won\u2019t stop means head in — crew check each other. (Threshold &lt;14 \u00b0C — research pending.)`});
+  if(t!=null && TH.windChill(t,I.activeM)) f.weather.push({lvl:'amber', t:'Wind chill',
+    b:`<b>${t} \u00b0C</b> with <b>${I.activeM} kt</b> — colder than it reads. Layer up; watch for cold, quiet crew.`});
+  if(TH.uvExtreme(S.uv)) f.weather.push({lvl:'amber', t:'Very high UV',
+    b:`UV <b>${S.uv}.</b> Sunscreen and hats, reapplied; shade between sessions.`});
+  else if(TH.uvProtect(S.uv)) f.weather.push({lvl:'info', t:'Sun protection',
+    b:`UV <b>${S.uv}.</b> Sunscreen and hats on.`});
+  if(S.rain && inSeason(melbMonth())) f.weather.push({lvl:'amber', t:'Water quality — after rain',
+    b:`Heavy rain lifts the bacteria count. Avoid swallowing water, hold off immersion, keep clear of drains. Check the EPA Beach Report for Port Melbourne.`});
+
+  /* location */
+  if(I.north) f.location.push({lvl:'info', t:'Northerly — sheltered, shifty, gusty',
+    b:`Lighter and shiftier at the launch than out in the bay; steadier further out. <b>Read the whitecaps</b> for where it picks up. Post a gust-spotter; be ready to ease. SUPs can drift out and not get back.`});
+  if(TH.building(I.dir,oM!=null?oM:0)) f.location.push({lvl:'amber', t:'Southerly building',
+    b:`Return before it kicks up. Big seas west of the G–clubhouse line. Lagoon Pier and the landing platform get dangerous — SUPs can be pushed under. SUPs struggle to leave the beach.`});
+  if(TH.swDrift(I.dir) && S.ship) f.location.push({lvl:'amber', t:'S/SW — drift onto the Station Pier ship',
+    b:`A capsize in the western area can drift down onto the berthed ship. Keep distance — 50 m and well clear.`});
+  if(I.dir!=null && I.dir>=135 && I.dir<=225 && oM!=null && oM>=10) f.location.push({lvl:'info', t:'Onshore waves — launch past the sandbank',
+    b:`Wade the boat onto / past the bank before sailing; land by heading into the wind just short of it. Centreboard\u2019s up until you\u2019re past — the waves will wash a learner back up the beach.`});
+  if(TH.lowTide(I.activeM, S.tide)) f.location.push({lvl:'info', t:'Light wind + incoming tide',
+    b:`Hard to leave the beach under sail — the tide pushes you back on. Walk the boat out past the bank and start from there. If it\u2019s a battle, signal for assistance (the come-closer wave) for a tow to deeper water — no shame in it.`});
+  if(S.jelly) f.location.push({lvl:'info', t:'Jellyfish about',
+    b:`The big blobby ones — blue blubber (<i>Catostylus mosaicus</i>) — are mostly harmless, though a solid one can nudge a centreboard; bluebottles sting a little. Watch for lion's mane (<i>Cyanea annaskala</i>): it stings more, and has bloomed between the piers in recent summers. Season runs spring to autumn, worst in midsummer. <a href="jellyfish.html">What's about, and stings &rarr;</a>`});
+  const ti = traffic(I);
+  const _dt = dayType();
+  let dayWhy='';
+  if(S.day==='holiday') dayWhy = (_dt.type==='holiday'&&_dt.why) ? _dt.why : 'a public holiday';
+  else if(S.day==='bridge') dayWhy = (_dt.type==='bridge'&&_dt.why) ? ('a bridge day before '+_dt.why+' — a long weekend for some') : 'a bridge day — a long weekend for some';
+  else if(S.day==='schoolhol') dayWhy = 'the school holidays';
+  if(ti!=='Low') f.location.push({lvl: ti==='High'?'amber':'info', t:`Beach &amp; water traffic — <span class="pill ${ti.toLowerCase()}">${ti}</span>`,
+    b:`${dayWhy?`It\u2019s ${dayWhy}. `:``}Expect jet skis, swimmers, SUPs, dogs and beach crowds. Watch the swim zones and the launch; count the fleet often.`});
+  if(S.ship && S.hour>=16 && S.hour<=19) f.location.push({lvl:'info', t:'Ship departure window',
+    b:`A berthed ship often departs 16:00–19:00. Funnel smoke means it\u2019s being readied — keep well clear and watch for tug and docking activity.`});
+
+  return {I, f};
+}
+
+function traffic(I){
+  let sc=0;
+  if(I.airTemp!=null && I.airTemp>=20 && S.sun) sc+=2; else if(I.airTemp!=null && I.airTemp>=20) sc+=1;
+  const d=I.dir, m=I.open.m!=null?I.open.m:99, N=TH.northerly(d), So=(d!=null&&d>=135&&d<=247);
+  const pleasant = (m<=8) || (N&&m<=12) || (So&&m<=18);
+  if(pleasant) sc+=2; else if(m<=15) sc+=1;
+  if(S.day==='holiday') sc+=2; else if(S.day==='weekend'||S.day==='bridge'||S.day==='schoolhol') sc+=1;
+  if(S.hour>=11 && S.hour<=19) sc+=1;
+  let lvl = sc>=5?'High':(sc>=3?'Med':'Low');
+  if(lvl==='High' && !beachHighSeason()) lvl='Med';   // High only in the warm beach season
+  return lvl;
+}
+
+/* --- render ---------------------------------------------------------------- */
+function fig(k,v,unit,s){ return `<div class="fig"><div class="k">${k}</div><div class="v">${v}${unit?`<b>${unit}</b>`:''}</div>${s?`<div class="s">${s}</div>`:''}</div>`; }
+function flagHTML(list){ return list.map(x=>`<div class="flag ${x.lvl}"><div class="t">${x.t}</div><div class="b">${x.b}</div></div>`).join(''); }
+
+function render(){
+  const {I, f} = compute();
+  const src = document.getElementById('lb-src'); const dot=document.getElementById('live');
+  if(live.state==='ok'){
+    const age = live.obsFull ? Math.max(0, Math.round(melbWallMin(melbParts()) - melbWallMin(bomParts(live.obsFull)))) : null;
+    const stale = age!=null && age>25;
+    src.className='lb-src'+(stale?' stale':''); dot.className='live'+(stale?' off':'');
+    src.textContent = 'live · ' + live.activeName + (age!=null?` · ${age} min ago`:'');
+  } else if(live.state==='loading'){
+    src.className='lb-src'; dot.className='live off';
+    src.textContent = 'connecting…';
+  } else {
+    src.className='lb-src stale'; dot.className='live off';
+    src.textContent = 'entered values — live wind offline';
+  }
+  const liveLoading = live.state==='loading';
+  const windStr = liveLoading ? '··' : (I.activeM!=null ? I.activeM : '—');
+  const airStr  = liveLoading ? '··' : (I.airTemp!=null ? I.airTemp : '—');
+  // Next turn + direction come from the SOONEST predicted extremum — reliable timing, and the arrow
+  // and the next-turn line can never disagree. The observed gauge gives the height now; its last-
+  // reading slope is too noisy to pick High vs Low, so it's only a fallback when there's no prediction.
+  let nextTurn=null, predRising=null;
+  if(tidePred.ok){
+    const nowMin=(+melbParts().hour)*60+(+melbParts().minute);
+    const tmin=x=>(+x.time.slice(0,2))*60+(+x.time.slice(3,5));
+    const cands=[]; const H=tidePred.nextHigh, L=tidePred.nextLow;
+    if(H) cands.push({turn:H,rising:true}); if(L) cands.push({turn:L,rising:false});
+    cands.sort((a,b)=>a.turn.k-b.turn.k);
+    const pick=cands.find(c=>tmin(c.turn)>=nowMin-8) || cands[cands.length-1] || null;
+    if(pick){ nextTurn=pick.turn; predRising=pick.rising; }
+  }
+  const tRising = (predRising!=null) ? predRising : (tide.ok ? tide.rising : (S.tide==='rising'));
+  const tArrow = `<span style="color:${tRising?'var(--green-b)':'var(--muted)'};font-size:.6em;vertical-align:middle;margin-right:4px">${tRising?'\u25B2':'\u25BC'}</span>`;
+  let tideH;
+  if(tide.ok) tideH=tide.heightNow; else if(tidePred.ok) tideH=tidePred.levelNow; else tideH=(I.north?1.0:0.8)+(S.tide==='rising'?0.4:-0.1);
+  let tideSub;
+  if(nextTurn&&nextTurn.time){ tideSub = 'next '+(predRising?'High':'Low')+' '+nextTurn.time; }
+  else if(tide.ok){ tideSub = (tRising?'rising':'falling')+(tide.lastTime?(' · since '+tide.lastKind+' '+tide.lastTime):''); }
+  else { tideSub = (tRising?'incoming':'falling'); }
+  const tideVal = (tideH!=null) ? (tArrow + tideH.toFixed(tide.ok?2:1)) : '—';
+  let waterVal, waterSub;
+  if(water.state==='ok'){ waterVal=water.temp.toFixed(1); waterSub='bay · '+dayMon(water.when); }
+  else if(water.state==='loading'){ waterVal='··'; waterSub='connecting…'; }
+  else { waterVal=S.water; waterSub='entered'; }
+  document.getElementById('lb-grid').innerHTML =
+    fig('Wind', windStr, 'kt', liveLoading?'connecting…':(cardinal(I.dir)+(I.activeG!=null?' · gust '+I.activeG:''))) +
+    fig('Air', airStr, '\u00b0C', liveLoading?'':(S.sun?'sunny':'cloud')) +
+    fig('Water', waterVal, '\u00b0C', waterSub) +
+    fig('UV', S.uv, '', fc.ok&&fc.uvMax!=null?('peaks '+fc.uvMax):(S.uv>=8?'very high':(S.uv>=3?'protect':'low'))) +
+    fig('Tide', tideVal, 'm', tideSub) +
+    fig('Rain', S.rain?'Recent':'None', '', fc.ok&&fc.rainChance!=null?(S.rain?('recent · '+fc.rainChance+'% later'):(fc.rainChance+'% later')):(S.rain?'after heavy rain':''));
+  document.getElementById('flags-wind').innerHTML     = flagHTML(f.wind);
+  const wflags = (fc.ok && fc.line) ? [{lvl:'info', t:'Rest of day', b:fc.line}].concat(f.weather) : f.weather;
+  document.getElementById('flags-weather').innerHTML  = flagHTML(wflags);
+  document.getElementById('flags-location').innerHTML = flagHTML(f.location);
+}
+
+/* --- reflect live state onto the wind/air inputs (disable when live) ------- */
+function applyLiveUI(){
+  const isLive = live.state==='ok';
+  document.querySelectorAll('.ctrl[data-live]').forEach(c=>{
+    const inp=c.querySelector('input'); if(inp) inp.disabled=isLive;
+    c.classList.toggle('islive', isLive);
+    let lk=c.querySelector('.lk'); const lab=c.querySelector('label');
+    if(isLive && !lk){ lk=document.createElement('span'); lk.className='lk'; lk.textContent=' live'; lab.appendChild(lk); }
+    if(!isLive && lk) lk.remove();
+  });
+  if(isLive){
+    const set=(id,v)=>{ const e=document.getElementById('c-'+id); if(e&&v!=null) e.value=v; };
+    set('wind', live.open&&live.open.m); set('gust', live.open&&live.open.g);
+    set('dir', live.open&&live.open.deg); set('air', live.airTemp);
+  }
+}
+
+/* --- load from the Worker -------------------------------------------------- */
+async function load(){
+  const [fk, rm, op] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH), fetchOne(TEMP_ST)]);
+  if(!fk && !rm){ live.state='off'; applyLiveUI(); render(); return; }
+  const fkDeg = degOf(fk);
+  const north = fk ? (fkDeg!=null && (fkDeg>=315 || fkDeg<=45)) : !!rm;
+  const active = north ? (rm||fk) : (fk||rm);
+  live.open = fk ? {m:ktOf(fk), g:gustOf(fk), deg:degOf(fk)} : (rm?{m:ktOf(rm),g:gustOf(rm),deg:degOf(rm)}:null);
+  live.lee  = rm ? {m:ktOf(rm), g:gustOf(rm), deg:degOf(rm)} : live.open;
+  const tOf = x => (x && x.air_temp!=null && isFinite(x.air_temp)) ? Math.round(x.air_temp) : null;
+  live.airTemp = [op,rm,active].map(tOf).find(t=>t!=null); if(live.airTemp===undefined) live.airTemp=null;
+  live.activeName = (active===rm) ? 'RMYS · St Kilda (lee)' : 'Fawkner Beacon (open bay)';
+  live.obsFull = active ? active.local_date_time_full : null;
+  live.state = live.open ? 'ok' : 'off';
+  applyLiveUI(); render();
+}
+
+/* --- wire the manual inputs ------------------------------------------------ */
+function bindR(id,key,unit){ const el=document.getElementById('c-'+id), lab=document.getElementById('v-'+id);
+  const upd=()=>{ S[key]=+el.value; if(id==='dir') lab.textContent=cardinal(S.dir)+' ('+S.dir+'\u00b0)';
+    else if(id==='hour') lab.textContent=((S.hour%12)||12)+(S.hour<12?'am':'pm');
+    else lab.textContent=el.value+(unit||''); render(); };
+  el.addEventListener('input',upd); upd(); }
+function bindS(id,key){ const el=document.getElementById('c-'+id); el.addEventListener('change',()=>{S[key]=el.value; render();}); }
+function bindC(id,key){ const el=document.getElementById('c-'+id); el.addEventListener('change',()=>{S[key]=el.checked; render();}); }
+
+// seed hour + weekday/weekend from the real Melbourne clock before binding
+(function seedFromClock(){ const h=melbHour();
+  if(h>=6&&h<=21) document.getElementById('c-hour').value=h;
+  document.getElementById('c-day').value=dayType().type;
+})();
+
+bindR('wind','wind',' kt'); bindR('gust','gust',' kt'); bindR('dir','dir');
+bindR('air','air','\u00b0C'); bindR('water','water','\u00b0C'); bindR('uv','uv'); bindR('hour','hour');
+bindS('tide','tide'); bindS('day','day');
+bindC('sun','sun'); bindC('rain','rain'); bindC('jelly','jelly'); bindC('ship','ship');
+
+function tick(){ document.getElementById('clock').textContent = fmtClock(); }
+tick(); setInterval(tick, 30000);
+render();                 // paint immediately from entered values
+load();                   // live wind + air (Bay Winds Worker)
+loadForecast();           // UV, sun/cloud, rain, rest-of-day (Open-Meteo)
+
+/* --- Export & log: PDF print + copy-a-row, from one shared data builder ----- */
+function _condLine(){
+  const liveOn=(typeof live!=='undefined' && live && live.state==='ok' && live.open);
+  const w=liveOn?live.open.m:S.wind, g=liveOn?live.open.g:S.gust;
+  const dd=(liveOn && live.open.deg!=null)?live.open.deg:S.dir;
+  const air=(liveOn && live.airTemp!=null)?live.airTemp:S.air;
+  const P=[];
+  if(w!=null) P.push('Wind '+w+' kt'+(g!=null?(' gusting '+g):''));
+  if(dd!=null) P.push('from '+cardinal(dd));
+  if(air!=null) P.push('air '+air+'°C');
+  if(S.water!=null) P.push('water '+S.water+'°C');
+  if(S.uv!=null) P.push('UV '+S.uv);
+  return P.join('  ·  ');
+}
+function _tideSummary(){
+  try{
+    if(typeof tidePred!=='undefined' && tidePred.ok){
+      const p=melbParts(), nowMin=(+p.hour)*60+(+p.minute), tmin=x=>(+x.time.slice(0,2))*60+(+x.time.slice(3,5));
+      const c=[]; if(tidePred.nextHigh)c.push({t:tidePred.nextHigh,r:true}); if(tidePred.nextLow)c.push({t:tidePred.nextLow,r:false});
+      c.sort((a,b)=>a.t.k-b.t.k);
+      const pk=c.find(x=>tmin(x.t)>=nowMin-8)||c[c.length-1];
+      if(pk) return (pk.r?'rising':'falling')+', next '+(pk.r?'High':'Low')+' '+pk.t.time;
+    }
+    if(typeof tide!=='undefined' && tide && tide.ok) return tide.rising?'rising':'falling';
+  }catch(e){}
+  return S.tide;
+}
+function briefingLog(){
+  const p=melbParts();
+  const liveOn=(typeof live!=='undefined' && live && live.state==='ok' && live.open);
+  const wind=liveOn?live.open.m:S.wind, gust=liveOn?live.open.g:S.gust;
+  const dd=(liveOn && live.open.deg!=null)?live.open.deg:S.dir;
+  const air=(liveOn && live.airTemp!=null)?live.airTemp:S.air;
+  const dt=dayType(), dayStr=dt.type+(dt.why?(' ('+dt.why+')'):'');
+  let traf=''; try{ traf=traffic({airTemp:air, dir:dd, open:{m:wind}}); }catch(e){}
+  const flags=[].slice.call(document.querySelectorAll('.flags .flag .t')).map(e=>e.textContent.replace(/\s+/g,' ').trim()).join('; ');
+  const topics=(document.getElementById('pv-n')?document.getElementById('pv-n').textContent:'0')+'/20';
+  return [
+    ['Date', p.year+'-'+p.month+'-'+p.day],
+    ['Time', p.hour+':'+p.minute],
+    ['Wind (kt)', wind], ['Gust (kt)', gust],
+    ['Direction', dd!=null?(cardinal(dd)+' '+dd+'°'):''],
+    ['Air (°C)', air], ['Water (°C)', S.water], ['UV', S.uv],
+    ['Tide', _tideSummary()], ['Rain', S.rain?'yes':'none'],
+    ['Day-type', dayStr], ['Traffic', traf], ['Topics covered', topics],
+    ['Flags', flags], ['Briefed by', ''], ['Crew', ''], ['Notes', '']
+  ];
+}
+function _esc(x){ return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function populateExport(){
+  const now=new Date();
+  const stamp=now.toLocaleString('en-AU',{timeZone:MELB_TZ,weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  let tz='Melbourne'; try{ const m=now.toLocaleTimeString('en-AU',{timeZone:MELB_TZ,timeZoneName:'short'}).match(/[A-Z]{3,4}$/); if(m) tz=m[0]; }catch(e){}
+  const st=document.getElementById('pt-stamp'); if(st) st.textContent='As at '+stamp+' ('+tz+')';
+  const co=document.getElementById('pt-cond'); if(co) co.textContent=_condLine();
+  const host=document.getElementById('print-log'); if(!host) return;
+  const data=briefingLog(), cell=v=>(v==null||v==='')?'&nbsp;':_esc(v);
+  const pairs=data.filter(r=>r[0]!=='Flags' && r[0]!=='Notes');
+  let h='<h3 class="pl-h">Briefing data — for the logbook</h3><table class="pl-t"><tbody>';
+  for(let i=0;i<pairs.length;i+=2){ const a=pairs[i], b=pairs[i+1];
+    h+='<tr><td class="pl-k">'+_esc(a[0])+'</td><td class="pl-v">'+cell(a[1])+'</td>'
+      +(b?('<td class="pl-k">'+_esc(b[0])+'</td><td class="pl-v">'+cell(b[1])+'</td>'):'<td></td><td></td>')+'</tr>'; }
+  const fl=data.find(r=>r[0]==='Flags'); if(fl) h+='<tr><td class="pl-k">Flags</td><td class="pl-v" colspan="3">'+cell(fl[1])+'</td></tr>';
+  h+='<tr><td class="pl-k">Notes</td><td class="pl-v" colspan="3">&nbsp;</td></tr></tbody></table>';
+  host.innerHTML=h;
+}
+function exportBriefingPDF(){ populateExport(); window.print(); }
+function _copyText(t){
+  if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  return new Promise((res,rej)=>{ try{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }catch(e){ rej(e); } });
+}
+function _flash(btn,msg){ if(!btn) return; if(!btn.dataset.o) btn.dataset.o=btn.textContent; btn.textContent=msg; setTimeout(()=>{ btn.textContent=btn.dataset.o; },1500); }
+function copyLogRow(){ const tsv=briefingLog().map(r=>String(r[1]==null?'':r[1])).join(String.fromCharCode(9)); const btn=document.getElementById('copyrow'); _copyText(tsv).then(()=>_flash(btn,'Copied ✓')).catch(()=>_flash(btn,'Copy failed')); }
+window.addEventListener('beforeprint', populateExport);
+(function(){ const e=document.getElementById('exportpdf'); if(e) e.addEventListener('click',exportBriefingPDF);
+             const c=document.getElementById('copyrow'); if(c) c.addEventListener('click',copyLogRow); })();
+loadTide();               // observed level + direction (BoM gauge via Worker)
+loadTidePred();           // next high/low TIME (tidal prediction)
+loadWater();              // bay water temp (NOAA CRW satellite SST via Worker)
+setInterval(load, REFRESH_MS);
+setInterval(loadForecast, REFRESH_MS);
+setInterval(loadTide, REFRESH_MS);
+setInterval(loadTidePred, REFRESH_MS);
+setInterval(loadWater, REFRESH_MS);
+
+/* --- view mode (Brief / Present) + the topic checklist --------------------- */
+(function(){
+  const mb=document.getElementById('m-brief'), mp=document.getElementById('m-present');
+  function setMode(present){ document.body.classList.toggle('mode-present',present);
+    mb.classList.toggle('on',!present); mp.classList.toggle('on',present);
+    mb.setAttribute('aria-pressed',String(!present)); mp.setAttribute('aria-pressed',String(present));
+    window.scrollTo(0,0); }
+  mb.addEventListener('click',()=>setMode(false));
+  mp.addEventListener('click',()=>setMode(true));
+  const cards=[...document.querySelectorAll('.pv-card')], n=document.getElementById('pv-n');
+  const count=()=>{ n.textContent=document.querySelectorAll('.pv-card.done').length; };
+  cards.forEach(c=>c.addEventListener('click',()=>{ c.classList.toggle('done'); count(); }));
+  const r=document.getElementById('pv-reset');
+  if(r) r.addEventListener('click',()=>{ cards.forEach(c=>c.classList.remove('done')); count(); });
+})();
+</script>
+</body>
+</html>
