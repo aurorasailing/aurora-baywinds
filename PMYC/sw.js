@@ -1,5 +1,5 @@
 /* PMYC pre-session check — service worker (offline app shell) */
-var CACHE = 'pmyc-presession-v3';
+var CACHE = 'pmyc-presession-v4';
 var SHELL = ['./PMYC-Powerboat-Check.html', './PMYC-Refuelling.html', './manifest.json'];
 
 self.addEventListener('install', function (e) {
