@@ -14,7 +14,7 @@
  * fresh copy. Without a bump, installed phones keep serving the old one.
  */
 
-var CACHE = 'pmyc-powerboat-v1.4';
+var CACHE = 'pmyc-powerboat-v1.5';
 
 var APP_URL  = new URL('./PMYC-Powerboat-Check.html', self.location).href;
 var APP_PATH = new URL(APP_URL).pathname;
