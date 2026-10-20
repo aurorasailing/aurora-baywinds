@@ -1,6 +1,6 @@
 {
   "name": "PMYC Power Boat — Pre-Session Check",
-  "short_name": "PMYC Check",
+  "short_name": "PMYC Powerboat",
   "start_url": "./PMYC-Powerboat-Check.html",
   "scope": "./",
   "display": "standalone",

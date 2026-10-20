@@ -1,4 +1,4 @@
-<!-- Aurora Bay Winds · PMYC/index.html · v1.0 · 2026-10-19 -->
+<!-- Aurora Bay Winds · PMYC/index.html · v1.1 · 2026-10-20 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,6 +7,11 @@
 <title>PMYC · Aurora Sailing</title>
 <meta name="description" content="Port Melbourne Yacht Club — live bay wind, the safety briefing, the RS Quest sailing-day check, the powerboat session check-in and the bay maps.">
 <meta name="theme-color" content="#F5F7F4">
+<link rel="manifest" href="./manifest-hub.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="PMYC">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADG0lEQVR4nO3cy00cQRRA0cFiRQCIEIiAEAiaEIiELPDCwhb/mTbTXX3rnB0Si1Lr6ulRTM/F1fXt8wEifm19APhJgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJudz6AAX3jzevfn64e9roJFz45qTl3ob8lrDXZ+VY6LuYj/0dfpagSRH0AqdMXlN6XYImRdCkCJoUQS/gOm5cgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyLoFfiQ/3oEvZL7xxthr0DQKxP1eQl6A6I+H0FvxApyHoLemLB/lqAHIeqfIeiBmNb/T9ADEvVygh6UqJcR9MCsIKcT9A6I+niC3glRH0fQOyLq7wl6Z0T9NUHvkKg/J+idEvXHBL1jrvXeEzQpgg4wpf8RdISo/xB0iKgFnTN71IIOmjlqQZMi6KhZ76gFTYqg42ab0oKewExRC5oUQU9ilikt6InMELWgJ1OPWtCkCHpC5SktaFIEPanqlBY0KYKeWHFKC5oUQU+uNqUFTYqgSU1pQZMiaA6HQ2dKC5oUQfNXYUoLmhRBkyJoXtn72iFoUgRNiqB5Z89rh6BJETQpguZDe107BE2KoEkRNJ/a49ohaFIETYqgSRE0KYLmS3v7w/By6wPM4OHuaesjTMOEJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQC+zttaSZCJoUQZMiaFIEvcApb3F743tdgiZF0AsdM3lN5/VdXF3fPm99iL17e40n5O0ImhQrBymCJkXQpAiaFEGTImhSdvOF5+56l5vp2Q1/D+2zx+dTDHvolUPM51V8vkMHDacaNuji9BhR7TkPGzQsIWhSBE3KsEEXr5RGVHvOwwYNSwwddG16jKb4fIf/T+GL2vXSloohv9hN0HCMoVcOOJWgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFJ+A1Imc7Eduf3OAAAAAElFTkSuQmCC">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -144,6 +149,8 @@ async function loadWind(){
             src: (active===rm) ? 'RMYS · St Kilda (lee)' : 'Fawkner Beacon (open bay)' });
 }
 loadWind(); setInterval(loadWind, 2*60*1000);
+/* --- install as an app (shares the /PMYC/ service worker) --- */
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }
 </script>
 </body>
 </html>
