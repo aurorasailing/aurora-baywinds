@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-is-it-a-sailing-day.html · v1.28 (into /1stVic/; Bay Winds links absolute; hub back-link; install block) · 2026-10-20 -->
+<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-is-it-a-sailing-day.html · v1.29 (into /1stVic/; Bay Winds links absolute; hub back-link; install block) · 2026-10-20 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -202,7 +202,7 @@
 
   </div>
     <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
-    <div class="ver">1stVic-is-it-a-sailing-day.html · v1.28</div>
+    <div class="ver">1stVic-is-it-a-sailing-day.html · v1.29</div>
   </footer>
 
 <script>
@@ -298,8 +298,10 @@ function compassRose(deg,kt,color){
   return '<svg viewBox="0 0 100 100" role="img" aria-label="Wind direction and strength on a compass">'+s+'</svg>';
 }
 // Warning strips. TRIGGERS are the RS Quest page's, unchanged (wind speeds tuned later).
-// Only the wording changes: plain and direct, Easy vs Pro, no "ask a grown-up".
-// X ("gusts up to") is the live bay peak.
+// Only the wording changes: plain and direct, Easy (≈10-year-olds) vs Pro.
+// X ("gusts up to") is the live bay peak. The bay reading is a GAUGE of how gusty
+// the air is — the lake sits NORTH of the bay, so this isn't wind rolling in off
+// the bay; the same gusts can arrive on the lake from the wind's direction.
 function buildAlerts(o){
   if(usingSample || !o) return "";
   const pro = (mode==="pro");
@@ -307,7 +309,7 @@ function buildAlerts(o){
   const iM=ktOf(o), iG=gustOf(o), wd=o.wind_dir;
   const oM=ktOf(bayRow), oG=gustOf(bayRow);
 
-  // 1) much stronger out on the open bay (Fawkner) — triggers unchanged
+  // 1) strong/gusty out on the open bay (Fawkner) — triggers unchanged
   if(iM!=null && oM!=null){
     const openPeak=Math.max(oM, oG||0);
     const diverge   = (bandIdx(oM)-bandIdx(iM) >= 1) || (oM-iM >= 8);
@@ -317,28 +319,28 @@ function buildAlerts(o){
       const bay = oM+" kt"+(oG!=null?" gusting "+oG:"");
       let title, body;
       if(pro){
-        title = red ? "Strong gradient out on the bay" : "Bay gradient up on the lake reading";
+        title = red ? "Strong and gusty out there" : "Bay well up on the lake reading";
         body  = red
-          ? "Fawkner is <b>"+bay+"</b> — the lake can see gusts to <b>"+openPeak+" kt</b>. Depower hard: flat main, plenty of twist, sheet ready to dump, and pick the lulls to manoeuvre."
-          : "RMYS reads <b>"+iM+" kt</b>; Fawkner in the open bay is <b>"+bay+"</b>. The lake feels the bay gradient in the puffs, so rig for the bigger number — peak near <b>"+openPeak+" kt</b>. Flatten the main, ease early, hike through the hits.";
+          ? "Fawkner on the bay is <b>"+bay+"</b> — strong and gusty. The same gusts can hit the lake, to about <b>"+openPeak+" kt</b>. Depower: flat main, plenty of twist, sheet ready to dump. Watch upwind for the gust lines coming across the water and pick the lulls to manoeuvre."
+          : "Fawkner on the bay is <b>"+bay+"</b>. The same gusts can reach the lake — to about <b>"+openPeak+" kt</b> — so rig for the bigger number. Watch upwind for the gust lines on the water; ease early and hike through them.";
       } else {
         title = red ? "A lot of wind out on the bay" : "Windier out on the bay";
         body  = red
-          ? "The open bay is <b>"+bay+"</b>, so the lake can get hard gusts — up to about <b>"+openPeak+" kt</b>. Big hits between the lulls. Keep the sail eased and be ready to let it right out. The smallest sailors might sit this one out."
-          : "St Kilda reads <b>"+iM+" kt</b>, but the open bay is <b>"+bay+"</b>. Those gusts can roll onto the lake — up to about <b>"+openPeak+" kt</b>. That's fine once you know it's coming: keep the sail loose and sit ready to let it out when a puff hits.";
+          ? "It's really blowing out on the bay — <b>"+bay+"</b>. The same hard gusts can hit the lake too, up to about <b>"+openPeak+" kt</b>. Keep watching upwind for the dark gust patches crossing the water, and let the sail right out as they reach you. The smallest sailors might sit this one out."
+          : "It's windier out on the bay right now — <b>"+bay+"</b>. The same strong gusts can hit the lake too, up to about <b>"+openPeak+" kt</b>. That's fine if you're ready: watch the water upwind for a dark, ruffled patch — that's a gust coming — and let the sail out as it reaches you.";
       }
       parts.push({red:red, title:title, body:body});
     }
   }
 
-  // 2) northerly = shifty on the lake (CBD high-rises upwind, Gunn Island)
+  // 2) northerly — broken, shifty wind on the lake (CBD high-rises upwind, Gunn Island)
   if(iM!=null && iM>=6 && isNortherly(wd)){
     parts.push(pro ? {red:false,
-      title:"Northerly — turbulence off the city",
-      body:"The lake sits downwind of the CBD and the Southbank high-rises, so the northerly arrives broken up — big oscillating shifts (20–30°) and gusts on top of the usual northerly instability. RMYS is downwind to the SE, so it reads this late and light. Play the shifts, keep the boat flat, and expect holes and header-gusts in the lee of <b>Gunn Island</b>."
+      title:"Northerly — broken and shifty",
+      body:"A northerly reaches the lake after crossing the city and the Southbank towers, so it arrives broken up — gusty, and swinging back and forth in direction (20–30°). RMYS sits to the south and reads it late and light, so the lake is livelier than the number. Watch upwind — to the north — for the gust lines on the water, play the shifts, and keep the boat flat. Expect a wind shadow and sudden headers in the lee of <b>Gunn Island</b>."
     } : {red:false,
-      title:"Wind from the north — shifty",
-      body:"A north wind blows over the city and the tall Southbank buildings before it reaches the lake, so it's bumpy and keeps swinging — more than open water. Expect sudden lifts and knocks, and light patches behind <b>Gunn Island</b>. Keep a hand on the sheet and watch up the lake for the next gust."
+      title:"Wind from the north",
+      body:"The wind is coming from the north — over the city and the tall buildings before it reaches the lake. That makes it jumpy: it speeds up, drops, and keeps changing direction. Look north, up the lake, and watch for dark patches sliding across the water toward you — that's the next gust. Let the sail out when it arrives. It's calmer right behind <b>Gunn Island</b>."
     });
   }
 
