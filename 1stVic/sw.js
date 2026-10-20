@@ -16,7 +16,7 @@
  * fresh copy. Without a bump, installed phones keep serving the old one.
  */
 
-var CACHE = '1stvic-v1.0';
+var CACHE = '1stvic-v1.1';
 
 var HUB_URL   = new URL('./index.html', self.location).href;
 var HUB_PATH  = new URL(HUB_URL).pathname;
