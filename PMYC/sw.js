@@ -18,7 +18,7 @@
  * fresh copy. Without a bump, installed phones keep serving the old one.
  */
 
-var CACHE = 'pmyc-v1.7';
+var CACHE = 'pmyc-v1.9';
 
 var HUB_URL   = new URL('./index.html', self.location).href;
 var HUB_PATH  = new URL(HUB_URL).pathname;
