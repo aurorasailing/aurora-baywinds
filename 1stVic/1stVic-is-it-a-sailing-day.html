@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-is-it-a-sailing-day.html · v1.26 (into /1stVic/; Bay Winds links absolute; hub back-link; install block) · 2026-10-20 -->
+<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-is-it-a-sailing-day.html · v1.28 (into /1stVic/; Bay Winds links absolute; hub back-link; install block) · 2026-10-20 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -111,6 +111,13 @@
     background:var(--harbour);border:1px solid var(--line);text-decoration:none;
     font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--navy)}
   .hubbar:active{transform:scale(.99)} .hubbar:hover{filter:brightness(1.04)}
+  /* warning strips — borrowed from the RS Quest cross-check, re-voiced for the lake */
+  .alerts{width:100%; max-width:440px; margin:12px auto 0; display:flex; flex-direction:column; gap:8px}
+  .alert{border-radius:16px; padding:12px 14px; text-align:left; border:1.5px solid}
+  .alert.amber{background:#FFF6E6; border-color:#F0B23C; color:#7A5200}
+  .alert.red{background:#FDECEC; border-color:#E4572E; color:#8A1C12}
+  .alert .at{font-family:'Syne',sans-serif; font-weight:700; font-size:15px; margin-bottom:2px}
+  .alert .ab{font-size:13.5px; line-height:1.45}
 </style>
 </head>
 <body>
@@ -121,7 +128,6 @@
 </header>
 
 <main>
-  <a href="index.html" class="hubbar">← 1st Vic hub</a>
   <div class="place">Albert Park Lake · Is it a Sailing Day?</div>
   <div class="modeToggle" id="modeToggle" role="group" aria-label="View mode">
     <button type="button" data-mode="easy">Easy</button>
@@ -129,6 +135,7 @@
   </div>
   <div class="hero" id="hero"></div>
   <div class="banner" id="banner"></div>
+  <div class="alerts" id="alerts"></div>
 </main>
 
 <footer>
@@ -152,6 +159,12 @@
     St Kilda is the closest station to the lake — just a little way toward the sea, down to the
     south-east. It feels the fresh wind off the bay before it reaches us, so it’s a good sneak
     peek at the wind coming our way — especially a cool change from the south.
+    <h2 style="margin-top:16px">The coloured warnings</h2>
+    When the open bay is much windier than St Kilda, or the wind is gusty or from the north, a
+    coloured strip shows above. The lake is flat, small and shallow — in most places you can stand
+    up — so strong gusts aren't a big deal once you know they're coming and you're ready to let the
+    sail out. The strips are a heads-up, not a stop sign: <b>amber</b> means there's something to
+    handle; <b>red</b> means it's really blowing, and the smallest sailors might sit it out.
     <p style="margin:12px 0 0">We keep the wind direction simple — one of eight main
     points: North, North-East, East, South-East, South, South-West, West and
     North-West.</p>
@@ -159,7 +172,7 @@
     minutes, so the “updated” time counts up to around ten or fifteen minutes and
     then starts again — that’s normal.</p>
     <p style="margin:12px 0 0">Wind from the <a href="http://www.bom.gov.au" target="_blank" rel="noopener">Bureau of Meteorology</a>
-    at St Kilda Harbour. Always ask a grown-up and check the water before you sail.</p>
+    at St Kilda Harbour. Always check the wind and the water before you sail.</p>
     <details class="spots">
       <summary>Sailing spots</summary>
       <nav class="spots-list" aria-label="All sailing spots">
@@ -185,16 +198,18 @@
       <a href="https://wind.aurorasailing.com.au/wind-barbs.html">Wind barbs</a>
       <a href="https://lakes.aurorasailing.com.au/" target="_blank" rel="noopener">Lake Winds ↗</a>
     </nav>
+    <a href="index.html" class="hubbar" style="margin:14px 0 2px">← Back to the 1st Vic hub</a>
 
   </div>
     <div class="credit"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne, Australia</div>
-    <div class="ver">1stVic-is-it-a-sailing-day.html · v1.26</div>
+    <div class="ver">1stVic-is-it-a-sailing-day.html · v1.28</div>
   </footer>
 
 <script>
 // const DATA_BASE = "./data";
 const DATA_BASE = "https://aurora-baywinds.gregor-fea.workers.dev";
-const STATION   = 95864;            // St Kilda Harbour RMYS (wind)
+const STATION   = 95864;            // St Kilda Harbour RMYS (wind) — the lake reading
+const BAY_STATION = 95872;          // Fawkner Beacon — open bay, for the "stronger out there" warning
 const TEMP_STATION = 95936;         // Melbourne (Olympic Park) — nearest air temperature to the lake
 const REFRESH_MS = 2 * 60 * 1000;
 
@@ -207,6 +222,10 @@ const LEVELS = [
   {max:999, emoji:"☠️", word:"Stay ashore", c:"#F90D24", t:"#C21020"},
 ];
 function levelFor(kt){ kt=Math.round(kt); for(const l of LEVELS){ if(kt<=l.max) return l; } return LEVELS[LEVELS.length-1]; }
+function bandIdx(k){ if(k==null) return -1; for(let i=0;i<LEVELS.length;i++){ if(k<=LEVELS[i].max) return i; } return LEVELS.length-1; }
+function ktOf(o){ return o&&o.wind_spd_kt!=null&&isFinite(o.wind_spd_kt)?Math.round(o.wind_spd_kt):null; }
+function gustOf(o){ return o&&o.gust_kt!=null&&isFinite(o.gust_kt)?Math.round(o.gust_kt):null; }
+function isNortherly(wd){ if(!wd || !(wd in DIR_DEG)) return false; const d=DIR_DEG[wd]; return d>=315 || d<=45; }
 
 function beaufort(kt){ const b=[1,4,7,11,17,22,28,34,41,48,56,64]; let f=0; for(let i=0;i<b.length;i++){ if(kt>=b[i]) f=i+1; } return f; }
 const BEAUFORT_NAME=["calm","light air","light breeze","gentle breeze","moderate breeze","fresh breeze","strong breeze","near gale","gale","strong gale","storm","violent storm","hurricane force"];
@@ -219,7 +238,7 @@ function dir8(wd){ if(!wd || !(wd in DIR_DEG)) return null; return PTS8[Math.rou
 
 function parseFull(f){ return new Date(+f.slice(0,4),+f.slice(4,6)-1,+f.slice(6,8),+f.slice(8,10),+f.slice(10,12)); }
 
-let rows=null, usingSample=false, newestFull=null, airTemp=null;
+let rows=null, usingSample=false, newestFull=null, airTemp=null, bayRow=null;
 let mode = (function(){ try{ return localStorage.getItem("aurora-youth-mode")==="pro"?"pro":"easy"; }catch(e){ return "easy"; } })();
 function setMode(m){ mode=m; try{ localStorage.setItem("aurora-youth-mode",m); }catch(e){}
   document.querySelectorAll("#modeToggle button").forEach(b=>b.classList.toggle("on", b.dataset.mode===m));
@@ -238,6 +257,12 @@ async function load(){
       const t=dt.length?dt[0].air_temp:null; airTemp=(t!=null&&isFinite(t))?Math.round(t):null; }
     else airTemp=null;
   }catch(e){ airTemp=null; }
+  // open-bay reading (Fawkner) for the "stronger out on the bay" warning — optional, never breaks the page
+  try{
+    const rb=await fetch(DATA_BASE+"/"+BAY_STATION+".json?_="+Date.now(),{cache:"no-store"});
+    if(rb.ok){ const jb=await rb.json(); const db=(jb.observations?jb.observations.data:jb.data)||[]; bayRow=db.length?db[0]:null; }
+    else bayRow=null;
+  }catch(e){ bayRow=null; }
   render();
 }
 function sample(){
@@ -272,6 +297,66 @@ function compassRose(deg,kt,color){
   s+='<circle cx="50" cy="50" r="2.4" fill="'+color+'"/>';
   return '<svg viewBox="0 0 100 100" role="img" aria-label="Wind direction and strength on a compass">'+s+'</svg>';
 }
+// Warning strips. TRIGGERS are the RS Quest page's, unchanged (wind speeds tuned later).
+// Only the wording changes: plain and direct, Easy vs Pro, no "ask a grown-up".
+// X ("gusts up to") is the live bay peak.
+function buildAlerts(o){
+  if(usingSample || !o) return "";
+  const pro = (mode==="pro");
+  const parts=[];
+  const iM=ktOf(o), iG=gustOf(o), wd=o.wind_dir;
+  const oM=ktOf(bayRow), oG=gustOf(bayRow);
+
+  // 1) much stronger out on the open bay (Fawkner) — triggers unchanged
+  if(iM!=null && oM!=null){
+    const openPeak=Math.max(oM, oG||0);
+    const diverge   = (bandIdx(oM)-bandIdx(iM) >= 1) || (oM-iM >= 8);
+    const strongBay = (oM>=21) || (oG!=null && oG>=25);
+    if(diverge || strongBay){
+      const red = (openPeak>=24) || (oG!=null && oG>=30);
+      const bay = oM+" kt"+(oG!=null?" gusting "+oG:"");
+      let title, body;
+      if(pro){
+        title = red ? "Strong gradient out on the bay" : "Bay gradient up on the lake reading";
+        body  = red
+          ? "Fawkner is <b>"+bay+"</b> — the lake can see gusts to <b>"+openPeak+" kt</b>. Depower hard: flat main, plenty of twist, sheet ready to dump, and pick the lulls to manoeuvre."
+          : "RMYS reads <b>"+iM+" kt</b>; Fawkner in the open bay is <b>"+bay+"</b>. The lake feels the bay gradient in the puffs, so rig for the bigger number — peak near <b>"+openPeak+" kt</b>. Flatten the main, ease early, hike through the hits.";
+      } else {
+        title = red ? "A lot of wind out on the bay" : "Windier out on the bay";
+        body  = red
+          ? "The open bay is <b>"+bay+"</b>, so the lake can get hard gusts — up to about <b>"+openPeak+" kt</b>. Big hits between the lulls. Keep the sail eased and be ready to let it right out. The smallest sailors might sit this one out."
+          : "St Kilda reads <b>"+iM+" kt</b>, but the open bay is <b>"+bay+"</b>. Those gusts can roll onto the lake — up to about <b>"+openPeak+" kt</b>. That's fine once you know it's coming: keep the sail loose and sit ready to let it out when a puff hits.";
+      }
+      parts.push({red:red, title:title, body:body});
+    }
+  }
+
+  // 2) northerly = shifty on the lake (CBD high-rises upwind, Gunn Island)
+  if(iM!=null && iM>=6 && isNortherly(wd)){
+    parts.push(pro ? {red:false,
+      title:"Northerly — turbulence off the city",
+      body:"The lake sits downwind of the CBD and the Southbank high-rises, so the northerly arrives broken up — big oscillating shifts (20–30°) and gusts on top of the usual northerly instability. RMYS is downwind to the SE, so it reads this late and light. Play the shifts, keep the boat flat, and expect holes and header-gusts in the lee of <b>Gunn Island</b>."
+    } : {red:false,
+      title:"Wind from the north — shifty",
+      body:"A north wind blows over the city and the tall Southbank buildings before it reaches the lake, so it's bumpy and keeps swinging — more than open water. Expect sudden lifts and knocks, and light patches behind <b>Gunn Island</b>. Keep a hand on the sheet and watch up the lake for the next gust."
+    });
+  }
+
+  // 3) gusty at the lake reading — triggers unchanged
+  if(iM!=null && iG!=null && (iG-iM>=10 || (iM>=6 && iG>=1.5*iM))){
+    const red=(iG>=30);
+    parts.push(pro ? {red:red,
+      title:"Gusty — big lull/gust spread",
+      body:"Mean <b>"+iM+" kt</b>, gusting <b>"+iG+" kt</b>. Sail slightly eased and twisted, weight ready, dump early in the hits and re-power in the lulls. Flat water keeps it forgiving."
+    } : {red:red,
+      title:"Gusty",
+      body:"The wind keeps jumping — about <b>"+iM+" kt</b>, gusting <b>"+iG+" kt</b>. The hits come between the calm bits. Keep the sail loose in the puffs and ready to let out. On the flat lake a gust is easy once you expect it."
+    });
+  }
+
+  if(!parts.length) return "";
+  return parts.map(p=>'<div class="alert '+(p.red?"red":"amber")+'"><div class="at">'+p.title+'</div><div class="ab">'+p.body+'</div></div>').join("");
+}
 function render(){
   const o = rows&&rows.length ? rows[0] : null;
   const kt = o ? Math.round(o.wind_spd_kt) : null;
@@ -295,6 +380,7 @@ function render(){
     '<div class="air">'+(airTemp==null?"":'🌡️ <b>'+airTemp+'°</b> in the air')+'</div>'+
     '<div class="hupd" id="hupd"></div>';
   newestFull = o ? o.local_date_time_full : null;
+  var al=document.getElementById("alerts"); if(al) al.innerHTML = buildAlerts(o);
   document.getElementById("banner").classList.toggle("show", usingSample);
   document.getElementById("banner").textContent = usingSample ? "Showing pretend wind — the live feed isn’t connected yet." : "";
   document.getElementById("live").style.background = usingSample ? "var(--muted)" : "var(--green-b)";

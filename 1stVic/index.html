@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts hub · 1stVic/index.html · v1.3 · 2026-10-20 · wind live from RMYS -->
+<!-- 1st Victorian Sea Scouts hub · 1stVic/index.html · v1.4 · 2026-10-20 · wind direction clause robust -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -151,8 +151,12 @@ function setWind(s){
   document.getElementById('w-dot').classList.toggle('on', s.live);
   document.getElementById('w-state').textContent = s.live ? 'Live' : 'Wind offline';
   document.getElementById('w-kt').textContent = (s.live && s.kt!=null) ? s.kt : '—';
+  var card = (s.deg!=null) ? cardinal(s.deg) : null;   // null / '—' → no direction this reading
+  var bits = [];
+  if(s.gust!=null) bits.push('gusting <b>'+s.gust+'</b>');
+  if(card && card!=='\u2014') bits.push('from <b>'+card+'</b>');
   document.getElementById('w-sub').innerHTML = s.live
-    ? ((s.gust!=null?('gusting <b>'+s.gust+'</b> · '):'')+'from <b>'+cardinal(s.deg)+'</b>')
+    ? (bits.join(' · ') || 'reading the lake')
     : 'the live feed isn\u2019t reachable';
   document.getElementById('w-src').textContent = s.live ? ('source: '+s.src) : 'St Kilda Harbour · RMYS';
 }
