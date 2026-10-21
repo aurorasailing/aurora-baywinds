@@ -1,0 +1,334 @@
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.0 · 2026-10-20 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Session Export — Port Melbourne · Aurora Explorer</title>
+<meta name="description" content="Assemble a whole PMYC session — briefing and conditions, powerboat checks and the review — into one sheet, as a PDF or as markdown to paste elsewhere.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --navy:#0A1628; --green:#50E040; --green-b:#39D455; --slate:#2E4057; --ink:#1C2B3A;
+    --muted:#7A8A7E; --line:#E1E6E0; --seafoam:#E8EDE6; --harbour:#F5F7F4; --white:#fff;
+    --pad:20px;
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--harbour);line-height:1.6;min-height:100vh}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--pad);
+    padding-top:calc(12px + env(safe-area-inset-top,0));background:var(--white);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hublink{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}
+
+  main{max-width:720px;margin:0 auto;padding:18px var(--pad) 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.05;margin:6px 0 12px;color:var(--navy)}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:6px 0 4px}
+  .controls label{display:block;font-size:12px;font-weight:700;color:var(--slate);margin-bottom:4px}
+  .controls select,.controls input{padding:11px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+  .controls .pick{flex:1;min-width:200px}
+  .status{font-size:13.5px;color:var(--muted);margin:10px 2px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
+  .btn{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;border:none;border-radius:12px;padding:12px 16px;cursor:pointer}
+  .btn.pdf{background:var(--navy);color:#fff}
+  .btn.copy{background:var(--green);color:var(--navy)}
+  .btn.ghost{background:#fff;color:var(--slate);border:1px solid var(--line);font-weight:700}
+  .btn:active{transform:scale(.99)}
+
+  /* rendered session sheet */
+  .sheet{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 20px 8px;margin:14px 0 4px}
+  .sheet .sh-date{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--navy);margin:0 0 2px}
+  .sheet .sh-sub{font-size:13px;color:var(--muted);margin:0 0 6px}
+  .block{margin:18px 0 0;break-inside:avoid}
+  .block h3{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--green-b);margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:14.5px;margin:0}
+  .kv dt{color:var(--muted)}
+  .kv dd{margin:0;color:var(--ink)}
+  .item{padding:10px 0;border-top:1px solid var(--line)}
+  .item:first-of-type{border-top:none}
+  .item .it-h{font-family:'Syne',sans-serif;font-weight:700;font-size:15.5px;color:var(--navy);margin:0 0 4px}
+  .item .it-h .t{color:var(--muted);font-family:'Lato';font-weight:400;font-size:13px;margin-left:6px}
+  .para{font-size:14.5px;margin:4px 0}
+  .para b{color:var(--slate)}
+  .flag{display:inline-block;background:#FFF6E6;color:#9A6700;border-radius:999px;padding:1px 9px;font-size:12.5px;font-weight:700;margin:2px 4px 2px 0}
+  .empty{color:var(--muted);font-size:14px}
+
+  details.md{margin:14px 0}
+  details.md summary{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--slate);cursor:pointer}
+  textarea.md-text{width:100%;height:280px;margin-top:8px;padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);white-space:pre}
+
+  .print-head{display:none}
+  footer{border-top:1px solid var(--line);padding:16px var(--pad);color:var(--muted);font-size:12.5px;text-align:center;margin-top:24px}
+  footer a{color:var(--green-b);text-decoration:none}
+  .ver{margin-top:8px;font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.04em;color:var(--muted)}
+
+  @page{ margin:16mm; }
+  @media print{
+    header,.controls,.actions,.status,details.md,footer,.hublink{display:none !important}
+    body{background:#fff}
+    main{max-width:none;margin:0;padding:0}
+    .sheet{border:none;border-radius:0;padding:0;margin:0}
+    .print-head{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;border-bottom:2px solid var(--navy);padding-bottom:6px}
+    .print-head .a{font-family:'Syne',sans-serif;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.02em}
+    .print-head .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .block{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="hublink" href="index.html">Hub ↑</a>
+</header>
+<main>
+  <span class="eyebrow">Port Melbourne Yacht Club</span>
+  <h1>Session export</h1>
+
+  <div class="controls">
+    <div class="pick">
+      <label for="ex-sessions">Session</label>
+      <select id="ex-sessions" style="width:100%"><option>Loading…</option></select>
+    </div>
+    <div>
+      <label for="ex-date">or a date</label>
+      <input type="date" id="ex-date">
+    </div>
+    <button type="button" class="btn ghost" id="ex-load">Load</button>
+  </div>
+  <div class="status" id="ex-status">Pick a session to assemble.</div>
+
+  <div class="actions" id="ex-actions" style="display:none">
+    <button type="button" class="btn pdf" id="ex-pdf">Save as PDF</button>
+    <button type="button" class="btn copy" id="ex-copy">Copy markdown</button>
+  </div>
+
+  <div id="ex-out"></div>
+
+  <details class="md" id="ex-mdwrap" style="display:none">
+    <summary>Markdown (select &amp; copy)</summary>
+    <textarea class="md-text" id="ex-md" readonly></textarea>
+  </details>
+</main>
+<footer>
+  Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+  <div class="ver">PMYC-Session-Export.html · v1.0</div>
+</footer>
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxOX6w8LPqXPVxMcyQGciFde1RP16FyGgBRunBTrqDu6rZ0qKbFvqFryDNSWKVhNo0M/exec";
+  var out=document.getElementById('ex-out'), statusEl=document.getElementById('ex-status'),
+      sel=document.getElementById('ex-sessions'), dateIn=document.getElementById('ex-date'),
+      actions=document.getElementById('ex-actions'), mdWrap=document.getElementById('ex-mdwrap'), mdText=document.getElementById('ex-md');
+  var currentMD='';
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+  function v(o,k){ return (o && o[k]!=null) ? String(o[k]).trim() : ''; }
+  function has(o,k){ return v(o,k)!==''; }
+
+  /* ---------- load the list of available sessions ---------- */
+  function loadDates(){
+    statusEl.textContent='Loading sessions…';
+    fetch(WEBAPP_URL+'?dates=1&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+      if(!d || !d.ok || !d.dates || !d.dates.length){ sel.innerHTML='<option value="">No sessions yet</option>'; statusEl.textContent='No sessions recorded yet.'; return; }
+      sel.innerHTML='';
+      d.dates.forEach(function(s){
+        var bits=[]; if(s.briefings) bits.push(s.briefings+' briefing'+(s.briefings>1?'s':''));
+        if(s.checkins) bits.push(s.checkins+' check'+(s.checkins>1?'s':'')); if(s.reviews) bits.push(s.reviews+' review'+(s.reviews>1?'s':''));
+        var o=document.createElement('option'); o.value=s.date; o.textContent=prettyDate(s.date)+'  —  '+bits.join(' · '); sel.appendChild(o);
+      });
+      statusEl.textContent='Pick a session, then Load.';
+      sel.value=d.dates[0].date; dateIn.value=d.dates[0].date; loadSession(d.dates[0].date);
+    }).catch(function(){ sel.innerHTML='<option value="">Couldn’t reach the sheet</option>'; statusEl.textContent='Couldn’t reach the sheet — check your connection and try again.'; });
+  }
+
+  function prettyDate(iso){
+    var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||''); if(!m) return iso||'';
+    var d=new Date(+m[1],+m[2]-1,+m[3]);
+    return d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  }
+
+  /* ---------- load + render one session ---------- */
+  function loadSession(date){
+    if(!date){ return; }
+    statusEl.textContent='Assembling '+prettyDate(date)+'…'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
+    fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+      if(!d || !d.ok){ statusEl.textContent='Couldn’t load that session.'; return; }
+      var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length;
+      if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
+      out.innerHTML = renderHTML(d);
+      currentMD = renderMD(d); mdText.value = currentMD;
+      statusEl.textContent = prettyDate(date)+' — '+total+' record'+(total>1?'s':'')+' assembled.';
+      actions.style.display='flex'; mdWrap.style.display='block';
+    }).catch(function(){ statusEl.textContent='Couldn’t reach the sheet — check your connection and try again.'; });
+  }
+
+  /* ---------- HTML render ---------- */
+  function kv(pairs){
+    var r=''; pairs.forEach(function(p){ if(p[1]!=='' && p[1]!=null) r+='<dt>'+esc(p[0])+'</dt><dd>'+esc(p[1])+'</dd>'; });
+    return r ? '<dl class="kv">'+r+'</dl>' : '';
+  }
+  function para(label,text){ return text ? '<p class="para"><b>'+esc(label)+':</b> '+esc(text)+'</p>' : ''; }
+
+  function renderHTML(d){
+    var b=(d.briefings||[])[0]||null;
+    var h='<div class="sheet">';
+    h+='<div class="print-head"><span class="a">Aurora</span><span class="b">Sailing · PMYC</span></div>';
+    h+='<p class="sh-date">Session — '+esc(prettyDate(d.date))+'</p>';
+    var subBits=[]; if(b && has(b,'Group')) subBits.push(v(b,'Group'));
+    if(b && has(b,'Day-type')) subBits.push(v(b,'Day-type')); if(b && has(b,'Traffic')) subBits.push('traffic '+v(b,'Traffic'));
+    if(subBits.length) h+='<p class="sh-sub">'+esc(subBits.join(' · '))+'</p>';
+
+    // Conditions (from the briefing row)
+    if(b){
+      var wind=v(b,'Wind (kt)'); if(wind){ wind=wind+' kt'+(has(b,'Gust (kt)')?(' gusting '+v(b,'Gust (kt)')):'')+(has(b,'Direction')?(' from '+v(b,'Direction')):''); }
+      var cond=kv([
+        ['Wind', wind],
+        ['Air', has(b,'Air (°C)')?v(b,'Air (°C)')+' °C':''],
+        ['Water', has(b,'Water (°C)')?v(b,'Water (°C)')+' °C':''],
+        ['UV', v(b,'UV')],
+        ['Tide', v(b,'Tide')],
+        ['Rain', v(b,'Rain')],
+        ['Sun', (has(b,'Sunrise')||has(b,'Sunset'))?((v(b,'Sunrise')||'—')+' / '+(v(b,'Sunset')||'—')):''],
+        ['Day-type', v(b,'Day-type')],
+        ['Traffic', v(b,'Traffic')]
+      ]);
+      if(cond){ h+='<div class="block"><h3>Conditions</h3>'+cond;
+        if(has(b,'Flags')){ h+='<p style="margin:8px 0 0">'+v(b,'Flags').split(/[;,]\s*/).map(function(x){ return x?'<span class="flag">'+esc(x)+'</span>':''; }).join('')+'</p>'; }
+        h+='</div>'; }
+    }
+
+    // Briefing
+    if(b){
+      h+='<div class="block"><h3>Briefing</h3>';
+      h+=kv([['Briefed by', v(b,'Briefed by')], ['Time', v(b,'Time')], ['Crew', v(b,'Crew')], ['Sections', v(b,'Count')||v(b,'Sections covered')]]);
+      h+=para('Notes', v(b,'Notes'));
+      h+='</div>';
+    }
+
+    // Powerboat checks
+    var cks=d.checkins||[];
+    if(cks.length){
+      h+='<div class="block"><h3>Powerboat checks</h3>';
+      cks.forEach(function(c){
+        h+='<div class="item"><p class="it-h">'+esc(v(c,'Boat')||'Boat')+' <span class="t">'+esc([v(c,'Operator'),v(c,'Time')].filter(Boolean).join(' · '))+'</span></p>';
+        h+=kv([['Call sign', v(c,'Call sign')], ['Group', v(c,'Group')], ['Declaration', v(c,'Declaration')], ['All required ticked', v(c,'All required ticked')], ['Not ticked', v(c,'Not ticked')]]);
+        h+=para('Faults / notes', v(c,'Faults / notes'));
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+
+    // Reviews
+    var rvs=d.reviews||[];
+    if(rvs.length){
+      h+='<div class="block"><h3>Review'+(rvs.length>1?'s':'')+'</h3>';
+      rvs.forEach(function(r){
+        h+='<div class="item"><p class="it-h">'+esc(v(r,'Activity')||'Session')+' <span class="t">'+esc([v(r,'Reviewed by'),v(r,'Time')].filter(Boolean).join(' · '))+'</span></p>';
+        h+=kv([['Group', v(r,'Group')], ['Crew / boats', v(r,'Crew / boats')]]);
+        h+=para('What we did', v(r,'What we did'));
+        h+=para('What went well', v(r,'What went well'));
+        h+=para('What could be improved', v(r,'What could be improved'));
+        h+=para('Action items', v(r,'Action items'));
+        h+=para('Specific achievements', v(r,'Specific achievements'));
+        var jelly=v(r,'Jellyfish'); if(jelly==='Seen'){ jelly='Seen'+(has(r,'Jellyfish detail')?(' — '+v(r,'Jellyfish detail')):''); }
+        h+=para('Jellyfish', jelly && jelly!=='None seen' ? jelly : '');
+        h+=para('Notes', v(r,'Notes'));
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+
+    h+='</div>';
+    return h;
+  }
+
+  /* ---------- Markdown render ---------- */
+  function mdLine(label,text){ return text ? '- **'+label+':** '+text+'\n' : ''; }
+  function renderMD(d){
+    var b=(d.briefings||[])[0]||null;
+    var m='# Session — '+prettyDate(d.date)+'\n';
+    var sub=[]; if(b && has(b,'Group')) sub.push(v(b,'Group')); if(b && has(b,'Day-type')) sub.push(v(b,'Day-type'));
+    if(sub.length) m+='\n_'+sub.join(' · ')+'_\n';
+
+    if(b){
+      m+='\n## Conditions\n';
+      var wind=v(b,'Wind (kt)'); if(wind){ wind=wind+' kt'+(has(b,'Gust (kt)')?(' gusting '+v(b,'Gust (kt)')):'')+(has(b,'Direction')?(' from '+v(b,'Direction')):''); }
+      m+=mdLine('Wind', wind);
+      m+=mdLine('Air', has(b,'Air (°C)')?v(b,'Air (°C)')+' °C':'');
+      m+=mdLine('Water', has(b,'Water (°C)')?v(b,'Water (°C)')+' °C':'');
+      m+=mdLine('UV', v(b,'UV'));
+      m+=mdLine('Tide', v(b,'Tide'));
+      m+=mdLine('Rain', v(b,'Rain'));
+      m+=mdLine('Sun', (has(b,'Sunrise')||has(b,'Sunset'))?((v(b,'Sunrise')||'—')+' / '+(v(b,'Sunset')||'—')):'');
+      m+=mdLine('Day-type', v(b,'Day-type'));
+      m+=mdLine('Traffic', v(b,'Traffic'));
+      m+=mdLine('Flags', v(b,'Flags'));
+
+      m+='\n## Briefing\n';
+      m+=mdLine('Briefed by', v(b,'Briefed by'));
+      m+=mdLine('Time', v(b,'Time'));
+      m+=mdLine('Crew', v(b,'Crew'));
+      m+=mdLine('Sections', v(b,'Count')||v(b,'Sections covered'));
+      m+=mdLine('Notes', v(b,'Notes'));
+    }
+
+    var cks=d.checkins||[];
+    if(cks.length){
+      m+='\n## Powerboat checks\n';
+      cks.forEach(function(c){
+        m+='\n### '+(v(c,'Boat')||'Boat')+ (v(c,'Operator')?(' — '+v(c,'Operator')):'') + (v(c,'Time')?(' ('+v(c,'Time')+')'):'') +'\n';
+        m+=mdLine('Call sign', v(c,'Call sign'));
+        m+=mdLine('Group', v(c,'Group'));
+        m+=mdLine('Declaration', v(c,'Declaration'));
+        m+=mdLine('All required ticked', v(c,'All required ticked'));
+        m+=mdLine('Not ticked', v(c,'Not ticked'));
+        m+=mdLine('Faults / notes', v(c,'Faults / notes'));
+      });
+    }
+
+    var rvs=d.reviews||[];
+    if(rvs.length){
+      m+='\n## Review'+(rvs.length>1?'s':'')+'\n';
+      rvs.forEach(function(r){
+        m+='\n### '+(v(r,'Activity')||'Session')+ (v(r,'Reviewed by')?(' — '+v(r,'Reviewed by')):'') + (v(r,'Time')?(' ('+v(r,'Time')+')'):'') +'\n';
+        m+=mdLine('Group', v(r,'Group'));
+        m+=mdLine('Crew / boats', v(r,'Crew / boats'));
+        m+=mdLine('What we did', v(r,'What we did'));
+        m+=mdLine('What went well', v(r,'What went well'));
+        m+=mdLine('What could be improved', v(r,'What could be improved'));
+        m+=mdLine('Action items', v(r,'Action items'));
+        m+=mdLine('Specific achievements', v(r,'Specific achievements'));
+        var jelly=v(r,'Jellyfish'); if(jelly==='Seen'){ jelly='Seen'+(has(r,'Jellyfish detail')?(' — '+v(r,'Jellyfish detail')):''); }
+        m+=mdLine('Jellyfish', (jelly && jelly!=='None seen') ? jelly : '');
+        m+=mdLine('Notes', v(r,'Notes'));
+      });
+    }
+    return m.replace(/\n{3,}/g,'\n\n').trim()+'\n';
+  }
+
+  /* ---------- wiring ---------- */
+  document.getElementById('ex-load').addEventListener('click', function(){ loadSession(dateIn.value || sel.value); });
+  sel.addEventListener('change', function(){ dateIn.value=sel.value; loadSession(sel.value); });
+  dateIn.addEventListener('change', function(){ loadSession(dateIn.value); });
+  document.getElementById('ex-pdf').addEventListener('click', function(){ window.print(); });
+  document.getElementById('ex-copy').addEventListener('click', function(){
+    var btn=this;
+    function done(ok){ btn.textContent = ok?'Copied ✓':'Select the text below'; setTimeout(function(){ btn.textContent='Copy markdown'; }, 1800); if(!ok){ mdWrap.open=true; mdText.focus(); mdText.select(); } }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(currentMD).then(function(){ done(true); }).catch(function(){ done(false); }); }
+    else { mdWrap.open=true; mdText.focus(); mdText.select(); try{ done(document.execCommand('copy')); }catch(e){ done(false); } }
+  });
+
+  loadDates();
+})();
+</script>
+</body>
+</html>

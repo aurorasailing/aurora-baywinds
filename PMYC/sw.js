@@ -14,12 +14,12 @@
  * Strategy: network-first for the shells, so a fresh deploy is picked up as soon
  * as there's signal; the cache is the offline fallback.
  *
- * WHEN YOU CHANGE EITHER APP: bump CACHE (e.g. v1.14 -> v1.15). On the next visit
+ * WHEN YOU CHANGE EITHER APP: bump CACHE (e.g. v1.16 -> v1.17). On the next visit
  * with signal, the new worker installs, drops the old cache, and phones get the
  * fresh copy. Without a bump, installed phones keep serving the old one.
  */
 
-var CACHE = 'pmyc-v1.14';
+var CACHE = 'pmyc-v1.16';
 
 var HUB_URL   = new URL('./index.html', self.location).href;
 var HUB_PATH  = new URL(HUB_URL).pathname;
