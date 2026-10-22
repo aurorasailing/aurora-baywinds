@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.10 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.11 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.10</div>
+  <div class="ver">PMYC-Session-Export.html · v1.11</div>
 </footer>
 <script>
 (function(){
@@ -410,6 +410,25 @@
     return svg+'</svg>';
   }
 
+  /* ---------- two mini northern-bay maps (session start & end), barbs at each station ---------- */
+  var BAY_VIEWBOX = "346 120 268 190";
+  var STATION_XY = { "RMYS":[479,160], "Fawkner":[448,230] };
+  var BAY_PATH = "M200.5,570.0 C200.1,563.0 226.8,560.5 238.0,546.7 C249.2,533.0 260.7,503.0 267.8,487.5 C274.9,472.0 286.7,468.7 280.7,453.5 C274.7,438.3 245.3,402.0 231.9,396.2 C218.5,390.4 212.3,412.2 200.5,418.5 C188.7,424.8 178.9,422.6 160.8,434.1 C142.7,445.6 115.9,487.5 92.1,487.5 C68.3,487.5 26.9,451.9 18.0,434.1 C9.1,416.3 26.2,396.1 38.6,380.7 C51.0,365.3 78.7,342.3 92.1,341.8 C105.5,341.3 107.3,385.0 118.8,377.7 C130.2,370.4 141.1,315.4 160.8,298.1 C180.5,280.8 206.6,288.4 237.2,273.9 C267.8,259.3 322.5,230.2 344.1,210.8 C365.7,191.4 354.9,166.3 367.0,157.4 C379.1,148.5 402.1,156.6 416.7,157.4 C431.3,158.2 444.6,161.7 454.9,162.2 C465.2,162.7 473.1,152.7 478.6,160.3 C484.1,167.9 483.4,194.5 487.7,207.9 C492.0,221.3 500.2,229.1 504.5,240.9 C508.8,252.7 502.9,269.2 513.7,278.7 C524.5,288.2 555.0,280.3 569.4,298.1 C583.8,315.9 595.8,363.6 600.0,385.5 C604.2,407.4 602.3,414.6 594.7,429.2 C587.1,443.8 565.2,460.3 554.2,472.9 C543.2,485.5 539.2,485.5 529.0,504.9 C518.8,524.3 510.6,568.0 493.1,589.4 C475.7,610.8 445.8,622.6 424.3,633.1 C402.8,643.6 380.6,651.4 364.0,652.5 C347.4,653.6 335.4,645.6 325.0,639.9 C314.6,634.2 310.9,626.6 301.4,618.5 C291.9,610.4 278.0,596.3 267.8,591.3 C257.6,586.3 251.5,591.9 240.3,588.4 C229.1,584.9 200.9,577.0 200.5,570.0 Z";
+  function bayMapSVG(wx, mode){
+    var inner='<path d="'+BAY_PATH+'" fill="#EEF1EC" stroke="#C5D0C8" stroke-width="1.4" opacity="0.9"/>';
+    var any=false;
+    wx.stations.forEach(function(st){
+      var xy=STATION_XY[shortStation(st.station)]; if(!xy) return;
+      var r = mode==='start' ? st.series[0] : st.series[st.series.length-1]; if(!r) return;
+      var deg=dirDeg(r.dir); if(deg==null) return; any=true;
+      inner+='<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="2.4" fill="#2E4057"/>';
+      inner+=barb(xy[0], xy[1], deg, r.spd);
+      inner+='<text x="'+xy[0]+'" y="'+(xy[1]+21)+'" text-anchor="middle" font-size="9" fill="#2E4057" font-family="sans-serif">'+esc(shortStation(st.station))+(r.spd==null?'':' '+Math.round(r.spd))+'</text>';
+    });
+    if(!any) return '';
+    return '<svg viewBox="'+BAY_VIEWBOX+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:#fff">'+inner+'</svg>';
+  }
+
   function renderHTML(d){
     var b=(d.briefings||[])[0]||null;
     var h='<div class="sheet">';
@@ -451,6 +470,13 @@
       var wprim=d.wx.stations[0];
       h+='<div class="block"><h3>Wind during the session</h3>';
       h+='<p class="para">'+esc(wprim.summary)+' <span style="color:var(--muted)">\u00b7 '+esc(wprim.station)+' \u00b7 '+esc(d.wx.startHHMM)+'\u2013'+esc(d.wx.endHHMM)+'</span></p>';
+      var mapS=bayMapSVG(d.wx,'start'), mapE=bayMapSVG(d.wx,'end');
+      if(mapS && mapE){
+        h+='<div style="display:flex;gap:10px;margin-top:8px">'
+          +'<div class="mapfit" style="flex:1;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+mapS+'<div style="font-size:11px;color:var(--muted);padding:4px 10px;background:#fff">Start \u00b7 '+esc(d.wx.startHHMM)+'</div></div>'
+          +'<div class="mapfit" style="flex:1;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+mapE+'<div style="font-size:11px;color:var(--muted);padding:4px 10px;background:#fff">End \u00b7 '+esc(d.wx.endHHMM)+'</div></div>'
+          +'</div>';
+      }
       h+='<div class="mapfit" style="margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+weatherSVG(d.wx,680)+'</div>';
       h+='<p style="font-size:11.5px;color:var(--muted);margin:5px 2px 0">Barbs point the way the wind came <b>from</b>, at 30-min steps \u00b7 half-barb 5 kt, full 10</p>';
       h+='</div>';
