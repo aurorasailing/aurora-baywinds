@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Review.html · v1.4 · 2026-10-20 -->
+<!-- Aurora Explorer · PMYC-Session-Review.html · v1.5 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -105,6 +105,7 @@
   <label class="dv-fld">What could be improved<textarea id="sr-improve" rows="3" placeholder="what to change next time"></textarea></label>
   <label class="dv-fld">Action items<textarea id="sr-actions" rows="3" placeholder="what to do before or at the next session, and who"></textarea></label>
   <label class="dv-fld">Specific achievements<textarea id="sr-achievements" rows="3" placeholder="milestones, firsts, sign-offs worth recording"></textarea></label>
+  <label class="dv-fld">Worth telling <span style="font-weight:400;color:var(--muted)">(for the write-up)</span><textarea id="sr-story" rows="2" placeholder="the bit that makes the story — a line someone said, the biggest adventure, a close call, a glorious wipe-out, a turning point"></textarea></label>
 
   <div class="dv-fld">Jellyfish
     <div class="seg" id="sr-jelly">
@@ -125,7 +126,7 @@
 <footer>
   Saved on this device and synced to the shared sheet when there's signal. One record per session.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Review.html · v1.4</div>
+  <div class="ver">PMYC-Session-Review.html · v1.5</div>
 </footer>
 <script>
 /* ===== Session review — offline-first, logs type:"review" to the sheet (same pattern as the briefing log) ===== */
@@ -175,18 +176,19 @@
     var did     = document.getElementById('sr-did').value.trim();
     var actions = document.getElementById('sr-actions').value.trim();
     var achievements = document.getElementById('sr-achievements').value.trim();
+    var story   = document.getElementById('sr-story').value.trim();
     var well    = document.getElementById('sr-well').value.trim();
     var improve = document.getElementById('sr-improve').value.trim();
     var notes   = document.getElementById('sr-notes').value.trim();
     var jdetail = document.getElementById('sr-jdetail').value.trim();
-    if(!did && !well && !improve && !actions && !achievements && !notes && jelly==='none'){
+    if(!did && !well && !improve && !actions && !achievements && !story && !notes && jelly==='none'){
       if(!confirm('Nothing recorded yet beyond the name. Log anyway?')) return;
     }
     var rec = {
       id:uuid(), type:'review', device:device, deviceTime:new Date().toLocaleString(),
       date:document.getElementById('sr-date').value||'', time:document.getElementById('sr-time').value||'', activity:document.getElementById('sr-activity').value.trim(), reviewedBy:by,
       group:grp, crew:document.getElementById('sr-crew').value.trim(),
-      did:did, wentWell:well, improve:improve, actions:actions, achievements:achievements,
+      did:did, wentWell:well, improve:improve, actions:actions, achievements:achievements, story:story,
       jellyfish:(jelly==='seen' ? 'Seen' : 'None seen'),
       jellyfishDetail:(jelly==='seen' ? jdetail : ''),
       notes:notes, status:'pending'

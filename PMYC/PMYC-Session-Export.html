@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.12 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.13 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.12</div>
+  <div class="ver">PMYC-Session-Export.html · v1.13</div>
 </footer>
 <script>
 (function(){
@@ -547,6 +547,7 @@
         h+=para('What could be improved', v(r,'What could be improved'));
         h+=para('Action items', v(r,'Action items'));
         h+=para('Specific achievements', v(r,'Specific achievements'));
+        h+=para('Worth telling', v(r,'Worth telling'));
         var jelly=v(r,'Jellyfish'); if(jelly==='Seen'){ jelly='Seen'+(has(r,'Jellyfish detail')?(' — '+v(r,'Jellyfish detail')):''); }
         h+=para('Jellyfish', jelly && jelly!=='None seen' ? jelly : '');
         h+=para('Notes', v(r,'Notes'));
@@ -636,6 +637,7 @@
         m+=mdLine('What could be improved', v(r,'What could be improved'));
         m+=mdLine('Action items', v(r,'Action items'));
         m+=mdLine('Specific achievements', v(r,'Specific achievements'));
+        m+=mdLine('Worth telling', v(r,'Worth telling'));
         var jelly=v(r,'Jellyfish'); if(jelly==='Seen'){ jelly='Seen'+(has(r,'Jellyfish detail')?(' — '+v(r,'Jellyfish detail')):''); }
         m+=mdLine('Jellyfish', (jelly && jelly!=='None seen') ? jelly : '');
         m+=mdLine('Notes', v(r,'Notes'));
