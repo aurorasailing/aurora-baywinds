@@ -15,7 +15,7 @@
  * WHEN YOU CHANGE EITHER APP: bump CACHE (e.g. v1.3 -> v1.4).
  */
 
-var CACHE = '1stvic-v1.3';
+var CACHE = '1stvic-v1.5';
 
 var HUB_URL   = new URL('./index.html', self.location).href;
 var HUB_PATH  = new URL(HUB_URL).pathname;
@@ -26,13 +26,17 @@ var HMAN_URL  = new URL('./manifest-hub.json', self.location).href;
 var HMAN_PATH = new URL(HMAN_URL).pathname;
 var MAN_URL   = new URL('./manifest.json', self.location).href;
 var MAN_PATH  = new URL(MAN_URL).pathname;
+var REV_URL   = new URL('./1stVic-Session-Review.html', self.location).href;   // session review tool
+var REV_PATH  = new URL(REV_URL).pathname;
+var OAS_URL   = new URL('./1stVic-OAS-Boating.html', self.location).href;      // OAS quick reference
+var OAS_PATH  = new URL(OAS_URL).pathname;
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(function (c) {
-      return c.addAll([HUB_URL, APP_URL, HMAN_URL, MAN_URL])
-              .catch(function () { return c.addAll([HUB_URL, APP_URL]); });
+      return c.addAll([HUB_URL, APP_URL, REV_URL, OAS_URL, HMAN_URL, MAN_URL])
+              .catch(function () { return c.addAll([HUB_URL, APP_URL, REV_URL, OAS_URL]); });
     })
   );
 });
@@ -55,6 +59,8 @@ self.addEventListener('fetch', function (e) {
   if      (url.pathname === APP_PATH)  key = APP_URL;                            // power-boat check
   else if (url.pathname === HUB_PATH)  key = HUB_URL;                            // hub (explicit index.html)
   else if (req.mode === 'navigate' && url.pathname === DIR_PATH) key = HUB_URL;  // hub (bare /1stVic/)
+  else if (url.pathname === REV_PATH)  key = REV_URL;                            // session review
+  else if (url.pathname === OAS_PATH)  key = OAS_URL;                            // OAS reference
   else if (url.pathname === HMAN_PATH) key = HMAN_URL;                           // hub manifest
   else if (url.pathname === MAN_PATH)  key = MAN_URL;                            // power-boat manifest
   if (!key) return;                                     // everything else: straight to network
