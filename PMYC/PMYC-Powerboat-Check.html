@@ -1,4 +1,4 @@
-<!-- PMYC-Powerboat-Check.html · v1.8 · 2026-10-20 -->
+<!-- PMYC-Powerboat-Check.html · v1.9 · 2026-10-20 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,7 +132,7 @@
 
   <a href="index.html" class="hubbar">← PMYC hub</a>
   <footer><span>Aurora Sailing</span><span>PMYC · Pre-Session Check</span></footer>
-  <div class="ver">PMYC-Powerboat-Check.html · v1.8</div>
+  <div class="ver">PMYC-Powerboat-Check.html · v1.9</div>
 </div>
 
 <script>
@@ -214,6 +214,11 @@ function requiredMissing(){
   });
   return miss;
 }
+function melbNow(){ var now=new Date(), p={}, t={};
+  new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).forEach(function(x){ p[x.type]=x.value; });
+  new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(now).forEach(function(x){ t[x.type]=x.value; });
+  return { date:p.year+'-'+p.month+'-'+p.day, time:t.hour+':'+t.minute };
+}
 function submit(){
   var warn=document.getElementById('warn'); warn.classList.add('hidden');
   var boat=boatSel.value, operator=document.getElementById('operator').value.trim();
@@ -227,8 +232,9 @@ function submit(){
   }
   var tickedList=[];
   GROUPS.forEach(function(g){ g.items.forEach(function(it){ if(ticks[g.key+'|'+it]) tickedList.push(it); }); });
+  var mn=melbNow();
   var rec={
-    id:uuid(), device:device, deviceTime:new Date().toLocaleString(),
+    id:uuid(), device:device, deviceTime:new Date().toLocaleString(), date:mn.date, time:mn.time,
     boat:boat, operator:operator, callSign:document.getElementById('callSign').value.trim(), group:grp,
     declaration:declChoice, allComplete: miss.length?'No':'Yes',
     ticked:tickedList.join('; '), notTicked:miss.join('; '),
