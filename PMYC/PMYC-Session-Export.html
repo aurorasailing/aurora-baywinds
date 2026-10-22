@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.3 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.4 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -72,6 +72,8 @@
 
   @page{ margin:16mm; }
   @media print{
+    html,body{height:auto !important;min-height:0 !important}
+    .mapfit{overflow:visible !important;break-inside:avoid}
     header,.controls,.actions,.status,details.md,footer,.hublink{display:none !important}
     body{background:#fff}
     main{max-width:none;margin:0;padding:0}
@@ -120,7 +122,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.3</div>
+  <div class="ver">PMYC-Session-Export.html · v1.4</div>
 </footer>
 <script>
 (function(){
@@ -364,7 +366,7 @@
       var wprim=d.wx.stations[0];
       h+='<div class="block"><h3>Wind during the session</h3>';
       h+='<p class="para">'+esc(wprim.summary)+' <span style="color:var(--muted)">\u00b7 '+esc(wprim.station)+' \u00b7 '+esc(d.wx.startHHMM)+'\u2013'+esc(d.wx.endHHMM)+'</span></p>';
-      h+='<div style="margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+weatherSVG(d.wx,680)+'</div>';
+      h+='<div class="mapfit" style="margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+weatherSVG(d.wx,680)+'</div>';
       h+='<p style="font-size:11.5px;color:var(--muted);margin:5px 2px 0">Barbs point the way the wind came <b>from</b>, at 30-min steps \u00b7 half-barb 5 kt, full 10</p>';
       h+='</div>';
     }
@@ -410,7 +412,7 @@
         h+='<div class="item"><p class="it-h">'+esc(v(g,'Mode')||'Track')+' <span class="t">'+esc([v(g,'Time'),v(g,'Source')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
         h+=kv([['Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':''], ['Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':''], ['Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':''], ['Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'']]);
         var svg=trackFromString(v(g,'Track'));
-        if(svg) h+='<div style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>';
+        if(svg) h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>';
         h+='</div>';
       });
       h+='</div>';
