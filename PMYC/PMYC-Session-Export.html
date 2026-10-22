@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.5 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.6 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -121,7 +121,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.5</div>
+  <div class="ver">PMYC-Session-Export.html · v1.6</div>
 </footer>
 <script>
 (function(){
@@ -171,6 +171,9 @@
         var win=sessionWindow(d);
         if(win){ buildWeatherTimed(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(date, wx); showReport(d, total, date); } }); }
       }
+      if(MAP_TOKEN && (d.gpx||[]).some(function(g){ return v(g,'Track') && !g.__mapimg; })){
+        Promise.all((d.gpx||[]).map(function(g){ if(g.__mapimg || !v(g,'Track')) return Promise.resolve(); return mapImageFor(v(g,'Track')).then(function(img){ if(img) g.__mapimg=img; }); })).then(function(){ showReport(d, total, date); });
+      }
     }).catch(function(){ statusEl.textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
   }
   function showReport(d, total, date){
@@ -202,7 +205,7 @@
     +".para{font-size:13.5px;margin:4px 0}.para b{color:var(--slate)}"
     +".flag{display:inline-block;background:#FFF6E6;color:#9A6700;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;margin:2px 4px 2px 0}"
     +".mapfit{break-inside:avoid;page-break-inside:avoid;margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden}"
-    +".mapfit svg{display:block;width:100%;height:auto}.sheet{padding:0;margin:0}";
+    +".mapfit svg,.mapfit img{display:block;width:100%;height:auto}.sheet{padding:0;margin:0}";
   function printReport(){
     if(!out.innerHTML.trim()){ return; }
     var html='<!doctype html><html><head><meta charset="utf-8"><title>PMYC session</title>'
@@ -241,6 +244,29 @@
       +'<circle cx="'+sx+'" cy="'+sy+'" r="5" fill="#39D455"/><circle cx="'+ex+'" cy="'+ey+'" r="5" fill="#F0792E"/></svg>';
   }
   function trackFromString(str){ if(!str) return ''; var thin=str.split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); }); if(thin.length<2) return ''; return trackSVG(thin,680,300); }
+
+  /* ---------- real-map track image (optional) ----------
+     Paste a free Mapbox public token below to swap the self-contained SVG track for map tiles with the
+     track drawn on top. Make one at mapbox.com (free), restrict it to your domain. Empty = keep the SVG. */
+  var MAP_TOKEN = "";                       // e.g. "pk.xxxxx"
+  var MAP_STYLE = "outdoors-v12";           // or "satellite-streets-v12" for aerial
+  function encodePolyline(pts){
+    var out='', lastLat=0, lastLon=0;
+    function enc(v){ v=v<0?~(v<<1):(v<<1); var s=''; while(v>=0x20){ s+=String.fromCharCode((0x20|(v&0x1f))+63); v=v>>5; } s+=String.fromCharCode(v+63); return s; }
+    for(var i=0;i<pts.length;i++){ var la=Math.round(pts[i][0]*1e5), lo=Math.round(pts[i][1]*1e5); out+=enc(la-lastLat)+enc(lo-lastLon); lastLat=la; lastLon=lo; }
+    return out;
+  }
+  function mapImageFor(trackStr){
+    if(!MAP_TOKEN) return Promise.resolve(null);
+    var pts=(trackStr||'').split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); });
+    if(pts.length<2) return Promise.resolve(null);
+    var enc=encodeURIComponent(encodePolyline(pts)), s=pts[0], e=pts[pts.length-1];
+    var overlay='pin-s+39d455('+s[1].toFixed(5)+','+s[0].toFixed(5)+'),pin-s+f0792e('+e[1].toFixed(5)+','+e[0].toFixed(5)+'),path-5+50e040-0.95('+enc+')';
+    var url='https://api.mapbox.com/styles/v1/mapbox/'+MAP_STYLE+'/static/'+overlay+'/auto/680x420@2x?padding=36&access_token='+encodeURIComponent(MAP_TOKEN);
+    return fetch(url).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+      .then(function(b){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ res(fr.result); }; fr.onerror=function(){ rej(); }; fr.readAsDataURL(b); }); })
+      .catch(function(){ return null; });
+  }
 
   /* ---------- session weather: wind from the bay stations (both), speed line + direction barbs ---------- */
   var WX_BASE="https://aurora-baywinds.gregor-fea.workers.dev";
@@ -454,8 +480,8 @@
       gps.forEach(function(g){
         h+='<div class="item"><p class="it-h">'+esc(v(g,'Mode')||'Track')+' <span class="t">'+esc([v(g,'Time'),v(g,'Source')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
         h+=kv([['Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':''], ['Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':''], ['Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':''], ['Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'']]);
-        var svg=trackFromString(v(g,'Track'));
-        if(svg) h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>';
+        if(g.__mapimg){ h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden"><img src="'+g.__mapimg+'" alt="Session track on a map" style="width:100%;display:block"><div style="font-size:11px;color:var(--muted);padding:4px 10px;background:#fff">\u00a9 Mapbox \u00a9 OpenStreetMap \u00b7 not for navigation</div></div>'; }
+        else { var svg=trackFromString(v(g,'Track')); if(svg) h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>'; }
         h+='</div>';
       });
       h+='</div>';
