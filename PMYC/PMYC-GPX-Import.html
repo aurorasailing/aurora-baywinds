@@ -1,0 +1,293 @@
+<!-- Aurora Explorer · PMYC-GPX-Import.html · v1.0 · 2026-10-22 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GPX Import — Port Melbourne · Aurora Explorer</title>
+<meta name="description" content="Upload a GPS track (GPX) from Waterspeed, Garmin, Strava or Google Earth. It reads distance, time and speed and files itself to the session by its own timestamps.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --navy:#0A1628; --green:#50E040; --green-b:#39D455; --slate:#2E4057; --ink:#1C2B3A;
+    --muted:#7A8A7E; --line:#E1E6E0; --seafoam:#E8EDE6; --harbour:#F5F7F4; --white:#fff;
+    --pad:20px;
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--harbour);line-height:1.6;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--pad);
+    padding-top:calc(12px + env(safe-area-inset-top,0));background:var(--white);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hublink{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}
+
+  main{max-width:680px;margin:0 auto;padding:18px var(--pad) 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.05;margin:6px 0 10px;color:var(--navy)}
+  .principle{background:var(--seafoam);border-left:4px solid var(--green-b);border-radius:0 12px 12px 0;padding:13px 16px;margin:4px 0 2px;font-size:15.5px;color:var(--slate)}
+  .principle b{color:var(--navy);font-weight:700}
+
+  .dv-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;font-size:13.5px;font-weight:600;margin:16px 0 2px;background:#EEF1EC;color:var(--slate)}
+  .dv-status .dot{width:9px;height:9px;border-radius:50%;background:#9aa;flex:0 0 auto}
+  .dv-status.s-ok{background:#EAF8EA;color:#227A2E} .dv-status.s-ok .dot{background:var(--green-b)}
+  .dv-status.s-wait{background:#FFF6E6;color:#9A6700} .dv-status.s-wait .dot{background:#E7B84B}
+  .dv-status.s-off{background:#EDEAE4;color:var(--muted)} .dv-status.s-off .dot{background:#9aa}
+
+  .drop{margin:16px 0 4px;border:2px dashed var(--line);border-radius:16px;background:#fff;padding:22px 16px;text-align:center}
+  .drop.over{border-color:var(--green-b);background:#F4FBF3}
+  .drop p{margin:6px 0;color:var(--slate);font-size:14.5px}
+  .pick-btn{display:inline-block;margin-top:4px;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:12px 18px;cursor:pointer}
+  input[type=file]{display:none}
+
+  .preview{display:none;margin:14px 0 2px}
+  .preview.show{display:block}
+  .track-wrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 12px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:0 0 6px}
+  .stat{background:var(--seafoam);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .stat .l{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700}
+  .stat .n{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;color:var(--navy);margin-top:1px}
+  .stat .u{font-size:12px;color:var(--muted);font-weight:400}
+  .meta{font-size:13px;color:var(--muted);margin:2px 2px 6px}
+
+  .lbl{display:block;font-size:13px;font-weight:700;color:var(--slate);margin:14px 0 0}
+  .gseg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+  .gseg button{padding:12px 8px;border:1px solid var(--line);border-radius:11px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--slate);cursor:pointer}
+  .gseg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  .dv-log{display:block;width:100%;margin:18px 0 2px;padding:15px;background:var(--green);color:var(--navy);font-family:'Syne',sans-serif;font-weight:800;font-size:16px;border:none;border-radius:14px;cursor:pointer;box-shadow:0 4px 14px rgba(80,224,64,.28)}
+  .dv-log:disabled{opacity:.5;box-shadow:none;cursor:default}
+  .dv-warn{background:#FDECEC;border-left:4px solid #C21020;border-radius:0 10px 10px 0;padding:11px 14px;margin:10px 0;font-size:14px;color:#8f1f14}
+  .dv-warn.hidden{display:none}
+  .dv-devrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 4px;font-size:13px;color:var(--muted)}
+  .dv-ghost{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+  .dv-recent{margin:2px 0 8px}
+  .dv-rec{display:flex;align-items:center;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13.5px}
+  .dv-rec .who{flex:1;color:var(--navy);font-weight:600;min-width:0}
+  .dv-rec .when{color:var(--muted);font-size:12px;white-space:nowrap}
+  .dv-rec .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .dv-rec .chip.sy{background:#EAF8EA;color:#227A2E} .dv-rec .chip.pe{background:#FFF6E6;color:#9A6700}
+
+  footer{border-top:1px solid var(--line);padding:16px var(--pad);color:var(--muted);font-size:12.5px;text-align:center;margin-top:24px}
+  footer a{color:var(--green-b);text-decoration:none}
+  .ver{margin-top:8px;font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.04em;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="hublink" href="index.html">Hub ↑</a>
+</header>
+<main>
+  <span class="eyebrow">Port Melbourne Yacht Club</span>
+  <h1>GPX import</h1>
+  <div class="principle">Upload a GPS track from <b>Waterspeed, Garmin, Strava or Google Earth</b>. It reads distance, time, speed and course, and files itself to the session by the track's own timestamps — upload whenever suits.</div>
+
+  <div class="dv-status" id="g-status"><span class="dot"></span><span id="g-statusText">Starting…</span></div>
+
+  <div class="drop" id="g-drop">
+    <p><b>Drop a .gpx file here</b></p>
+    <p>or</p>
+    <button type="button" class="pick-btn" id="g-pick">Choose a GPX file</button>
+    <input type="file" id="g-file" accept=".gpx,application/gpx+xml,text/xml,application/xml">
+  </div>
+  <div class="dv-warn hidden" id="g-warn"></div>
+
+  <div class="preview" id="g-preview">
+    <div class="meta" id="g-meta"></div>
+    <div class="track-wrap" id="g-track"></div>
+    <div class="stats" id="g-stats"></div>
+    <label class="lbl">Mode <span style="color:#C21020">*</span>
+      <div class="gseg" id="g-mode">
+        <button type="button" data-v="Sailing">Sailing</button>
+        <button type="button" data-v="Powerboat">Powerboat</button>
+      </div>
+    </label>
+    <button type="button" class="dv-log" id="g-log" disabled>Log track</button>
+  </div>
+
+  <div class="dv-devrow"><span>This device: <b id="g-dev">—</b></span><button type="button" class="dv-ghost" id="g-rename">Rename</button></div>
+  <div class="dv-recent" id="g-recent"></div>
+</main>
+<footer>
+  The original file isn't kept — only the summary and a thinned track. Saved on this device and synced when there's signal.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+  <div class="ver">PMYC-GPX-Import.html · v1.0</div>
+</footer>
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxOX6w8LPqXPVxMcyQGciFde1RP16FyGgBRunBTrqDu6rZ0qKbFvqFryDNSWKVhNo0M/exec";
+  var MS2KT = 1.943844;
+
+  function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
+  function load(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+  var queue = load('pmyc_gpx_queue', []);
+  function save(){ localStorage.setItem('pmyc_gpx_queue', JSON.stringify(queue)); }
+  var device = localStorage.getItem('pmyc_device');
+  if(!device){ device = 'Device-' + Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device', device); }
+  var syncing=false, mode='', S=null;
+
+  /* ---------- Melbourne date/time of a Date ---------- */
+  function melbDate(d){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){ p[x.type]=x.value; }); return p.year+'-'+p.month+'-'+p.day; }
+  function melbTime(d){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(function(x){ t[x.type]=x.value; }); return t.hour+':'+t.minute; }
+  function pretty(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||''); if(!m) return iso||''; return new Date(+m[1],+m[2]-1,+m[3]).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+
+  /* ---------- GPX parse + stats + thin + render ---------- */
+  function parseGPX(text){
+    var xml=new DOMParser().parseFromString(text,'application/xml');
+    if(xml.getElementsByTagName('parsererror').length) throw new Error('That doesn\u2019t look like valid GPX.');
+    var tp=xml.getElementsByTagName('trkpt'); if(!tp.length) throw new Error('No track points in that file.');
+    var pts=[];
+    for(var i=0;i<tp.length;i++){ var lat=parseFloat(tp[i].getAttribute('lat')), lon=parseFloat(tp[i].getAttribute('lon'));
+      var tn=tp[i].getElementsByTagName('time')[0], t=tn?new Date(tn.textContent.trim()):null;
+      if(isFinite(lat)&&isFinite(lon)&&t&&!isNaN(t.getTime())) pts.push([lat,lon,t]); }
+    if(pts.length<2) throw new Error('That track has too few timed points.');
+    var g=xml.getElementsByTagName('gpx')[0], src=g?(g.getAttribute('creator')||''):'';
+    return { points:pts, source:src };
+  }
+  function hav(a,b){ var R=6371000, r=Math.PI/180, la1=a[0]*r, la2=b[0]*r, dla=(b[0]-a[0])*r, dlo=(b[1]-a[1])*r;
+    var h=Math.sin(dla/2)*Math.sin(dla/2)+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)*Math.sin(dlo/2);
+    return 2*R*Math.asin(Math.sqrt(h)); }
+  function dp(pts, eps){
+    if(pts.length<3) return pts.slice();
+    var keep=new Array(pts.length); keep[0]=keep[pts.length-1]=true; var stack=[[0,pts.length-1]];
+    function perp(p,a,b){ var dx=b[0]-a[0], dy=b[1]-a[1]; if(dx===0&&dy===0) return Math.hypot(p[0]-a[0],p[1]-a[1]);
+      var t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/(dx*dx+dy*dy); t=Math.max(0,Math.min(1,t));
+      return Math.hypot(p[0]-(a[0]+t*dx), p[1]-(a[1]+t*dy)); }
+    while(stack.length){ var s=stack.pop(), a=s[0], b=s[1], dmax=0, idx=-1;
+      for(var i=a+1;i<b;i++){ var d=perp(pts[i],pts[a],pts[b]); if(d>dmax){ dmax=d; idx=i; } }
+      if(dmax>eps && idx>-1){ keep[idx]=true; stack.push([a,idx]); stack.push([idx,b]); } }
+    var out=[]; for(var i=0;i<pts.length;i++) if(keep[i]) out.push(pts[i]); return out;
+  }
+  function computeStats(gpx){
+    var P=gpx.points, start=P[0][2], end=P[P.length-1][2], dist=0, seg=[];
+    for(var i=1;i<P.length;i++){ var d=hav(P[i-1],P[i]), dt=(P[i][2]-P[i-1][2])/1000; dist+=d; if(dt>0 && dt<120) seg.push(d/dt); }
+    var sm=[]; for(var i=0;i<seg.length;i++){ var w=seg.slice(i,i+3), s=0; for(var j=0;j<w.length;j++) s+=w[j]; sm.push(s/w.length); }
+    var mov=seg.filter(function(s){ return s>0.26; });
+    var latlon=P.map(function(p){ return [p[0],p[1]]; });
+    var thin=dp(latlon, 0.00004);
+    var lats=latlon.map(function(p){return p[0];}), lons=latlon.map(function(p){return p[1];});
+    return { date:melbDate(start), time:melbTime(start),
+      durationMin:Math.round((end-start)/60000),
+      distanceNm:dist/1852,
+      avgKt: mov.length?(mov.reduce(function(a,b){return a+b;},0)/mov.length)*MS2KT:0,
+      maxKt: sm.length?Math.max.apply(null,sm)*MS2KT:0,
+      thin:thin, source:gpx.source||'GPX', nPoints:P.length };
+  }
+  function trackSVG(thin,w,h){
+    var lats=thin.map(function(p){return p[0];}), lons=thin.map(function(p){return p[1];});
+    var minLo=Math.min.apply(null,lons), maxLa=Math.max.apply(null,lats);
+    var lat0=(Math.min.apply(null,lats)+maxLa)/2, k=Math.cos(lat0*Math.PI/180);
+    var X=thin.map(function(p){return (p[1]-minLo)*k;}), Y=thin.map(function(p){return (maxLa-p[0]);});
+    var ww=Math.max.apply(null,X)||1e-6, hh=Math.max.apply(null,Y)||1e-6, pad=14;
+    var sc=Math.min((w-2*pad)/ww,(h-2*pad)/hh), ox=(w-ww*sc)/2, oy=(h-hh*sc)/2;
+    var d='M'+X.map(function(x,i){return (x*sc+ox).toFixed(1)+','+(Y[i]*sc+oy).toFixed(1);}).join(' L');
+    var sx=(X[0]*sc+ox).toFixed(1), sy=(Y[0]*sc+oy).toFixed(1), ex=(X[X.length-1]*sc+ox).toFixed(1), ey=(Y[Y.length-1]*sc+oy).toFixed(1);
+    return '<svg viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">'
+      +'<rect width="'+w+'" height="'+h+'" fill="#0A1628"/>'
+      +'<path d="'+d+'" fill="none" stroke="#50E040" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'
+      +'<circle cx="'+sx+'" cy="'+sy+'" r="5" fill="#50E040"/><circle cx="'+ex+'" cy="'+ey+'" r="5" fill="#F0792E"/></svg>';
+  }
+
+  /* ---------- file handling ---------- */
+  var warnEl=document.getElementById('g-warn');
+  function warn(msg){ warnEl.textContent=msg; warnEl.classList.remove('hidden'); }
+  function clearWarn(){ warnEl.classList.add('hidden'); }
+
+  function handleFile(file){
+    clearWarn();
+    if(!file){ return; }
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        var gpx=parseGPX(String(r.result)); S=computeStats(gpx);
+        document.getElementById('g-meta').textContent = file.name+' · '+pretty(S.date)+' '+S.time+' · '+S.source;
+        document.getElementById('g-track').innerHTML = trackSVG(S.thin, 680, 300);
+        document.getElementById('g-stats').innerHTML =
+          stat('Distance', S.distanceNm.toFixed(2), 'NM')
+         +stat('Duration', String(S.durationMin), 'min')
+         +stat('Avg moving', S.avgKt.toFixed(1), 'kt')
+         +stat('Max', S.maxKt.toFixed(1), 'kt');
+        document.getElementById('g-preview').classList.add('show');
+        document.getElementById('g-log').disabled = (mode==='');
+        window.scrollTo({top:document.getElementById('g-preview').offsetTop-60,behavior:'smooth'});
+      }catch(err){ S=null; document.getElementById('g-preview').classList.remove('show'); warn(err.message||'Could not read that file.'); }
+    };
+    r.onerror=function(){ warn('Could not read that file.'); };
+    r.readAsText(file);
+  }
+  function stat(l,n,u){ return '<div class="stat"><div class="l">'+l+'</div><div class="n">'+n+' <span class="u">'+u+'</span></div></div>'; }
+
+  var fileIn=document.getElementById('g-file'), drop=document.getElementById('g-drop');
+  document.getElementById('g-pick').addEventListener('click', function(){ fileIn.click(); });
+  fileIn.addEventListener('change', function(){ handleFile(fileIn.files[0]); });
+  ['dragenter','dragover'].forEach(function(e){ drop.addEventListener(e,function(ev){ ev.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(e){ drop.addEventListener(e,function(ev){ ev.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function(ev){ var f=ev.dataTransfer && ev.dataTransfer.files[0]; if(f) handleFile(f); });
+
+  var modeEl=document.getElementById('g-mode');
+  modeEl.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; mode=b.getAttribute('data-v');
+    Array.prototype.forEach.call(modeEl.children,function(x){ x.classList.toggle('on', x===b); });
+    document.getElementById('g-log').disabled = !(S && mode); });
+
+  /* ---------- device + submit ---------- */
+  document.getElementById('g-dev').textContent = device;
+  document.getElementById('g-rename').addEventListener('click', function(){ var n=prompt('Name for this device (shows in the sheet):', device); if(n){ device=n.trim().slice(0,40); localStorage.setItem('pmyc_device',device); document.getElementById('g-dev').textContent=device; } });
+  document.getElementById('g-log').addEventListener('click', submit);
+
+  function submit(){
+    if(!S){ warn('Choose a GPX file first.'); return; }
+    if(!mode){ warn('Pick Sailing or Powerboat.'); return; }
+    clearWarn();
+    var rec={ id:uuid(), type:'gpx', device:device, deviceTime:new Date().toLocaleString(),
+      date:S.date, time:S.time, mode:mode,
+      distanceNm:S.distanceNm.toFixed(2), durationMin:String(S.durationMin),
+      avgKt:S.avgKt.toFixed(1), maxKt:S.maxKt.toFixed(1),
+      points:S.thin.map(function(p){ return p[0].toFixed(5)+','+p[1].toFixed(5); }).join(';'),
+      source:S.source, status:'pending' };
+    queue.unshift(rec); save();
+    // reset for the next file
+    S=null; mode=''; document.getElementById('g-preview').classList.remove('show');
+    Array.prototype.forEach.call(modeEl.children,function(x){ x.classList.remove('on'); });
+    document.getElementById('g-log').disabled=true; fileIn.value='';
+    render(); syncAll();
+  }
+
+  function syncOne(rec){
+    return fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+      .then(function(r){ return r.json(); }).then(function(d){ if(d&&d.ok) return true; throw 0; })
+      .catch(function(){ return fetch(WEBAPP_URL+'?verify='+encodeURIComponent(rec.id)).then(function(r){ return r.json(); }).then(function(d){ return !!(d&&d.exists); }).catch(function(){ return false; }); });
+  }
+  function syncAll(){
+    if(!WEBAPP_URL || !navigator.onLine || syncing){ render(); return; }
+    var pend=queue.filter(function(r){ return r.status!=='synced'; });
+    if(!pend.length){ render(); return; }
+    syncing=true; render();
+    (function next(i){ if(i>=pend.length){ syncing=false; render(); return; }
+      syncOne(pend[i]).then(function(ok){ if(ok){ pend[i].status='synced'; save(); } render(); next(i+1); }); })(0);
+  }
+  function render(){
+    var pend=queue.filter(function(r){ return r.status!=='synced'; }).length;
+    var s=document.getElementById('g-status'), t=document.getElementById('g-statusText'); s.className='dv-status';
+    if(!navigator.onLine){ s.classList.add('s-off'); t.textContent = pend?('Offline — '+pend+' track'+(pend>1?'s':'')+' waiting, will sync when back online.'):'Offline — ready. Tracks will sync when back online.'; }
+    else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
+    else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' track'+(pend>1?'s':'')+' waiting to sync.'; }
+    else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
+    else { t.textContent='Ready — drop in a GPX file.'; }
+    var rec=document.getElementById('g-recent'); if(!queue.length){ rec.innerHTML=''; return; } rec.innerHTML='';
+    queue.slice(0,8).forEach(function(r){ var row=document.createElement('div'); row.className='dv-rec'; var synced=r.status==='synced';
+      row.innerHTML='<span class="who"></span><span class="when"></span><span class="chip '+(synced?'sy':'pe')+'">'+(synced?'\u2713 Synced':'\u29D6 Pending')+'</span>';
+      row.querySelector('.who').textContent = pretty(r.date)+' \u00b7 '+(r.mode||'')+' \u00b7 '+r.distanceNm+' NM';
+      row.querySelector('.when').textContent = r.deviceTime; rec.appendChild(row); });
+  }
+  window.addEventListener('online', syncAll); window.addEventListener('offline', render);
+  setInterval(syncAll, 15000);
+  render(); syncAll();
+})();
+</script>
+</body>
+</html>
