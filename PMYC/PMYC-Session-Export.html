@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.9 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.10 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -84,6 +84,11 @@
     .print-head .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
     .block{break-inside:avoid}
   }
+  .gate{background:var(--seafoam);border:1px solid var(--line);border-radius:14px;padding:18px;margin:12px 0}
+  .gate-lead{font-size:14.5px;color:var(--slate);margin:0 0 12px}
+  .gate-lbl{display:block;font-size:12px;font-weight:700;color:var(--slate)}
+  .gate-lbl input{display:block;width:100%;max-width:320px;margin:6px 0 12px;padding:11px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+  .gate-err{color:#C21020;font-size:13px;margin:10px 2px 0;min-height:1em}
 </style>
 </head>
 <body>
@@ -94,6 +99,13 @@
 <main>
   <span class="eyebrow">Port Melbourne Yacht Club</span>
   <h1>Session export</h1>
+
+  <div class="gate" id="ex-gate" style="display:none">
+    <p class="gate-lead">These reports include names and notes, so they’re access-controlled.</p>
+    <label class="gate-lbl">Access key<input type="password" id="ex-key" autocomplete="current-password" placeholder="shared leader key"></label>
+    <button type="button" class="btn pdf" id="ex-unlock">Unlock</button>
+    <p class="gate-err" id="ex-gateerr"></p>
+  </div>
 
   <div class="controls">
     <div class="pick">
@@ -124,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.9</div>
+  <div class="ver">PMYC-Session-Export.html · v1.10</div>
 </footer>
 <script>
 (function(){
@@ -141,7 +153,8 @@
   /* ---------- load the list of available sessions ---------- */
   function loadDates(){
     statusEl.textContent='Loading sessions…';
-    fetch(WEBAPP_URL+'?dates=1&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+    fetch(WEBAPP_URL+'?dates=1&key='+encodeURIComponent(KEY)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+      if(d && d.error==='auth'){ authFail(); return; }
       if(!d || !d.ok || !d.dates || !d.dates.length){ sel.innerHTML='<option value="">No sessions yet</option>'; statusEl.textContent='No sessions recorded yet.'; return; }
       sel.innerHTML='';
       d.dates.forEach(function(s){
@@ -164,8 +177,8 @@
   function loadSession(date){
     if(!date){ return; }
     statusEl.textContent='Assembling '+prettyDate(date)+'\u2026'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
-    fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
-      if(!d || !d.ok){ statusEl.textContent='Couldn\u2019t load that session.'; return; }
+    fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&key='+encodeURIComponent(KEY)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+      if(!d || !d.ok){ if(d && d.error==='auth'){ authFail(); return; } statusEl.textContent='Couldn\u2019t load that session.'; return; }
       var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
       d.wx = weatherFromRows(d.weather||[]);               // saved trace if any — report never waits on the network
@@ -590,7 +603,15 @@
     else { mdWrap.open=true; mdText.focus(); mdText.select(); try{ done(document.execCommand('copy')); }catch(e){ done(false); } }
   });
 
-  loadDates();
+  /* ---------- access gate: a shared key is required to read the data ---------- */
+  var KEY = (function(){ try{ return localStorage.getItem('pmyc_read_key')||''; }catch(e){ return ''; } })();
+  var gateEl=document.getElementById('ex-gate'), controlsEl=document.querySelector('.controls'), gateErr=document.getElementById('ex-gateerr');
+  function showGate(msg){ gateEl.style.display='block'; controlsEl.style.display='none'; statusEl.style.display='none'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none'; gateErr.textContent=msg||''; var k=document.getElementById('ex-key'); k.value=''; k.focus(); }
+  function hideGate(){ gateEl.style.display='none'; controlsEl.style.display=''; statusEl.style.display=''; }
+  function authFail(){ try{ localStorage.removeItem('pmyc_read_key'); }catch(e){} KEY=''; showGate('That key wasn\u2019t recognised \u2014 try again.'); }
+  document.getElementById('ex-unlock').addEventListener('click', function(){ var v=(document.getElementById('ex-key').value||'').trim(); if(!v){ gateErr.textContent='Enter the access key.'; return; } KEY=v; try{ localStorage.setItem('pmyc_read_key', KEY); }catch(e){} hideGate(); loadDates(); });
+  document.getElementById('ex-key').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('ex-unlock').click(); } });
+  if(KEY){ loadDates(); } else { showGate(); }
 })();
 </script>
 </body>
