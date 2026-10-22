@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.0 · 2026-10-20 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.2 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -120,7 +120,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.0</div>
+  <div class="ver">PMYC-Session-Export.html · v1.2</div>
 </footer>
 <script>
 (function(){
@@ -142,7 +142,7 @@
       sel.innerHTML='';
       d.dates.forEach(function(s){
         var bits=[]; if(s.briefings) bits.push(s.briefings+' briefing'+(s.briefings>1?'s':''));
-        if(s.checkins) bits.push(s.checkins+' check'+(s.checkins>1?'s':'')); if(s.reviews) bits.push(s.reviews+' review'+(s.reviews>1?'s':''));
+        if(s.checkins) bits.push(s.checkins+' check'+(s.checkins>1?'s':'')); if(s.reviews) bits.push(s.reviews+' review'+(s.reviews>1?'s':'')); if(s.gpx) bits.push(s.gpx+' track'+(s.gpx>1?'s':''));
         var o=document.createElement('option'); o.value=s.date; o.textContent=prettyDate(s.date)+'  —  '+bits.join(' · '); sel.appendChild(o);
       });
       statusEl.textContent='Pick a session, then Load.';
@@ -162,12 +162,15 @@
     statusEl.textContent='Assembling '+prettyDate(date)+'…'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
     fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
       if(!d || !d.ok){ statusEl.textContent='Couldn’t load that session.'; return; }
-      var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length;
+      var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
-      out.innerHTML = renderHTML(d);
-      currentMD = renderMD(d); mdText.value = currentMD;
-      statusEl.textContent = prettyDate(date)+' — '+total+' record'+(total>1?'s':'')+' assembled.';
-      actions.style.display='flex'; mdWrap.style.display='block';
+      statusEl.textContent='Reading session weather…';
+      ensureWeather(d).then(function(){
+        out.innerHTML = renderHTML(d);
+        currentMD = renderMD(d); mdText.value = currentMD;
+        statusEl.textContent = prettyDate(date)+' — '+total+' record'+(total>1?'s':'')+' assembled'+(d.wx?', weather included':'')+'.';
+        actions.style.display='flex'; mdWrap.style.display='block';
+      });
     }).catch(function(){ statusEl.textContent='Couldn’t reach the sheet — check your connection and try again.'; });
   }
 
@@ -177,6 +180,98 @@
     return r ? '<dl class="kv">'+r+'</dl>' : '';
   }
   function para(label,text){ return text ? '<p class="para"><b>'+esc(label)+':</b> '+esc(text)+'</p>' : ''; }
+
+  function trackSVG(thin,w,hh){
+    var lats=thin.map(function(p){return p[0];}), lons=thin.map(function(p){return p[1];});
+    var minLo=Math.min.apply(null,lons), maxLa=Math.max.apply(null,lats);
+    var lat0=(Math.min.apply(null,lats)+maxLa)/2, k=Math.cos(lat0*Math.PI/180);
+    var X=thin.map(function(p){return (p[1]-minLo)*k;}), Y=thin.map(function(p){return (maxLa-p[0]);});
+    var ww=Math.max.apply(null,X)||1e-6, hgt=Math.max.apply(null,Y)||1e-6, pad=14;
+    var sc=Math.min((w-2*pad)/ww,(hh-2*pad)/hgt), ox=(w-ww*sc)/2, oy=(hh-hgt*sc)/2;
+    var dd='M'+X.map(function(x,i){return (x*sc+ox).toFixed(1)+','+(Y[i]*sc+oy).toFixed(1);}).join(' L');
+    var sx=(X[0]*sc+ox).toFixed(1), sy=(Y[0]*sc+oy).toFixed(1), ex=(X[X.length-1]*sc+ox).toFixed(1), ey=(Y[Y.length-1]*sc+oy).toFixed(1);
+    return '<svg viewBox="0 0 '+w+' '+hh+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">'
+      +'<rect width="'+w+'" height="'+hh+'" fill="#EEF1EC"/>'
+      +'<path d="'+dd+'" fill="none" stroke="#0A1628" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+      +'<circle cx="'+sx+'" cy="'+sy+'" r="5" fill="#39D455"/><circle cx="'+ex+'" cy="'+ey+'" r="5" fill="#F0792E"/></svg>';
+  }
+  function trackFromString(str){ if(!str) return ''; var thin=str.split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); }); if(thin.length<2) return ''; return trackSVG(thin,680,300); }
+
+  /* ---------- session weather: wind trace from the bay stations ---------- */
+  var WX_BASE="https://aurora-baywinds.gregor-fea.workers.dev";
+  var WX_STATIONS=[{id:95872,name:"Fawkner Beacon"},{id:95864,name:"RMYS \u00b7 St Kilda"}];
+  function num(x){ x=parseFloat(x); return isFinite(x)?x:null; }
+  function hhmmToMin(s){ var m=/^(\d{1,2}):(\d{2})/.exec(s||''); return m?(+m[1]*60+ +m[2]):null; }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function addDayCompact(ymd){ var y=+ymd.slice(0,4),mo=+ymd.slice(4,6),da=+ymd.slice(6,8); var dt=new Date(Date.UTC(y,mo-1,da)+86400000); return ''+dt.getUTCFullYear()+pad2(dt.getUTCMonth()+1)+pad2(dt.getUTCDate()); }
+  function keyFor(ymd,minutes){ var day=ymd; if(minutes>=1440){ day=addDayCompact(ymd); minutes-=1440; } return day+pad2(Math.floor(minutes/60))+pad2(minutes%60); }
+  function hhmmOfMin(minutes){ minutes=((minutes%1440)+1440)%1440; return pad2(Math.floor(minutes/60))+':'+pad2(minutes%60); }
+  function sessionWindow(d){
+    var ymd=(d.date||'').replace(/-/g,''); if(ymd.length!==8) return null;
+    var starts=[], ends=[];
+    (d.briefings||[]).forEach(function(b){ var m=hhmmToMin(b['Time']); if(m!=null) starts.push(m); });
+    (d.checkins||[]).forEach(function(c){ var m=hhmmToMin(c['Time']); if(m!=null) starts.push(m); });
+    (d.gpx||[]).forEach(function(g){ var m=hhmmToMin(g['Time']); if(m!=null){ starts.push(m); var dur=parseInt(g['Duration (min)'],10); if(isFinite(dur)) ends.push(m+dur); } });
+    (d.reviews||[]).forEach(function(r){ var m=hhmmToMin(r['Time']); if(m!=null) ends.push(m); });
+    if(!starts.length){ (d.reviews||[]).forEach(function(r){ var m=hhmmToMin(r['Time']); if(m!=null) starts.push(m); }); }
+    if(!starts.length) return null;
+    var start=Math.min.apply(null,starts);
+    var end=ends.length?Math.max.apply(null,ends):start+480;
+    if(end<=start) end=start+480; if(end>start+480) end=start+480;
+    return { ymd:ymd, startKey:keyFor(ymd,start), endKey:keyFor(ymd,end), startHHMM:hhmmOfMin(start), endHHMM:hhmmOfMin(end) };
+  }
+  function fetchStation(st,win){
+    return fetch(WX_BASE+'/'+st.id+'.json?_='+Date.now()).then(function(r){ return r.json(); }).then(function(j){
+      var data=(j&&(j.observations?j.observations.data:j.data))||[]; var pts=[];
+      for(var i=0;i<data.length;i++){ var o=data[i], k=String(o.local_date_time_full||'').slice(0,12);
+        if(k.length===12 && k>=win.startKey && k<=win.endKey){ pts.push({ key:k, hhmm:k.slice(8,10)+':'+k.slice(10,12), spd:num(o.wind_spd_kt), gust:num(o.gust_kt), dir:(o.wind_dir||'') }); } }
+      pts.sort(function(a,b){ return a.key<b.key?-1:(a.key>b.key?1:0); }); return { name:st.name, pts:pts };
+    }).catch(function(){ return { name:st.name, pts:[] }; });
+  }
+  function wxSummary(pts){
+    var spd=pts.map(function(p){return p.spd;}).filter(function(x){return x!=null;});
+    var gust=pts.map(function(p){return p.gust;}).filter(function(x){return x!=null;});
+    var dirs=pts.map(function(p){return p.dir;}).filter(Boolean);
+    var s=''; if(spd.length){ s+='Wind '+Math.min.apply(null,spd)+'\u2013'+Math.max.apply(null,spd)+' kt'; }
+    if(gust.length){ s+=(s?', ':'')+'gusting '+Math.max.apply(null,gust); }
+    if(dirs.length){ var a=dirs[0], b=dirs[dirs.length-1]; s+=(s?' \u00b7 ':'')+(a===b?a:(a+'\u2192'+b)); }
+    return s||'\u2014';
+  }
+  function buildWeather(win){
+    return Promise.all(WX_STATIONS.map(function(s){ return fetchStation(s,win); })).then(function(res){
+      res.sort(function(a,b){ return b.pts.length-a.pts.length; });
+      var best=res[0]; if(!best || best.pts.length<2) return null;
+      return { station:best.name, startHHMM:win.startHHMM, endHHMM:win.endHHMM, series:best.pts, summary:wxSummary(best.pts) };
+    });
+  }
+  function weatherFromRow(row){
+    if(!row) return null;
+    var series=String(row['Series']||'').split(';').map(function(s){ var a=s.split(','); var t=a[0]||''; return { hhmm:t.length>=4?(t.slice(0,2)+':'+t.slice(2,4)):t, spd:num(a[1]), gust:num(a[2]), dir:a[3]||'' }; }).filter(function(p){ return p.hhmm; });
+    if(series.length<2) return null;
+    return { station:row['Station']||'', startHHMM:row['Window start']||'', endHHMM:row['Window end']||'', series:series, summary:row['Summary']||wxSummary(series) };
+  }
+  function saveWeather(date,wx){
+    var series=wx.series.map(function(p){ return (p.hhmm||'').replace(':','')+','+(p.spd==null?'':p.spd)+','+(p.gust==null?'':p.gust)+','+(p.dir||''); }).join(';');
+    var rec={ type:'weather', id:'weather-'+date, date:date, station:wx.station, windowStart:wx.startHHMM, windowEnd:wx.endHHMM, series:series, summary:wx.summary, device:'export' };
+    try{ fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)}); }catch(e){}
+  }
+  function ensureWeather(d){
+    var saved=weatherFromRow((d.weather||[])[0]); if(saved){ d.wx=saved; return Promise.resolve(); }
+    var win=sessionWindow(d); if(!win) return Promise.resolve();
+    return buildWeather(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(d.date,wx); } }).catch(function(){});
+  }
+  function windChartSVG(series,w,h){
+    var pad={l:28,r:10,t:12,b:20};
+    var spd=series.map(function(p){return p.spd;}), gust=series.map(function(p){return p.gust;});
+    var vals=spd.concat(gust).filter(function(x){return x!=null;}); if(!vals.length) return '';
+    var ymax=Math.ceil((Math.max.apply(null,vals)+2)/5)*5||5, n=series.length;
+    function X(i){ return pad.l+(w-pad.l-pad.r)*(n<2?0.5:i/(n-1)); }
+    function Y(v){ return h-pad.b-(h-pad.t-pad.b)*(v/ymax); }
+    function poly(arr,color,wd){ var dd='',started=false; for(var i=0;i<arr.length;i++){ if(arr[i]==null) continue; dd+=(started?' L':'M')+X(i).toFixed(1)+','+Y(arr[i]).toFixed(1); started=true; } return dd?('<path d="'+dd+'" fill="none" stroke="'+color+'" stroke-width="'+wd+'" stroke-linejoin="round"/>'):''; }
+    var grid=''; for(var g=0;g<=ymax;g+=5){ var y=Y(g).toFixed(1); grid+='<line x1="'+pad.l+'" y1="'+y+'" x2="'+(w-pad.r)+'" y2="'+y+'" stroke="#E1E6E0"/><text x="'+(pad.l-4)+'" y="'+(+y+3)+'" text-anchor="end" font-size="9" fill="#7A8A7E" font-family="sans-serif">'+g+'</text>'; }
+    var xl='<text x="'+X(0).toFixed(1)+'" y="'+(h-6)+'" font-size="9" fill="#7A8A7E" font-family="sans-serif">'+series[0].hhmm+'</text><text x="'+X(n-1).toFixed(1)+'" y="'+(h-6)+'" text-anchor="end" font-size="9" fill="#7A8A7E" font-family="sans-serif">'+series[n-1].hhmm+'</text>';
+    return '<svg viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:#fff">'+grid+poly(gust,'#B9C2BA',1.5)+poly(spd,'#0A1628',2)+xl+'<text x="'+(w-pad.r)+'" y="11" text-anchor="end" font-size="8.5" fill="#7A8A7E" font-family="sans-serif">kt \u00b7 line wind, grey gust</text></svg>';
+  }
 
   function renderHTML(d){
     var b=(d.briefings||[])[0]||null;
@@ -214,6 +309,14 @@
       h+='</div>';
     }
 
+    // Wind during the session (trace)
+    if(d.wx && d.wx.series && d.wx.series.length){
+      h+='<div class="block"><h3>Wind during the session</h3>';
+      h+='<p class="para">'+esc(d.wx.summary)+' <span style="color:var(--muted)">\u00b7 '+esc(d.wx.station)+' \u00b7 '+esc(d.wx.startHHMM)+'\u2013'+esc(d.wx.endHHMM)+'</span></p>';
+      h+='<div style="margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+windChartSVG(d.wx.series,680,220)+'</div>';
+      h+='</div>';
+    }
+
     // Powerboat checks
     var cks=d.checkins||[];
     if(cks.length){
@@ -242,6 +345,20 @@
         var jelly=v(r,'Jellyfish'); if(jelly==='Seen'){ jelly='Seen'+(has(r,'Jellyfish detail')?(' — '+v(r,'Jellyfish detail')):''); }
         h+=para('Jellyfish', jelly && jelly!=='None seen' ? jelly : '');
         h+=para('Notes', v(r,'Notes'));
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+
+    // Tracks (GPX)
+    var gps=d.gpx||[];
+    if(gps.length){
+      h+='<div class="block"><h3>Track'+(gps.length>1?'s':'')+'</h3>';
+      gps.forEach(function(g){
+        h+='<div class="item"><p class="it-h">'+esc(v(g,'Mode')||'Track')+' <span class="t">'+esc([v(g,'Time'),v(g,'Source')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
+        h+=kv([['Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':''], ['Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':''], ['Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':''], ['Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'']]);
+        var svg=trackFromString(v(g,'Track'));
+        if(svg) h+='<div style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>';
         h+='</div>';
       });
       h+='</div>';
@@ -280,6 +397,13 @@
       m+=mdLine('Sections', v(b,'Count')||v(b,'Sections covered'));
       m+=mdLine('Notes', v(b,'Notes'));
     }
+      if(d.wx && d.wx.series && d.wx.series.length){
+        m+='\n## Wind during the session\n';
+        m+='- '+d.wx.summary+' ('+d.wx.station+', '+d.wx.startHHMM+'\u2013'+d.wx.endHHMM+')\n';
+        var ws=d.wx.series, step=Math.max(1,Math.floor(ws.length/6));
+        for(var wi=0;wi<ws.length;wi+=step){ var wp=ws[wi]; m+='  - '+wp.hhmm+': '+(wp.spd==null?'\u2014':wp.spd)+' kt'+(wp.gust!=null?(' g'+wp.gust):'')+(wp.dir?(' '+wp.dir):'')+'\n'; }
+      }
+
 
     var cks=d.checkins||[];
     if(cks.length){
@@ -311,6 +435,19 @@
         m+=mdLine('Jellyfish', (jelly && jelly!=='None seen') ? jelly : '');
         m+=mdLine('Notes', v(r,'Notes'));
       });
+    }
+    var gps=d.gpx||[];
+    if(gps.length){
+      m+='\n## Track'+(gps.length>1?'s':'')+'\n';
+      gps.forEach(function(g){
+        m+='\n### '+(v(g,'Mode')||'Track')+(v(g,'Time')?(' ('+v(g,'Time')+')'):'')+'\n';
+        m+=mdLine('Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':'');
+        m+=mdLine('Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':'');
+        m+=mdLine('Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':'');
+        m+=mdLine('Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'');
+        m+=mdLine('Source', v(g,'Source'));
+      });
+      m+='\n_Track map in the PDF export._\n';
     }
     return m.replace(/\n{3,}/g,'\n\n').trim()+'\n';
   }
