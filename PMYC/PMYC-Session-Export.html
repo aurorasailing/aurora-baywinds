@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.6 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.9 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -36,6 +36,8 @@
   .controls select,.controls input{padding:11px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
   .controls .pick{flex:1;min-width:200px}
   .status{font-size:13.5px;color:var(--muted);margin:10px 2px}
+  .pdf-note{display:none;font-size:12px;color:var(--muted);margin:7px 2px 0;line-height:1.5}
+  .pdf-note b{color:var(--slate)}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
   .btn{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;border:none;border-radius:12px;padding:12px 16px;cursor:pointer}
   .btn.pdf{background:var(--navy);color:#fff}
@@ -110,6 +112,7 @@
     <button type="button" class="btn pdf" id="ex-pdf">Save as PDF</button>
     <button type="button" class="btn copy" id="ex-copy">Copy markdown</button>
   </div>
+  <p class="pdf-note" id="ex-pdfnote">In the print dialog, choose <b>Save as PDF</b> (save it to disk). On macOS, <b>Open in Preview</b> can show a blank page — a known macOS quirk; the saved file opens correctly.</p>
 
   <div id="ex-out"></div>
 
@@ -121,7 +124,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.6</div>
+  <div class="ver">PMYC-Session-Export.html · v1.9</div>
 </footer>
 <script>
 (function(){
@@ -171,7 +174,7 @@
         var win=sessionWindow(d);
         if(win){ buildWeatherTimed(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(date, wx); showReport(d, total, date); } }); }
       }
-      if(MAP_TOKEN && (d.gpx||[]).some(function(g){ return v(g,'Track') && !g.__mapimg; })){
+      if((d.gpx||[]).some(function(g){ return v(g,'Track') && !g.__mapimg; })){
         Promise.all((d.gpx||[]).map(function(g){ if(g.__mapimg || !v(g,'Track')) return Promise.resolve(); return mapImageFor(v(g,'Track')).then(function(img){ if(img) g.__mapimg=img; }); })).then(function(){ showReport(d, total, date); });
       }
     }).catch(function(){ statusEl.textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
@@ -181,6 +184,7 @@
     currentMD = renderMD(d); mdText.value = currentMD;
     statusEl.textContent = prettyDate(date)+' \u2014 '+total+' record'+(total>1?'s':'')+' assembled'+(d.wx?', weather included':'')+'.';
     actions.style.display='flex'; mdWrap.style.display='block';
+    var _pn=document.getElementById('ex-pdfnote'); if(_pn) _pn.style.display='block';
   }
   function buildWeatherTimed(win){
     return Promise.race([ buildWeather(win), new Promise(function(res){ setTimeout(function(){ res(null); }, 8000); }) ]);
@@ -245,11 +249,11 @@
   }
   function trackFromString(str){ if(!str) return ''; var thin=str.split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); }); if(thin.length<2) return ''; return trackSVG(thin,680,300); }
 
-  /* ---------- real-map track image (optional) ----------
-     Paste a free Mapbox public token below to swap the self-contained SVG track for map tiles with the
-     track drawn on top. Make one at mapbox.com (free), restrict it to your domain. Empty = keep the SVG. */
-  var MAP_TOKEN = "";                       // e.g. "pk.xxxxx"
-  var MAP_STYLE = "outdoors-v12";           // or "satellite-streets-v12" for aerial
+  /* ---------- real-map track image ----------
+     The track is drawn on Mapbox tiles, but the Mapbox token is NOT in this file — it lives in the
+     Cloudflare Worker, which adds it server-side (see MAP_PROXY). Nothing here for secret scanners to flag. */
+  var MAP_PROXY = "https://aurora-baywinds.gregor-fea.workers.dev/map";   // worker route that injects the token
+  var MAP_STYLE = "outdoors-v12";           // or "satellite-streets-v12" for aerial           // or "satellite-streets-v12" for aerial
   function encodePolyline(pts){
     var out='', lastLat=0, lastLon=0;
     function enc(v){ v=v<0?~(v<<1):(v<<1); var s=''; while(v>=0x20){ s+=String.fromCharCode((0x20|(v&0x1f))+63); v=v>>5; } s+=String.fromCharCode(v+63); return s; }
@@ -257,13 +261,12 @@
     return out;
   }
   function mapImageFor(trackStr){
-    if(!MAP_TOKEN) return Promise.resolve(null);
     var pts=(trackStr||'').split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); });
     if(pts.length<2) return Promise.resolve(null);
     var enc=encodeURIComponent(encodePolyline(pts)), s=pts[0], e=pts[pts.length-1];
     var overlay='pin-s+39d455('+s[1].toFixed(5)+','+s[0].toFixed(5)+'),pin-s+f0792e('+e[1].toFixed(5)+','+e[0].toFixed(5)+'),path-5+50e040-0.95('+enc+')';
-    var url='https://api.mapbox.com/styles/v1/mapbox/'+MAP_STYLE+'/static/'+overlay+'/auto/680x420@2x?padding=36&access_token='+encodeURIComponent(MAP_TOKEN);
-    return fetch(url).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+    var mb='https://api.mapbox.com/styles/v1/mapbox/'+MAP_STYLE+'/static/'+overlay+'/auto/680x420@2x?padding=36';
+    return fetch(MAP_PROXY+'?u='+encodeURIComponent(mb)).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
       .then(function(b){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ res(fr.result); }; fr.onerror=function(){ rej(); }; fr.readAsDataURL(b); }); })
       .catch(function(){ return null; });
   }
