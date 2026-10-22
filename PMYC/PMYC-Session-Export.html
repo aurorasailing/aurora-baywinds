@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.4 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.5 · 2026-10-22 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -72,7 +72,6 @@
 
   @page{ margin:16mm; }
   @media print{
-    html,body{height:auto !important;min-height:0 !important}
     .mapfit{overflow:visible !important;break-inside:avoid}
     header,.controls,.actions,.status,details.md,footer,.hublink{display:none !important}
     body{background:#fff}
@@ -122,7 +121,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.4</div>
+  <div class="ver">PMYC-Session-Export.html · v1.5</div>
 </footer>
 <script>
 (function(){
@@ -161,22 +160,66 @@
   /* ---------- load + render one session ---------- */
   function loadSession(date){
     if(!date){ return; }
-    statusEl.textContent='Assembling '+prettyDate(date)+'…'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
+    statusEl.textContent='Assembling '+prettyDate(date)+'\u2026'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
     fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
-      if(!d || !d.ok){ statusEl.textContent='Couldn’t load that session.'; return; }
+      if(!d || !d.ok){ statusEl.textContent='Couldn\u2019t load that session.'; return; }
       var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
-      statusEl.textContent='Reading session weather…';
-      ensureWeather(d).then(function(){
-        out.innerHTML = renderHTML(d);
-        currentMD = renderMD(d); mdText.value = currentMD;
-        statusEl.textContent = prettyDate(date)+' — '+total+' record'+(total>1?'s':'')+' assembled'+(d.wx?', weather included':'')+'.';
-        actions.style.display='flex'; mdWrap.style.display='block';
-      });
-    }).catch(function(){ statusEl.textContent='Couldn’t reach the sheet — check your connection and try again.'; });
+      d.wx = weatherFromRows(d.weather||[]);               // saved trace if any — report never waits on the network
+      showReport(d, total, date);
+      if(!d.wx){                                           // first export: fetch live wind in the background, then refresh + save
+        var win=sessionWindow(d);
+        if(win){ buildWeatherTimed(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(date, wx); showReport(d, total, date); } }); }
+      }
+    }).catch(function(){ statusEl.textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
+  }
+  function showReport(d, total, date){
+    out.innerHTML = renderHTML(d);
+    currentMD = renderMD(d); mdText.value = currentMD;
+    statusEl.textContent = prettyDate(date)+' \u2014 '+total+' record'+(total>1?'s':'')+' assembled'+(d.wx?', weather included':'')+'.';
+    actions.style.display='flex'; mdWrap.style.display='block';
+  }
+  function buildWeatherTimed(win){
+    return Promise.race([ buildWeather(win), new Promise(function(res){ setTimeout(function(){ res(null); }, 8000); }) ]);
   }
 
-  /* ---------- HTML render ---------- */
+  /* Print / Save-as-PDF by writing just the report into a clean off-screen document — avoids the whole app page's CSS and the macOS blank-page quirk. */
+  var PRINT_CSS = ":root{--navy:#0A1628;--green-b:#39D455;--slate:#2E4057;--ink:#1C2B3A;--muted:#7A8A7E;--line:#E1E6E0}"
+    +"*{box-sizing:border-box}@page{margin:16mm}"
+    +"html,body{margin:0;padding:0;background:#fff;color:var(--ink);font-family:'Lato',-apple-system,system-ui,sans-serif;line-height:1.55;font-size:13px;-webkit-print-color-adjust:exact;print-color-adjust:exact}"
+    +".print-head{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;border-bottom:2px solid var(--navy);padding-bottom:6px}"
+    +".print-head .a{font-family:'Syne',sans-serif;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.02em}"
+    +".print-head .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}"
+    +".sh-date{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--navy);margin:0 0 2px}"
+    +".sh-sub{font-size:13px;color:var(--muted);margin:0 0 6px}"
+    +".block{margin:16px 0 0;break-inside:avoid;page-break-inside:avoid}"
+    +".block h3{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--green-b);margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid var(--line)}"
+    +".kv{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:13.5px;margin:0}"
+    +".kv dt{color:var(--muted)}.kv dd{margin:0;color:var(--ink)}"
+    +".item{padding:9px 0;border-top:1px solid var(--line)}.item:first-of-type{border-top:none}"
+    +".item .it-h{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--navy);margin:0 0 4px}"
+    +".item .it-h .t{color:var(--muted);font-weight:400;font-size:12.5px;margin-left:6px}"
+    +".para{font-size:13.5px;margin:4px 0}.para b{color:var(--slate)}"
+    +".flag{display:inline-block;background:#FFF6E6;color:#9A6700;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700;margin:2px 4px 2px 0}"
+    +".mapfit{break-inside:avoid;page-break-inside:avoid;margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden}"
+    +".mapfit svg{display:block;width:100%;height:auto}.sheet{padding:0;margin:0}";
+  function printReport(){
+    if(!out.innerHTML.trim()){ return; }
+    var html='<!doctype html><html><head><meta charset="utf-8"><title>PMYC session</title>'
+      +'<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">'
+      +'<style>'+PRINT_CSS+'</style></head><body>'+out.innerHTML+'</body></html>';
+    var ifr=document.createElement('iframe');
+    ifr.setAttribute('aria-hidden','true');
+    ifr.style.cssText='position:fixed;left:-9999px;top:0;width:900px;height:1200px;border:0';
+    document.body.appendChild(ifr);
+    var doc=ifr.contentWindow.document; doc.open(); doc.write(html); doc.close();
+    setTimeout(function(){
+      try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }
+      catch(e){ try{ window.print(); }catch(_){} }
+      setTimeout(function(){ try{ ifr.parentNode.removeChild(ifr); }catch(e){} }, 1500);
+    }, 600);
+  }
+
   function kv(pairs){
     var r=''; pairs.forEach(function(p){ if(p[1]!=='' && p[1]!=null) r+='<dt>'+esc(p[0])+'</dt><dd>'+esc(p[1])+'</dd>'; });
     return r ? '<dl class="kv">'+r+'</dl>' : '';
@@ -510,7 +553,7 @@
   document.getElementById('ex-load').addEventListener('click', function(){ loadSession(dateIn.value || sel.value); });
   sel.addEventListener('change', function(){ dateIn.value=sel.value; loadSession(sel.value); });
   dateIn.addEventListener('change', function(){ loadSession(dateIn.value); });
-  document.getElementById('ex-pdf').addEventListener('click', function(){ window.print(); });
+  document.getElementById('ex-pdf').addEventListener('click', printReport);
   document.getElementById('ex-copy').addEventListener('click', function(){
     var btn=this;
     function done(ok){ btn.textContent = ok?'Copied ✓':'Select the text below'; setTimeout(function(){ btn.textContent='Copy markdown'; }, 1800); if(!ok){ mdWrap.open=true; mdText.focus(); mdText.select(); } }
