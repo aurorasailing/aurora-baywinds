@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-Session-Export.html · v1.1 · 2026-10-23 · session-window end = review time; load retry + stale-guard; robust to missing data -->
+<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-Session-Export.html · v1.2 · 2026-10-23 · drops a stale saved weather window and refetches with the corrected one -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -141,7 +141,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px">1st Victorian Sea Scouts · Albert Park Lake · built with <a href="https://aurorasailing.com.au">Aurora Sailing</a></div>
-  <div class="ver">1stVic-Session-Export.html · v1.1</div>
+  <div class="ver">1stVic-Session-Export.html · v1.2</div>
 </footer>
 <script>
 (function(){
@@ -196,9 +196,10 @@
       var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
       d.wx = weatherFromRows(d.weather||[]);               // saved trace if any — report never waits on the network
-      showReport(d, total, date);
       var win=sessionWindow(d);
-      if(!d.wx && win){                                    // first export: fetch live wind in the background, then refresh + save
+      if(d.wx && win && d.wx.endHHMM !== win.endHHMM){ d.wx=null; }   // a trace saved against a stale window → drop it and refetch with the corrected one
+      showReport(d, total, date);
+      if(!d.wx && win){                                    // no (usable) saved trace: fetch live wind in the background, then refresh + save
         buildWeatherTimed(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(date, wx); showReport(d, total, date); } });
       }
       if(win){                                             // all northern-bay stations for the two maps — live, export-only; any without window data drop off
