@@ -1,0 +1,87 @@
+<!-- Aurora Sailing · PMYC/Season.html · v1.0 · 2026-10-23 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Start of Season · Aurora Sailing</title>
+<meta name="description" content="Start-of-season and maintenance boat checks for PMYC — X3, RS Quest and the power boats — and the season-check export.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--harbour:#F5F7F4;--white:#fff;--ink:#1C2B3A}
+  *{box-sizing:border-box} html,body{margin:0}
+  html{padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--harbour);line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--white)}
+  .brand{display:flex;align-items:baseline;gap:7px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hublink{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  main{flex:1;width:100%;max-width:480px;margin:0 auto;padding:20px 18px 10px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.08;margin:5px 0 10px;color:var(--navy)}
+  .lead{font-size:15px;color:var(--slate);margin:0 0 6px}
+  .links{display:flex;flex-direction:column;gap:11px}
+  .card{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:15px 16px;text-decoration:none;transition:border-color .12s,transform .04s}
+  .card:active{transform:scale(.995)} .card:hover{border-color:var(--green-b)}
+  .card .ic{flex:0 0 40px;height:40px;border-radius:11px;background:var(--seafoam);display:flex;align-items:center;justify-content:center}
+  .card .ic svg{width:22px;height:22px;stroke:var(--slate);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .card.go .ic{background:var(--green)} .card.go .ic svg{stroke:var(--navy)}
+  .card .tx{flex:1;min-width:0}
+  .card .t{display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--navy)}
+  .card .s{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+  .card .ar{flex:0 0 auto;color:var(--muted);font-size:18px}
+  .card.soon{opacity:.6;cursor:default;pointer-events:none}
+  .card.soon .ar{display:none}
+  .badge{font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+  .grp{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+  footer{border-top:1px solid var(--line);padding:16px 18px;color:var(--muted);font-size:12.5px;text-align:center;margin-top:20px}
+  footer a{color:var(--green-b);text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="hublink" href="index.html">Hub ↑</a>
+</header>
+<main>
+  <span class="eyebrow">Port Melbourne Yacht Club</span>
+  <h1>Start of season</h1>
+  <p class="lead">The bigger boat checks — one per boat type. Run them at the <b>start of season</b>, or any time during the season as a <b>maintenance check</b>, on any boat. They log to their own sheet, separate from the session record.</p>
+
+  <div class="grp">Boat checks</div>
+  <nav class="links" aria-label="Season checks">
+    <a class="card go" href="PMYC-X3-Season.html">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v15"/><path d="M12 5c4 2 7 5 8 10H12"/><path d="M6 21h12"/></svg></span>
+      <span class="tx"><span class="t">X3 boat check</span><span class="s">Hull · Boom · Mast · Sail — #1 to #5</span></span>
+      <span class="ar">→</span>
+    </a>
+    <a class="card soon">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v15"/><path d="M12 5c4 2 7 5 8 10H12"/><path d="M6 21h12"/></svg></span>
+      <span class="tx"><span class="t">RS Quest boat check</span><span class="s">full season / maintenance check — Aurora</span></span>
+      <span class="badge">Soon</span>
+    </a>
+    <a class="card soon">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 14h18l-2 5H5l-2-5z"/><path d="M5 14V7a2 2 0 0 1 2-2h7l3 4h-7"/></svg></span>
+      <span class="tx"><span class="t">Power boat inspection</span><span class="s">start-of-season inspection — by rego</span></span>
+      <span class="badge">Soon</span>
+    </a>
+  </nav>
+
+  <div class="grp">Off the water</div>
+  <nav class="links" aria-label="Reporting">
+    <a class="card soon">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6M9 15l3 3 3-3"/></svg></span>
+      <span class="tx"><span class="t">Season-check export</span><span class="s">the bigger checks as a PDF or markdown</span></span>
+      <span class="badge">Soon</span>
+    </a>
+  </nav>
+</main>
+<footer>
+  Start-of-season and maintenance checks for PMYC boats.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+</footer>
+</body>
+</html>

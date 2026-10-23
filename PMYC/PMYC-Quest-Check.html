@@ -1,0 +1,213 @@
+<!-- Aurora Explorer · PMYC-Quest-Check.html · v1.0 · 2026-10-23 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RS Quest pre-session check — Port Melbourne · Aurora Explorer</title>
+<meta name="description" content="Quick pre-launch check for the RS Quest at PMYC before a session. Works offline; logs to the shared sheet.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--ink:#1C2B3A;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--harbour:#F5F7F4;--white:#fff;--pad:20px}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--harbour);line-height:1.6;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--pad);padding-top:calc(12px + env(safe-area-inset-top,0));background:var(--white);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:baseline;gap:9px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .hublink{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}
+  main{max-width:680px;margin:0 auto;padding:18px var(--pad) 8px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,7vw,40px);line-height:1.05;margin:6px 0 10px;color:var(--navy)}
+  .principle{background:var(--seafoam);border-left:4px solid var(--green-b);border-radius:0 12px 12px 0;padding:13px 16px;margin:4px 0 2px;font-size:15px;color:var(--slate)}
+  .principle b{color:var(--navy)}
+  .status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;font-size:13.5px;font-weight:600;margin:16px 0 2px;background:#EEF1EC;color:var(--slate)}
+  .status .dot{width:9px;height:9px;border-radius:50%;background:#9aa;flex:0 0 auto}
+  .status.s-ok{background:#EAF8EA;color:#227A2E}.status.s-ok .dot{background:var(--green-b)}
+  .status.s-wait{background:#FFF6E6;color:#9A6700}.status.s-wait .dot{background:#E7B84B}
+  .status.s-off{background:#EDEAE4;color:var(--muted)}.status.s-off .dot{background:#9aa}
+  .fld{display:block;font-size:13px;font-weight:700;color:var(--slate);margin:14px 0 0}
+  .fld .req{color:#C21020}
+  .fld input{width:100%;box-sizing:border-box;padding:12px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);margin-top:5px}
+  .fld textarea{width:100%;box-sizing:border-box;padding:12px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);margin-top:5px;resize:vertical}
+  .seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .seg button{flex:1 1 auto;min-width:64px;padding:11px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--slate);cursor:pointer}
+  .seg button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .grp-h{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--green-b);margin:22px 0 2px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .chk{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;margin:7px 0;cursor:pointer;font-size:15px;color:var(--ink)}
+  .chk .bx{flex:0 0 22px;height:22px;border:2px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .chk .bx svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;visibility:hidden}
+  .chk.on{border-color:var(--green-b);background:#F4FBF3}
+  .chk.on .bx{background:var(--green-b);border-color:var(--green-b)}
+  .chk.on .bx svg{visibility:visible}
+  .decl{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:16px 0 2px;cursor:pointer;font-size:14.5px;color:var(--ink)}
+  .decl.on{border-color:var(--green-b);background:#F4FBF3}
+  .decl .bx{flex:0 0 22px;height:22px;border:2px solid var(--line);border-radius:6px}
+  .decl.on .bx{background:var(--green-b);border-color:var(--green-b)}
+  .log{display:block;width:100%;margin:18px 0 2px;padding:15px;background:var(--green);color:var(--navy);font-family:'Syne',sans-serif;font-weight:800;font-size:16px;border:none;border-radius:14px;cursor:pointer;box-shadow:0 4px 14px rgba(80,224,64,.28)}
+  .warn{background:#FDECEC;border-left:4px solid #C21020;border-radius:0 10px 10px 0;padding:11px 14px;margin:10px 0;font-size:14px;color:#8f1f14}
+  .warn.hidden{display:none}
+  .devrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 4px;font-size:13px;color:var(--muted)}
+  .ghost{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+  .recent{margin:2px 0 8px}
+  .rec{display:flex;align-items:center;gap:8px;padding:9px 2px;border-top:1px solid var(--line);font-size:13.5px}
+  .rec .who{flex:1;color:var(--navy);font-weight:600;min-width:0}
+  .rec .when{color:var(--muted);font-size:12px;white-space:nowrap}
+  .rec .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .rec .chip.sy{background:#EAF8EA;color:#227A2E}.rec .chip.pe{background:#FFF6E6;color:#9A6700}
+  footer{border-top:1px solid var(--line);padding:16px var(--pad);color:var(--muted);font-size:12.5px;text-align:center;margin-top:24px}
+  footer a{color:var(--green-b);text-decoration:none}
+  .ver{margin-top:8px;font-family:'Syne',sans-serif;font-size:11px;letter-spacing:.04em;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <a class="hublink" href="index.html">Hub ↑</a>
+</header>
+<main>
+  <span class="eyebrow">Pre-session · RS Quest</span>
+  <h1>RS Quest check</h1>
+  <div class="principle">A quick <b>pre-launch</b> check of the RS&nbsp;Quest before a session — hull, rig and safety. Works with no signal; syncs when there’s signal.</div>
+
+  <div class="status" id="status"><span class="dot"></span><span id="statusText">Starting…</span></div>
+
+  <label class="fld">Boat <span class="req">*</span>
+    <div class="seg" id="boat">
+      <button type="button" data-v="Aurora">Aurora</button>
+    </div>
+  </label>
+  <label class="fld">Group<div class="seg" id="group"></div></label>
+  <label class="fld">Checked by <span class="req">*</span><input type="text" id="by" placeholder="Your name" autocomplete="name"></label>
+  <label class="fld">Date<input type="date" id="date"></label>
+
+  <div id="groups"></div>
+
+  <label class="fld">Faults / notes<textarea id="faults" rows="2" placeholder="anything not right before launch"></textarea></label>
+
+  <div class="decl" id="decl"><span class="bx"></span><span>The boat is checked and good to launch.</span></div>
+
+  <button type="button" class="log" id="log">Log check</button>
+  <div class="warn hidden" id="warn"></div>
+
+  <div class="devrow"><span>This device: <b id="dev">—</b></span><button type="button" class="ghost" id="rename">Rename</button></div>
+  <div class="recent" id="recent"></div>
+</main>
+<footer>
+  Saved on this device and synced to the shared sheet when there's signal.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+  <div class="ver">PMYC-Quest-Check.html · v1.0</div>
+</footer>
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxOX6w8LPqXPVxMcyQGciFde1RP16FyGgBRunBTrqDu6rZ0qKbFvqFryDNSWKVhNo0M/exec";
+  var BOAT_TYPE = "RS Quest";
+  var GROUPS = [
+    { key:"Hull & foils", items:["Bung in","Cockpit & hull clear","Centreboard & elastic","Rudder & tiller — fitted and down-haul on","Hatch covers secure","Grab rails / handles sound"] },
+    { key:"Rig & sails", items:["Mast up & secure","Shrouds & forestay","Mainsail hoisted","Reefing system fitted & working","Jib set / furling works","Spinnaker halyard runs free (if used)","Gnav (kicker) set","Sheets & control lines run free","Outhaul & reefing lines"] },
+    { key:"Safety", items:["Masthead float fitted","Toe straps sound","Bailer / bucket","Painter attached","Crew buoyancy aids on","Wind within limits (reef if needed)"] }
+  ];
+
+  function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
+  function load(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+  var queue = load('pmyc_boatcheck_queue', []);
+  function save(){ localStorage.setItem('pmyc_boatcheck_queue', JSON.stringify(queue)); }
+  var device = localStorage.getItem('pmyc_device');
+  if(!device){ device='Device-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device',device); }
+  var syncing=false, ticks={}, boat='', grp='', declared=false;
+
+  // date default (Melbourne), editable
+  (function(){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;}); document.getElementById('date').value=p.year+'-'+p.month+'-'+p.day; })();
+
+  // boat + check-type segmented selectors
+  function seg(elId, set){ var el=document.getElementById(elId);
+    el.addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; set(b.getAttribute('data-v'));
+      Array.prototype.forEach.call(el.children, function(x){ x.classList.toggle('on', x===b); }); }); }
+  seg('boat', function(v){ boat=v; });
+  var CTX=(new URLSearchParams(location.search).get('ctx')||'').toLowerCase();
+  var GROUP_OPTS = CTX==='sos' ? ['SOS','Private'] : ['Sailing School','Port Explorers','Scouts','Other'];
+  var grpEl=document.getElementById('group');
+  grpEl.innerHTML = GROUP_OPTS.map(function(o){ return '<button type="button" data-v="'+o+'">'+o+'</button>'; }).join('');
+  seg('group', function(v){ grp=v; });
+  if(CTX==='sos'){ var _ey=document.querySelector('.eyebrow'); if(_ey) _ey.textContent='Session on the Sea · RS Quest'; }
+
+  // tick groups
+  var tick='<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>';
+  var g=document.getElementById('groups'); var html='';
+  GROUPS.forEach(function(grp){
+    html+='<div class="grp-h">'+grp.key+'</div>';
+    grp.items.forEach(function(it){ var id=grp.key+'|'+it;
+      html+='<div class="chk" data-id="'+id.replace(/"/g,'&quot;')+'"><span class="bx">'+tick+'</span><span>'+it+'</span></div>'; });
+  });
+  g.innerHTML=html;
+  g.addEventListener('click', function(e){ var row=e.target.closest('.chk'); if(!row) return; var id=row.getAttribute('data-id');
+    ticks[id]=!ticks[id]; row.classList.toggle('on', !!ticks[id]); });
+
+  var declEl=document.getElementById('decl');
+  declEl.addEventListener('click', function(){ declared=!declared; declEl.classList.toggle('on', declared); });
+
+  document.getElementById('dev').textContent=device;
+  document.getElementById('rename').addEventListener('click', function(){ var n=prompt('Name for this device (shows in the sheet):', device); if(n){ device=n.trim().slice(0,40); localStorage.setItem('pmyc_device',device); document.getElementById('dev').textContent=device; } });
+  document.getElementById('log').addEventListener('click', submit);
+
+  function allItems(){ var a=[]; GROUPS.forEach(function(grp){ grp.items.forEach(function(it){ a.push(grp.key+'|'+it); }); }); return a; }
+
+  function submit(){
+    var warn=document.getElementById('warn'); warn.classList.add('hidden');
+    var by=document.getElementById('by').value.trim();
+    if(!boat){ return fail(warn,'Pick the boat.'); }
+    if(!by){ return fail(warn,'Enter who did the check.'); }
+    var ticked=[], notTicked=[];
+    allItems().forEach(function(id){ var label=id.split('|')[1]; (ticks[id]?ticked:notTicked).push(label); });
+    if(!declared && notTicked.length){ if(!confirm(notTicked.length+' item'+(notTicked.length>1?'s':'')+' not ticked. Log the check anyway?')) return; }
+    var mn=(function(){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(function(x){t[x.type]=x.value;}); return t.hour+':'+t.minute; })();
+    var rec={ id:uuid(), type:'boatcheck', device:device, deviceTime:new Date().toLocaleString(),
+      date:document.getElementById('date').value||'', time:mn, boatType:BOAT_TYPE, boat:boat, sailor:by, group:grp,
+      allComplete: notTicked.length?'No':'Yes', ticked:ticked.join('; '), notTicked:notTicked.join('; '),
+      notes:document.getElementById('faults').value.trim(), declaration: declared?'Good to launch':'', status:'pending' };
+    queue.unshift(rec); save(); resetForm(); render(); syncAll();
+  }
+  function fail(warn,msg){ warn.textContent=msg; warn.classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
+  function resetForm(){
+    ticks={}; Array.prototype.forEach.call(document.querySelectorAll('.chk.on'), function(r){ r.classList.remove('on'); });
+    declared=false; declEl.classList.remove('on');
+    boat=''; Array.prototype.forEach.call(document.getElementById('boat').children, function(x){ x.classList.remove('on'); });
+    document.getElementById('faults').value='';
+    // keep checked-by, date and group for a quick next check
+  }
+
+  function syncOne(rec){
+    return fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+      .then(function(r){return r.json();}).then(function(d){ if(d&&d.ok) return true; throw 0; })
+      .catch(function(){ return fetch(WEBAPP_URL+'?verify='+encodeURIComponent(rec.id)).then(function(r){return r.json();}).then(function(d){ return !!(d&&d.exists); }).catch(function(){ return false; }); });
+  }
+  function syncAll(){
+    if(!navigator.onLine || syncing){ render(); return; }
+    var pend=queue.filter(function(r){return r.status!=='synced';}); if(!pend.length){ render(); return; }
+    syncing=true; render();
+    (function next(i){ if(i>=pend.length){ syncing=false; render(); return; }
+      syncOne(pend[i]).then(function(ok){ if(ok){ pend[i].status='synced'; save(); } render(); next(i+1); }); })(0);
+  }
+  function render(){
+    var pend=queue.filter(function(r){return r.status!=='synced';}).length;
+    var s=document.getElementById('status'), t=document.getElementById('statusText'); s.className='status';
+    if(!navigator.onLine){ s.classList.add('s-off'); t.textContent=pend?('Offline — '+pend+' check'+(pend>1?'s':'')+' waiting, will sync when back online.'):'Offline — all saved.'; }
+    else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
+    else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' check'+(pend>1?'s':'')+' waiting to sync.'; }
+    else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
+    else { t.textContent='Ready — pick a boat and start the check.'; }
+    var rec=document.getElementById('recent'); if(!queue.length){ rec.innerHTML=''; return; } rec.innerHTML='';
+    queue.slice(0,8).forEach(function(r){ var row=document.createElement('div'); row.className='rec'; var synced=r.status==='synced';
+      row.innerHTML='<span class="who"></span><span class="when"></span><span class="chip '+(synced?'sy':'pe')+'">'+(synced?'\u2713 Synced':'\u29D6 Pending')+'</span>';
+      row.querySelector('.who').textContent=r.boat+(r.group?' \u00b7 '+r.group:'')+(r.allComplete==='No'?' \u00b7 notes':'');
+      row.querySelector('.when').textContent=r.deviceTime; rec.appendChild(row); });
+  }
+  window.addEventListener('online', syncAll); window.addEventListener('offline', render);
+  setInterval(syncAll, 15000);
+  render(); syncAll();
+})();
+</script>
+</body>
+</html>
