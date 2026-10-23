@@ -1,0 +1,156 @@
+<!-- Aurora Sailing · PMYC/SOS.html · v1.0 · 2026-10-23 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Session on the Sea · Aurora Sailing</title>
+<meta name="description" content="Aurora Session on the Sea — the live bay wind, the safety briefing for the session record, and the session review.">
+<meta name="theme-color" content="#F5F7F4">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--navy:#0A1628;--green:#50E040;--green-b:#39D455;--slate:#2E4057;--muted:#7A8A7E;--line:#E1E6E0;--seafoam:#E8EDE6;--harbour:#F5F7F4;--white:#fff;--ink:#1C2B3A}
+  *{box-sizing:border-box} html,body{margin:0}
+  html{min-height:100%;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+  body{font-family:'Lato',-apple-system,system-ui,sans-serif;color:var(--ink);background:var(--harbour);line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;row-gap:6px}
+  .brand{display:flex;align-items:baseline;gap:7px;text-decoration:none}
+  .brand .a{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;color:var(--green)}
+  .brand .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .clock{font-family:'Syne',sans-serif;font-weight:600;font-size:12.5px;color:var(--muted)}
+  main{flex:1;width:100%;max-width:480px;margin:0 auto;padding:20px 18px 10px}
+  .eyebrow{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--green-b)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.08;margin:5px 0 16px;color:var(--navy)}
+  /* wind card */
+  .wind{background:var(--seafoam);border:1px solid var(--line);border-radius:18px;padding:16px 18px 18px;margin:0 0 18px;text-align:center}
+  .w-top{display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+  .w-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+  .w-dot.on{background:var(--green-b);box-shadow:0 0 0 3px rgba(57,212,85,.22)}
+  .w-main{margin:6px 0 2px;line-height:1}
+  .w-kt{font-family:'Syne',sans-serif;font-weight:800;font-size:58px;color:var(--navy)}
+  .w-unit{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--muted);margin-left:5px}
+  .w-sub{font-size:15.5px;color:var(--slate)}
+  .w-sub b{color:var(--navy)}
+  .w-src{font-size:12.5px;color:var(--muted);margin-top:7px}
+  /* link cards */
+  .links{display:flex;flex-direction:column;gap:11px}
+  .card{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:15px 16px;text-decoration:none;transition:border-color .12s,transform .04s}
+  .card:active{transform:scale(.995)}
+  .card:hover{border-color:var(--green-b)}
+  .card .ic{flex:0 0 40px;height:40px;border-radius:11px;background:var(--seafoam);display:flex;align-items:center;justify-content:center}
+  .card .ic svg{width:22px;height:22px;stroke:var(--slate);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .card.go .ic{background:var(--green);} .card.go .ic svg{stroke:var(--navy)}
+  .card .tx{flex:1;min-width:0}
+  .card .t{display:block;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--navy)}
+  .card .s{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+  .card .ar{flex:0 0 auto;color:var(--muted);font-size:18px}
+  .grp{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+  .grp.later{margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+  .later-note{font-size:12.5px;color:var(--muted);margin:10px 2px 0;line-height:1.5}
+  .later-note b{color:var(--slate)}
+  footer{border-top:1px solid var(--line);padding:16px 18px;color:var(--muted);font-size:12.5px;text-align:center;margin-top:20px}
+  footer a{color:var(--green-b);text-decoration:none}
+  /* add-to-home-screen — mobile & tablet only */
+  .install{display:none;width:100%;margin-top:18px;padding:14px 16px;border:0;border-radius:14px;
+    background:var(--navy);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:15.5px;
+    align-items:center;justify-content:center;gap:9px;cursor:pointer}
+  .install:active{transform:scale(.99)}
+  .install svg{width:19px;height:19px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .install.show{display:flex}
+  .install-tip{display:none;margin:9px 4px 0;font-size:13px;line-height:1.5;color:var(--slate)}
+  .install-tip b{color:var(--navy)}
+  .install-tip.show{display:block}
+  @media (hover:hover) and (pointer:fine){ .install.show{display:none!important} }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="https://aurorasailing.com.au"><span class="a">Aurora</span><span class="b">Sailing</span></a>
+  <span class="clock" id="clock">—</span>
+</header>
+<main>
+  <span class="eyebrow">Session on the Sea</span>
+  <h1>On the water today</h1>
+
+  <!-- live wind -->
+  <section class="wind" id="wind" aria-label="Live bay wind">
+    <div class="w-top"><span class="w-dot" id="w-dot"></span><span id="w-state">Connecting…</span></div>
+    <div class="w-main"><span class="w-kt" id="w-kt">··</span><span class="w-unit">kt</span></div>
+    <div class="w-sub" id="w-sub">reading the bay</div>
+    <div class="w-src" id="w-src">live from the Bureau, via Bay Winds</div>
+  </section>
+
+  <!-- SOS tools -->
+  <nav class="links" aria-label="SOS tools">
+    <a class="card go" href="PMYC-briefing.html?ctx=sos">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+      <span class="tx"><span class="t">Safety briefing</span><span class="s">today’s conditions — for the session record</span></span>
+      <span class="ar">→</span>
+    </a>
+    <a class="card" href="PMYC-Session-Review.html?ctx=sos">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h4"/></svg></span>
+      <span class="tx"><span class="t">Session review</span><span class="s">after the session — what happened, and what’s worth telling</span></span>
+      <span class="ar">→</span>
+    </a>
+  </nav>
+
+  <div class="grp later">Off the water</div>
+  <nav class="links" aria-label="Reporting">
+    <a class="card" href="PMYC-Session-Export.html">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6M9 15l3 3 3-3"/></svg></span>
+      <span class="tx"><span class="t">Session export</span><span class="s">a whole session as a PDF or markdown — needs signal</span></span>
+      <span class="ar">→</span>
+    </a>
+  </nav>
+  <p class="later-note">For the full log with the weather trace, export within <b>2 days</b> — after 3 the bay stations’ wind history ages out and the session’s wind can’t be recovered.</p>
+
+</main>
+<footer>
+  Wind is live from the Bureau of Meteorology via <b>Bay Winds</b> — Fawkner Beacon in the open bay, RMYS&nbsp;/&nbsp;St&nbsp;Kilda in a northerly lee, switched automatically.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+  <div style="margin-top:6px"><a href="PMYC-GPX-Import.html" style="color:var(--muted);font-size:11px;text-decoration:none">GPX import</a></div>
+</footer>
+<script>
+/* --- Melbourne clock ------------------------------------------------------- */
+const MELB_TZ='Australia/Melbourne';
+function tick(){ document.getElementById('clock').textContent=new Date().toLocaleString('en-AU',{timeZone:MELB_TZ,weekday:'short',hour:'numeric',minute:'2-digit',hour12:true}); }
+tick(); setInterval(tick,30000);
+
+/* --- live bay wind (same source + auto-switch as the RS Quest / briefing) --- */
+const DATA_BASE="https://aurora-baywinds.gregor-fea.workers.dev";
+const ST_SOUTH=95872;   // Fawkner Beacon — open bay
+const ST_NORTH=95864;   // RMYS / St Kilda — northerly lee
+const DIR_DEG={N:0,NNE:22.5,NE:45,ENE:67.5,E:90,ESE:112.5,SE:135,SSE:157.5,S:180,SSW:202.5,SW:225,WSW:247.5,W:270,WNW:292.5,NW:315,NNW:337.5};
+const PTS16=["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+function cardinal(d){ return d==null?"—":PTS16[Math.round(((d%360)+360)%360/22.5)%16]; }
+function pickReading(j){ const d=(j&&(j.observations?j.observations.data:j.data))||[]; return d.length?d[0]:null; }
+async function fetchOne(wmo){ try{ const r=await fetch(DATA_BASE+"/"+wmo+".json?_="+Date.now(),{cache:"no-store"}); if(!r.ok) return null; return pickReading(await r.json()); }catch(e){ return null; } }
+function ktOf(o){ return o&&o.wind_spd_kt!=null&&isFinite(o.wind_spd_kt)?Math.round(o.wind_spd_kt):null; }
+function gustOf(o){ return o&&o.gust_kt!=null&&isFinite(o.gust_kt)?Math.round(o.gust_kt):null; }
+function degOf(o){ if(!o) return null;
+  if(o.wind_dir_deg!=null && isFinite(o.wind_dir_deg)) return (((+o.wind_dir_deg)%360)+360)%360;
+  if(o.wind_dir && (o.wind_dir in DIR_DEG)) return DIR_DEG[o.wind_dir]; return null; }
+
+function setWind(s){
+  document.getElementById('w-dot').classList.toggle('on', s.live);
+  document.getElementById('w-state').textContent = s.live ? 'Live' : 'Wind offline';
+  document.getElementById('w-kt').textContent = (s.live && s.kt!=null) ? s.kt : '—';
+  document.getElementById('w-sub').innerHTML = s.live
+    ? ((s.gust!=null?('gusting <b>'+s.gust+'</b> · '):'')+'from <b>'+cardinal(s.deg)+'</b>')
+    : 'the live feed isn\u2019t reachable';
+  document.getElementById('w-src').textContent = s.live ? ('source: '+s.src) : 'live from the Bureau, via Bay Winds';
+}
+async function loadWind(){
+  const [fk, rm] = await Promise.all([fetchOne(ST_SOUTH), fetchOne(ST_NORTH)]);
+  if(!fk && !rm){ setWind({live:false}); return; }
+  const fkDeg = degOf(fk);
+  const north = fk ? (fkDeg!=null && (fkDeg>=315 || fkDeg<=45)) : !!rm;   // northerly -> read the lee
+  const active = north ? (rm||fk) : (fk||rm);
+  setWind({ live:true, kt:ktOf(active), gust:gustOf(active), deg:degOf(active),
+            src: (active===rm) ? 'RMYS · St Kilda (lee)' : 'Fawkner Beacon (open bay)' });
+}
+loadWind(); setInterval(loadWind, 2*60*1000);
+</script>
+</body>
+</html>
