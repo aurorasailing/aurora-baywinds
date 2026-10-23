@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-Session-Export.html · v1.2 · 2026-10-23 · drops a stale saved weather window and refetches with the corrected one -->
+<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-Session-Export.html · v1.3 · 2026-10-23 · exported PDF styled 1st Vic (masthead + scout-blue/gold print CSS) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -141,7 +141,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px">1st Victorian Sea Scouts · Albert Park Lake · built with <a href="https://aurorasailing.com.au">Aurora Sailing</a></div>
-  <div class="ver">1stVic-Session-Export.html · v1.2</div>
+  <div class="ver">1stVic-Session-Export.html · v1.3</div>
 </footer>
 <script>
 (function(){
@@ -223,10 +223,10 @@
   }
 
   /* Print / Save-as-PDF by writing just the report into a clean off-screen document — avoids the whole app page's CSS and the macOS blank-page quirk. */
-  var PRINT_CSS = ":root{--navy:#0A1628;--green-b:#39D455;--slate:#2E4057;--ink:#1C2B3A;--muted:#7A8A7E;--line:#E1E6E0}"
+  var PRINT_CSS = ":root{--navy:#3B4A86;--green-b:#3B4A86;--gold:#C8962B;--slate:#2E4057;--ink:#1A1C24;--muted:#6E7180;--line:#E6E6EA}"
     +"*{box-sizing:border-box}@page{margin:16mm}"
     +"html,body{margin:0;padding:0;background:#fff;color:var(--ink);font-family:'Lato',-apple-system,system-ui,sans-serif;line-height:1.55;font-size:13px;-webkit-print-color-adjust:exact;print-color-adjust:exact}"
-    +".print-head{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;border-bottom:2px solid var(--navy);padding-bottom:6px}"
+    +".print-head{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;border-bottom:2px solid var(--gold);padding-bottom:6px}"
     +".print-head .a{font-family:'Syne',sans-serif;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.02em}"
     +".print-head .b{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}"
     +".sh-date{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--navy);margin:0 0 2px}"
@@ -491,7 +491,7 @@
   function renderHTML(d){
     var b=(d.briefings||[])[0]||null;
     var h='<div class="sheet">';
-    h+='<div class="print-head"><span class="a">Aurora</span><span class="b">Sailing · PMYC</span></div>';
+    h+='<div class="print-head"><span class="a">1st Vic Sea Scouts</span><span class="b">Albert Park Lake · Session export</span></div>';
     h+='<p class="sh-date">Session — '+esc(prettyDate(d.date))+'</p>';
     var subBits=[]; if(b && has(b,'Group')) subBits.push(v(b,'Group'));
     if(b && has(b,'Day-type')) subBits.push(v(b,'Day-type')); if(b && has(b,'Traffic')) subBits.push('traffic '+v(b,'Traffic'));
