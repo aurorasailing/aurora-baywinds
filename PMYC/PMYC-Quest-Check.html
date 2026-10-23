@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Quest-Check.html · v1.0 · 2026-10-23 -->
+<!-- Aurora Explorer · PMYC-Quest-Check.html · v1.3 · 2026-10-23 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -98,16 +98,18 @@
 <footer>
   Saved on this device and synced to the shared sheet when there's signal.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Quest-Check.html · v1.0</div>
+  <div class="ver">PMYC-Quest-Check.html · v1.3</div>
 </footer>
 <script>
 (function(){
   var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxOX6w8LPqXPVxMcyQGciFde1RP16FyGgBRunBTrqDu6rZ0qKbFvqFryDNSWKVhNo0M/exec";
   var BOAT_TYPE = "RS Quest";
   var GROUPS = [
-    { key:"Hull & foils", items:["Bung in","Cockpit & hull clear","Centreboard & elastic","Rudder & tiller — fitted and down-haul on","Hatch covers secure","Grab rails / handles sound"] },
-    { key:"Rig & sails", items:["Mast up & secure","Shrouds & forestay","Mainsail hoisted","Reefing system fitted & working","Jib set / furling works","Spinnaker halyard runs free (if used)","Gnav (kicker) set","Sheets & control lines run free","Outhaul & reefing lines"] },
-    { key:"Safety", items:["Masthead float fitted","Toe straps sound","Bailer / bucket","Painter attached","Crew buoyancy aids on","Wind within limits (reef if needed)"] }
+    { key:"Hull & foils", items:["Cockpit & hull clear", "Centreboard & elastic", "Rudder & tiller — working and locking, tiller extension good", "Hatch covers secure", "Dolly in good condition"] },
+    { key:"Rig & sails", items:["Mast up & secure", "Mast foot nuts checked & taped (if stepped this session)", "Shrouds & forestay", "Mainsail in good condition", "Mainsail rigged correctly — outhaul, halyard, Cunningham (tack not hooked in unless reefed)", "Reefing system fitted & working", "Jib set / furling works", "Jib in good condition", "Spinnaker halyard runs free (if used)", "Spinnaker in good condition", "Gnav (kicker) working and set", "Sheets & control lines run free", "Outhaul & reefing lines"] },
+    { key:"Safety", items:["Masthead float fitted and looking secure", "Toe straps sound", "Rigged for conditions (reef if needed)"] },
+    { key:"Optional", req:false, items:["Flares checked (if carrying)", "Lights checked (if needed)", "Water bottle on board", "Compass attached", "Burgee set", "Speaker on board", "Phone Charged", "VHF Radio checked (if carrying)"] },
+    { key:"Crew (reminders)", req:false, items:["Sun screen applied", "Crew recorded (and Tower notified if needed)", "Crew dressed correctly", "Crew buoyancy aids on", "Crew briefed for the day"] }
   ];
 
   function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
@@ -159,13 +161,14 @@
     var by=document.getElementById('by').value.trim();
     if(!boat){ return fail(warn,'Pick the boat.'); }
     if(!by){ return fail(warn,'Enter who did the check.'); }
-    var ticked=[], notTicked=[];
-    allItems().forEach(function(id){ var label=id.split('|')[1]; (ticks[id]?ticked:notTicked).push(label); });
-    if(!declared && notTicked.length){ if(!confirm(notTicked.length+' item'+(notTicked.length>1?'s':'')+' not ticked. Log the check anyway?')) return; }
+    var ticked=[], notTicked=[], reqMiss=[];
+    GROUPS.forEach(function(grp){ grp.items.forEach(function(it){ var id=grp.key+'|'+it;
+      if(ticks[id]) ticked.push(it); else { notTicked.push(it); if(grp.req!==false) reqMiss.push(it); } }); });
+    if(!declared && reqMiss.length){ if(!confirm(reqMiss.length+' core item'+(reqMiss.length>1?'s':'')+' not ticked. Log the check anyway?')) return; }
     var mn=(function(){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(function(x){t[x.type]=x.value;}); return t.hour+':'+t.minute; })();
     var rec={ id:uuid(), type:'boatcheck', device:device, deviceTime:new Date().toLocaleString(),
       date:document.getElementById('date').value||'', time:mn, boatType:BOAT_TYPE, boat:boat, sailor:by, group:grp,
-      allComplete: notTicked.length?'No':'Yes', ticked:ticked.join('; '), notTicked:notTicked.join('; '),
+      allComplete: reqMiss.length?'No':'Yes', ticked:ticked.join('; '), notTicked:notTicked.join('; '),
       notes:document.getElementById('faults').value.trim(), declaration: declared?'Good to launch':'', status:'pending' };
     queue.unshift(rec); save(); resetForm(); render(); syncAll();
   }
