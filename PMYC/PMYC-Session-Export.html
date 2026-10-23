@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.13 · 2026-10-22 -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.14 · 2026-10-23 · robustness: session-window end = review time; stale-weather refetch; load retry + guard; tolerant of missing data -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.13</div>
+  <div class="ver">PMYC-Session-Export.html · v1.14</div>
 </footer>
 <script>
 (function(){
@@ -145,6 +145,7 @@
       sel=document.getElementById('ex-sessions'), dateIn=document.getElementById('ex-date'),
       actions=document.getElementById('ex-actions'), mdWrap=document.getElementById('ex-mdwrap'), mdText=document.getElementById('ex-md');
   var currentMD='';
+  var loadSeq=0;
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
   function v(o,k){ return (o && o[k]!=null) ? String(o[k]).trim() : ''; }
@@ -163,7 +164,8 @@
         var o=document.createElement('option'); o.value=s.date; o.textContent=prettyDate(s.date)+'  —  '+bits.join(' · '); sel.appendChild(o);
       });
       statusEl.textContent='Pick a session, then Load.';
-      sel.value=d.dates[0].date; dateIn.value=d.dates[0].date; loadSession(d.dates[0].date);
+      sel.value=d.dates[0].date; dateIn.value=d.dates[0].date;
+      setTimeout(function(){ loadSession(d.dates[0].date); }, 500);
     }).catch(function(){ sel.innerHTML='<option value="">Couldn’t reach the sheet</option>'; statusEl.textContent='Couldn’t reach the sheet — check your connection and try again.'; });
   }
 
@@ -176,15 +178,23 @@
   /* ---------- load + render one session ---------- */
   function loadSession(date){
     if(!date){ return; }
+    var myseq=++loadSeq;
     statusEl.textContent='Assembling '+prettyDate(date)+'\u2026'; out.innerHTML=''; actions.style.display='none'; mdWrap.style.display='none';
-    fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&key='+encodeURIComponent(KEY)+'&_='+Date.now()).then(function(r){ return r.json(); }).then(function(d){
+    function go(tries){
+      return fetch(WEBAPP_URL+'?session='+encodeURIComponent(date)+'&key='+encodeURIComponent(KEY)+'&_='+Date.now())
+        .then(function(r){ return r.json(); })
+        .catch(function(e){ if(tries>0) return new Promise(function(res){ setTimeout(res,700); }).then(function(){ return go(tries-1); }); throw e; });
+    }
+    go(1).then(function(d){
+      if(myseq!==loadSeq) return;
       if(!d || !d.ok){ if(d && d.error==='auth'){ authFail(); return; } statusEl.textContent='Couldn\u2019t load that session.'; return; }
       var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
       d.wx = weatherFromRows(d.weather||[]);               // saved trace if any — report never waits on the network
-      showReport(d, total, date);
       var win=sessionWindow(d);
-      if(!d.wx && win){                                    // first export: fetch live wind in the background, then refresh + save
+      if(d.wx && win && d.wx.endHHMM !== win.endHHMM){ d.wx=null; }   // a trace saved against a stale window → drop it and refetch with the corrected one
+      showReport(d, total, date);
+      if(!d.wx && win){                                    // no (usable) saved trace: fetch live wind in the background, then refresh + save
         buildWeatherTimed(win).then(function(wx){ if(wx){ d.wx=wx; saveWeather(date, wx); showReport(d, total, date); } });
       }
       if(win){                                             // all northern-bay stations for the two maps — live, export-only; any without window data drop off
@@ -194,7 +204,7 @@
       if((d.gpx||[]).some(function(g){ return v(g,'Track') && !g.__mapimg; })){
         Promise.all((d.gpx||[]).map(function(g){ if(g.__mapimg || !v(g,'Track')) return Promise.resolve(); return mapImageFor(v(g,'Track')).then(function(img){ if(img) g.__mapimg=img; }); })).then(function(){ showReport(d, total, date); });
       }
-    }).catch(function(){ statusEl.textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
+    }).catch(function(){ if(myseq===loadSeq) statusEl.textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
   }
   function showReport(d, total, date){
     out.innerHTML = renderHTML(d);
@@ -307,11 +317,15 @@
     (d.checkins||[]).forEach(function(c){ var m=hhmmToMin(c['Time']); if(m!=null) starts.push(m); });
     (d.gpx||[]).forEach(function(g){ var m=hhmmToMin(g['Time']); if(m!=null){ starts.push(m); var dur=parseInt(g['Duration (min)'],10); if(isFinite(dur)) ends.push(m+dur); } });
     (d.reviews||[]).forEach(function(r){ var m=hhmmToMin(r['Time']); if(m!=null) ends.push(m); });
-    if(!starts.length){ (d.reviews||[]).forEach(function(r){ var m=hhmmToMin(r['Time']); if(m!=null) starts.push(m); }); }
-    if(!starts.length) return null;
-    var start=Math.min.apply(null,starts);
-    var end=ends.length?Math.max.apply(null,ends):start+480;
-    if(end<=start) end=start+480; if(end>start+480) end=start+480;
+    var DEFAULT=180;                                   // a typical session, minutes
+    var start = starts.length ? Math.min.apply(null,starts) : null;
+    var end   = ends.length   ? Math.max.apply(null,ends)   : null;   // the review time is the end when nothing else gives one
+    if(start==null && end==null) return null;
+    if(start==null) start = end - DEFAULT;             // only an end (e.g. just a review) → back-date the start
+    if(end==null)   end   = start + DEFAULT;           // only a start → run a session forward
+    if(end<=start)  start = end - DEFAULT;             // collapsed → keep the end, start a session before it
+    if(end-start>600) start = end - 600;               // cap the fetch window at 10 h
+    if(start<0) start = 0;
     return { ymd:ymd, startKey:keyFor(ymd,start), endKey:keyFor(ymd,end), startHHMM:hhmmOfMin(start), endHHMM:hhmmOfMin(end) };
   }
   function fetchStation(st,win){
