@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-X3-Season.html · v1.0 · 2026-10-23 -->
+<!-- Aurora Explorer · PMYC-X3-Season.html · v1.1 · 2026-10-23 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -42,6 +42,13 @@
   .chk.on{border-color:var(--green-b);background:#F4FBF3}
   .chk.on .bx{background:var(--green-b);border-color:var(--green-b)}
   .chk.on .bx svg{visibility:visible}
+  .chk .lbl{flex:1;min-width:0}
+  .chk.has-note{border-color:#E7B84B;background:#FFFBF0}
+  .note-btn{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+  .note-btn svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .note-btn.on{background:#FFF1CC;border-color:#E7B84B} .note-btn.on svg{stroke:#9A6700}
+  .note-wrap{display:none;margin:-2px 2px 8px} .note-wrap.open{display:block}
+  .note-wrap input{width:100%;box-sizing:border-box;padding:10px 12px;font-size:15px;font-family:inherit;border:1px solid #E7B84B;border-radius:11px;background:#FFFBF0;color:var(--ink)}
   .decl{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:16px 0 2px;cursor:pointer;font-size:14.5px;color:var(--ink)}
   .decl.on{border-color:var(--green-b);background:#F4FBF3}
   .decl .bx{flex:0 0 22px;height:22px;border:2px solid var(--line);border-radius:6px}
@@ -92,9 +99,9 @@
   <label class="fld">Checked by <span class="req">*</span><input type="text" id="by" placeholder="Your name" autocomplete="name"></label>
   <label class="fld">Date<input type="date" id="date"></label>
 
+  <p style="font-size:12.5px;color:var(--muted);margin:16px 2px 2px">Tap an item to tick it OK — or the pencil to note a defect against it, in place.</p>
   <div id="groups"></div>
 
-  <label class="fld">Faults / defects<textarea id="faults" rows="2" placeholder="anything not right — be specific"></textarea></label>
   <label class="fld">Actions<textarea id="actions" rows="2" placeholder="what needs doing, and who"></textarea></label>
 
   <div class="decl" id="decl"><span class="bx"></span><span>I have checked each item above and recorded any defect.</span></div>
@@ -108,7 +115,7 @@
 <footer>
   Saved on this device and synced to the shared sheet when there's signal.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-X3-Season.html · v1.0</div>
+  <div class="ver">PMYC-X3-Season.html · v1.1</div>
 </footer>
 <script>
 (function(){
@@ -127,7 +134,8 @@
   function save(){ localStorage.setItem('pmyc_season_queue', JSON.stringify(queue)); }
   var device = localStorage.getItem('pmyc_device');
   if(!device){ device='Device-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device',device); }
-  var syncing=false, ticks={}, boat='', ctype='Start of season', declared=false;
+  var syncing=false, ticks={}, notes={}, boat='', ctype='Start of season', declared=false;
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   // date default (Melbourne), editable
   (function(){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;}); document.getElementById('date').value=p.year+'-'+p.month+'-'+p.day; })();
@@ -145,11 +153,19 @@
   GROUPS.forEach(function(grp){
     html+='<div class="grp-h">'+grp.key+'</div>';
     grp.items.forEach(function(it){ var id=grp.key+'|'+it;
-      html+='<div class="chk" data-id="'+id.replace(/"/g,'&quot;')+'"><span class="bx">'+tick+'</span><span>'+it+'</span></div>'; });
+      html+='<div class="chk" data-id="'+esc(id)+'"><span class="bx">'+tick+'</span><span class="lbl">'+esc(it)+'</span><button type="button" class="note-btn" aria-label="Note on '+esc(it)+'"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button></div>';
+      html+='<div class="note-wrap"><input type="text" placeholder="Note on '+esc(it)+'\u2026"></div>'; });
   });
   g.innerHTML=html;
-  g.addEventListener('click', function(e){ var row=e.target.closest('.chk'); if(!row) return; var id=row.getAttribute('data-id');
+  g.addEventListener('click', function(e){
+    var nb=e.target.closest('.note-btn');
+    if(nb){ var r=nb.closest('.chk'); var w=r.nextElementSibling; var open=w.classList.toggle('open'); if(open){ var i=w.querySelector('input'); if(i) i.focus(); } return; }
+    var row=e.target.closest('.chk'); if(!row) return; var id=row.getAttribute('data-id');
     ticks[id]=!ticks[id]; row.classList.toggle('on', !!ticks[id]); });
+  g.addEventListener('input', function(e){ var w=e.target.closest('.note-wrap'); if(!w) return;
+    var row=w.previousElementSibling; var id=row.getAttribute('data-id'); var v=e.target.value.trim();
+    if(v) notes[id]=v; else delete notes[id];
+    row.classList.toggle('has-note', !!v); var nb=row.querySelector('.note-btn'); if(nb) nb.classList.toggle('on', !!v); });
 
   var declEl=document.getElementById('decl');
   declEl.addEventListener('click', function(){ declared=!declared; declEl.classList.toggle('on', declared); });
@@ -168,19 +184,23 @@
     var ticked=[], notTicked=[];
     allItems().forEach(function(id){ var label=id.split('|')[1]; (ticks[id]?ticked:notTicked).push(label); });
     if(!declared && notTicked.length){ if(!confirm(notTicked.length+' item'+(notTicked.length>1?'s':'')+' not ticked. Log the check anyway?')) return; }
+    var faultList=[]; allItems().forEach(function(id){ if(notes[id]) faultList.push(id.split('|')[1]+': '+notes[id]); });
     var rec={ id:uuid(), type:'season', device:device, deviceTime:new Date().toLocaleString(),
       date:document.getElementById('date').value||'', boatType:BOAT_TYPE, boat:boat, checkType:ctype, checkedBy:by,
       allComplete: notTicked.length?'No':'Yes', ticked:ticked.join('; '), notTicked:notTicked.join('; '),
-      faults:document.getElementById('faults').value.trim(), actions:document.getElementById('actions').value.trim(),
+      faults:faultList.join('; '), actions:document.getElementById('actions').value.trim(),
       declaration: declared?'Checked & defects recorded':'', notes:'', status:'pending' };
     queue.unshift(rec); save(); resetForm(); render(); syncAll();
   }
   function fail(warn,msg){ warn.textContent=msg; warn.classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); }
   function resetForm(){
-    ticks={}; Array.prototype.forEach.call(document.querySelectorAll('.chk.on'), function(r){ r.classList.remove('on'); });
+    ticks={}; notes={};
+    Array.prototype.forEach.call(document.querySelectorAll('.chk'), function(r){ r.classList.remove('on'); r.classList.remove('has-note'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.note-btn'), function(b){ b.classList.remove('on'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.note-wrap'), function(w){ w.classList.remove('open'); var i=w.querySelector('input'); if(i) i.value=''; });
     declared=false; declEl.classList.remove('on');
     boat=''; Array.prototype.forEach.call(document.getElementById('boat').children, function(x){ x.classList.remove('on'); });
-    document.getElementById('faults').value=''; document.getElementById('actions').value='';
+    document.getElementById('actions').value='';
     // keep checked-by, date and check type for a quick next boat
   }
 
