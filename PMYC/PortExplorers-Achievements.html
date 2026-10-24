@@ -47,9 +47,14 @@
   details.stage>summary::-webkit-details-marker{display:none}
   details.stage>summary .tri{color:var(--muted);font-size:12px;transition:transform .15s}
   details.stage[open]>summary .tri{transform:rotate(90deg)}
-  details.stage>summary .count{margin-left:auto;font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:999px;padding:2px 9px;min-width:22px;text-align:center;visibility:hidden}
+  details.stage>summary .count{font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:999px;padding:2px 9px;min-width:22px;text-align:center;visibility:hidden}
   details.stage>summary .count.show{visibility:visible}
-  .phase-h{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 14px 4px;background:var(--wash)}
+  .phase-h{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:9px 14px 4px;background:var(--wash)}
+  .phase-h .phnm{flex:1 1 auto}
+  details.stage>summary .snm{flex:1 1 auto}
+  .allbtn{font:inherit;font-size:11px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:7px;padding:3px 9px;cursor:pointer;flex:0 0 auto}
+  .allbtn:hover{border-color:var(--navy);background:var(--navy);color:#fff}
+  .phase-h .allbtn{font-size:10px;padding:2px 8px;letter-spacing:0;text-transform:none}
   .req{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-top:1px solid var(--line);cursor:pointer}
   .req:hover{background:#FAFAFE}
   .req .box{width:22px;height:22px;border:2px solid var(--line);border-radius:6px;flex:0 0 auto;margin-top:1px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
@@ -217,6 +222,12 @@
   $('addName').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); $('addBtn').click(); }});
 
   /* build frameworks */
+  function setRow(row, on){
+    var key=row.getAttribute('data-k');
+    if(on){ ticks[key]=row.__desc; row.classList.add('on'); }
+    else { delete ticks[key]; row.classList.remove('on'); }
+  }
+
   (function build(){
     var host=$('frameworks');
     FRAMEWORKS.forEach(function(fw, fi){
@@ -224,25 +235,38 @@
       fw.stages.forEach(function(st, si){
         var d=document.createElement('details'); d.className='stage';
         var sum=document.createElement('summary');
-        sum.innerHTML='<span class="tri">\u25B6</span>'+st.name+'<span class="count" id="cnt-'+fi+'-'+si+'">0</span>';
+        sum.innerHTML='<span class="tri">\u25B6</span><span class="snm"></span><button type="button" class="allbtn" data-st="f'+fi+'-s'+si+'">All</button><span class="count" id="cnt-'+fi+'-'+si+'">0</span>';
+        sum.querySelector('.snm').textContent=st.name;
         d.appendChild(sum);
         st.phases.forEach(function(ph, pi){
-          var hh=document.createElement('div'); hh.className='phase-h'; hh.textContent=ph.phase; d.appendChild(hh);
+          var phk='f'+fi+'-s'+si+'-p'+pi;
+          var hh=document.createElement('div'); hh.className='phase-h';
+          hh.innerHTML='<span class="phnm"></span><button type="button" class="allbtn" data-ph="'+phk+'">All</button>';
+          hh.querySelector('.phnm').textContent=ph.phase; d.appendChild(hh);
           ph.items.forEach(function(txt, ii){
-            var key='f'+fi+'-s'+si+'-p'+pi+'-i'+ii;
+            var key=phk+'-i'+ii;
             var row=document.createElement('div'); row.className='req'; row.setAttribute('data-k',key);
+            row.setAttribute('data-st','f'+fi+'-s'+si); row.setAttribute('data-ph',phk);
+            row.__desc={framework:fw.short,stage:st.name,phase:ph.phase,requirement:txt};
             row.innerHTML='<span class="box"></span><span class="txt"></span>';
             row.querySelector('.txt').textContent=txt;
-            row.onclick=function(){
-              ticks[key]=ticks[key]?null:{framework:fw.short,stage:st.name,phase:ph.phase,requirement:txt};
-              if(!ticks[key]) delete ticks[key];
-              row.classList.toggle('on', !!ticks[key]); updateCounts();
-            };
+            row.onclick=function(){ setRow(row, !ticks[key]); updateCounts(); };
             d.appendChild(row);
           });
         });
         host.appendChild(d);
       });
+    });
+    /* "All" buttons: tick (or untick) every requirement in a stage or a section */
+    host.addEventListener('click', function(e){
+      var t=e.target; var b=(t&&t.classList&&t.classList.contains('allbtn'))?t:(t&&t.closest?t.closest('.allbtn'):null);
+      if(!b) return;
+      e.preventDefault(); e.stopPropagation();
+      var sel = b.hasAttribute('data-ph') ? '.req[data-ph="'+b.getAttribute('data-ph')+'"]' : '.req[data-st="'+b.getAttribute('data-st')+'"]';
+      var rows=document.querySelectorAll(sel);
+      var allOn=true; Array.prototype.forEach.call(rows,function(r){ if(!ticks[r.getAttribute('data-k')]) allOn=false; });
+      Array.prototype.forEach.call(rows,function(r){ setRow(r, !allOn); });
+      updateCounts();
     });
   })();
 
