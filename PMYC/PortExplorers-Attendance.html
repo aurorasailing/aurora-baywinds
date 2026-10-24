@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Port Explorers · Attendance</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23363187'/%3E%3Cpath d='M32 12l6 14h14l-11 9 4 15-13-9-13 9 4-15-11-9h14z' fill='%23F90D24'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
+<style>
+  :root{--red:#F90D24;--navy:#363187;--ink:#22214E;--green:#50E040;--paper:#FFFFFF;--wash:#F4F4FA;--line:#E2E2EF;--muted:#6E7180;--text:#1C1B33;}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:'DM Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:var(--wash);padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);-webkit-text-size-adjust:100%}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 48px}
+  header.ph{display:flex;align-items:center;gap:12px;padding:6px 2px 14px}
+  header.ph .mark{width:40px;height:40px;border-radius:9px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  header.ph .mark svg{width:26px;height:26px}
+  header.ph h1{font-size:19px;line-height:1.1;margin:0;color:var(--navy);font-weight:700;letter-spacing:.2px}
+  header.ph .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  a.back{display:inline-block;font-size:13px;color:var(--navy);text-decoration:none;margin:2px 2px 10px;font-weight:500}
+  a.back:hover{text-decoration:underline}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(34,33,78,.04)}
+  .grp{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500;margin-bottom:12px}
+  .grp .dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
+  label.fld{display:block;font-size:13px;color:var(--navy);font-weight:500;margin:14px 0 5px}
+  label.fld:first-of-type{margin-top:0}
+  input[type=text],input[type=date],textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}
+  textarea{min-height:76px;resize:vertical;line-height:1.4}
+  input:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(54,49,135,.12)}
+  .two{display:flex;gap:10px}.two>div{flex:1}
+  .ro{background:var(--wash);color:var(--muted);border-style:dashed}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px 0}
+
+  .listhead{display:flex;align-items:center;margin:0 2px 8px}
+  .listhead .t{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .listhead .q{margin-left:auto;display:flex;gap:6px}
+  .qbtn{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:5px 10px;cursor:pointer}
+  .qbtn:hover{border-color:var(--navy)}
+  .prow{display:flex;align-items:center;gap:11px;padding:11px 2px;border-top:1px solid var(--line);cursor:pointer}
+  .prow:first-of-type{border-top:none}
+  .prow .box{width:23px;height:23px;border:2px solid var(--line);border-radius:6px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
+  .prow.on .box{background:var(--navy);border-color:var(--navy)}
+  .prow.on .box::after{content:"\2713"}
+  .prow .nm{font-size:15.5px;color:var(--text)}
+  .prow .tag{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--red);border:1px solid #F7C9CE;background:#FDEAEC;border-radius:999px;padding:1px 7px}
+
+  .addrow{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .addrow input{flex:1 1 auto}
+  .addbtn{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:10px;padding:0 14px;cursor:pointer;white-space:nowrap}
+  .addbtn:hover{background:var(--navy);color:#fff}
+
+  button.go{width:100%;font:inherit;font-size:16px;font-weight:700;color:#fff;background:var(--red);border:none;border-radius:12px;padding:14px;margin-top:14px;cursor:pointer;letter-spacing:.2px}
+  button.go:active{transform:translateY(1px)}
+  .tally{text-align:center;font-size:13px;color:var(--navy);font-weight:600;margin:12px 2px 0;min-height:18px}
+
+  .dv-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;margin-bottom:10px}
+  .dv-status .d{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+  .dv-status.s-ok .d{background:#1EA84E}.dv-status.s-wait .d{background:#E39A00}.dv-status.s-off .d{background:var(--red)}
+  .dv-rec{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 2px;border-top:1px solid var(--line)}
+  .dv-rec .who{font-weight:500;color:var(--text);flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dv-rec .when{color:var(--muted);font-size:12px;flex:0 0 auto}
+  .dv-rec .chip{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;flex:0 0 auto}
+  .dv-rec .chip.sy{background:#E6F5EC;color:#1E7A3C}.dv-rec .chip.pe{background:#FDEAEC;color:#B00D1F}
+  .sec-title{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 2px 8px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px;border-top:3px solid var(--green);padding-top:14px}
+  footer a{color:var(--navy);text-decoration:none}footer a:hover{text-decoration:underline}
+  .ver{font-size:11px;color:#A9A9BD;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="./PortExplorers.html">&lsaquo; Port Explorers hub</a>
+
+  <header class="ph">
+    <span class="mark" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 10l7 16h16l-13 10 5 18-15-11-15 11 5-18-13-10h16z" fill="#fff"/></svg></span>
+    <div><h1>Attendance</h1><div class="sub">Port Explorers · PMYC</div></div>
+  </header>
+
+  <div class="dv-status" id="status"><span class="d"></span><span id="statusText">Loading&hellip;</span></div>
+
+  <div class="card">
+    <span class="grp"><span class="dot"></span>Port Explorers</span>
+    <div class="two">
+      <div><label class="fld" for="f-date">Date</label><input type="date" id="f-date"></div>
+      <div><label class="fld" for="f-by">Logged by</label><input type="text" id="f-by" placeholder="Your name" autocomplete="off"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="listhead">
+      <span class="t">Who&rsquo;s here</span>
+      <span class="q"><button class="qbtn" id="allBtn">All</button><button class="qbtn" id="noneBtn">None</button></span>
+    </div>
+    <div id="roster"></div>
+    <div class="addrow">
+      <input type="text" id="addName" placeholder="Add someone not on the list" autocomplete="off">
+      <button class="addbtn" id="addBtn">Add</button>
+    </div>
+    <div class="hint">A name added here is remembered on this device. To add them for everyone, put them in the roster file.</div>
+  </div>
+
+  <div class="card">
+    <label class="fld" for="f-note" style="margin-top:0">Notes <span style="color:var(--muted);font-weight:400">(optional, for the session)</span></label>
+    <textarea id="f-note" placeholder="Anything worth recording about tonight"></textarea>
+    <div class="tally" id="tally"></div>
+    <button class="go" id="go">Log attendance</button>
+  </div>
+
+  <div class="card">
+    <div class="sec-title">Marked present on this device</div>
+    <div id="recent"></div>
+  </div>
+
+  <footer>
+    Saved on this device and synced when there&rsquo;s signal.<br>
+    <a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne
+    <div class="ver">PortExplorers-Attendance.html · v0.5</div>
+  </footer>
+</div>
+
+<script src="./PortExplorers-roster.js"></script>
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzbsxCSHBEZSgGH4CKAYzWmNgDVMBjJA3VzUfFM8029OtSW4mtA312JCTg6NVzN-gU/exec";
+  var GROUP = "Port Explorers";
+
+  function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
+  function load(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+  var queue = load('pe_attend_queue', []);
+  function saveQ(){ localStorage.setItem('pe_attend_queue', JSON.stringify(queue)); }
+  var device = localStorage.getItem('pmyc_device');
+  if(!device){ device='Device-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device',device); }
+  var syncing=false, present={};
+
+  function melbDate(d){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;}); return p.year+'-'+p.month+'-'+p.day; }
+  function melbTime(d){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(function(x){t[x.type]=x.value;}); return t.hour+':'+t.minute; }
+  var $=function(id){return document.getElementById(id);};
+
+  $('f-date').value = melbDate(new Date());
+  $('f-by').value = localStorage.getItem('pe_logger') || '';
+
+  /* roster = shipped names + anyone added on this device, de-duplicated, sorted */
+  var added = load('pe_roster_added', []);
+  function roster(){
+    var base = (window.PE_ROSTER||[]).slice();
+    var all = base.concat(added), seen={}, out=[];
+    all.forEach(function(n){ var k=n.toLowerCase(); if(n && !seen[k]){ seen[k]=1; out.push(n); } });
+    out.sort(function(a,b){ return a.localeCompare(b); });
+    return out;
+  }
+  function isAdded(n){ return added.some(function(x){return x.toLowerCase()===n.toLowerCase();}); }
+
+  function renderRoster(){
+    var host=$('roster'); host.innerHTML='';
+    roster().forEach(function(name){
+      var row=document.createElement('div'); row.className='prow'+(present[name]?' on':'');
+      var box=document.createElement('span'); box.className='box';
+      var nm=document.createElement('span'); nm.className='nm'; nm.textContent=name;
+      row.appendChild(box); row.appendChild(nm);
+      if(isAdded(name)){ var tg=document.createElement('span'); tg.className='tag'; tg.textContent='new'; row.appendChild(tg); }
+      row.onclick=function(){ present[name]=!present[name]; row.classList.toggle('on', !!present[name]); countSel(); };
+      host.appendChild(row);
+    });
+    countSel();
+  }
+  function countSel(){
+    var n=Object.keys(present).filter(function(k){return present[k];}).length;
+    $('tally').textContent = n ? (n+' marked present') : '';
+    $('go').textContent = n ? ('Log attendance ('+n+')') : 'Log attendance';
+  }
+
+  $('allBtn').onclick=function(){ roster().forEach(function(n){present[n]=true;}); renderRoster(); };
+  $('noneBtn').onclick=function(){ present={}; renderRoster(); };
+
+  $('addBtn').onclick=function(){
+    var n=$('addName').value.trim(); if(!n) return;
+    if(!roster().some(function(x){return x.toLowerCase()===n.toLowerCase();})){
+      added.push(n); localStorage.setItem('pe_roster_added', JSON.stringify(added));
+    }
+    present[n]=true; $('addName').value=''; renderRoster();
+  };
+  $('addName').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); $('addBtn').click(); }});
+
+  renderRoster();
+
+  $('go').onclick=function(){
+    var names=Object.keys(present).filter(function(k){return present[k];});
+    if(!names.length){ $('tally').textContent='Tick who was here first.'; return; }
+    var by=$('f-by').value.trim(), note=$('f-note').value.trim();
+    var date=$('f-date').value||melbDate(new Date()), time=melbTime(new Date());
+    var stamp=new Date().toLocaleString();
+    names.forEach(function(name){
+      queue.unshift({ id:uuid(), type:'attendance', device:device, deviceTime:stamp,
+        date:date, time:time, group:GROUP, sailor:name, loggedBy:by, note:note, status:'pending' });
+    });
+    saveQ();
+    if(by) localStorage.setItem('pe_logger', by);
+    present={}; $('f-note').value='';
+    renderRoster(); render(); syncAll();
+  };
+
+  function syncOne(rec){
+    return fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+      .then(function(r){return r.json();}).then(function(d){ if(d&&d.ok) return true; throw 0; })
+      .catch(function(){ return fetch(WEBAPP_URL+'?verify='+encodeURIComponent(rec.id)).then(function(r){return r.json();}).then(function(d){return !!(d&&d.exists);}).catch(function(){return false;}); });
+  }
+  function syncAll(){
+    if(!WEBAPP_URL || WEBAPP_URL.indexOf('PASTE_')===0 || !navigator.onLine || syncing){ render(); return; }
+    var pend = queue.filter(function(r){return r.status!=='synced';});
+    if(!pend.length){ render(); return; }
+    syncing=true; render();
+    (function next(i){ if(i>=pend.length){ syncing=false; render(); return; }
+      syncOne(pend[i]).then(function(ok){ if(ok){ pend[i].status='synced'; saveQ(); } render(); next(i+1); }); })(0);
+  }
+  function render(){
+    var pend = queue.filter(function(r){return r.status!=='synced';}).length;
+    var s=$('status'), t=$('statusText'); s.className='dv-status';
+    if(!navigator.onLine){ s.classList.add('s-off'); t.textContent = pend?('Offline \u2014 '+pend+' waiting, will sync when back online.'):'Offline \u2014 all saved.'; }
+    else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
+    else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' waiting to sync.'; }
+    else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
+    else { t.textContent='Nothing logged yet on this device.'; }
+    var rec=$('recent'); if(!queue.length){ rec.innerHTML='<div style="color:var(--muted);font-size:13px;padding:4px 2px">\u2014</div>'; return; }
+    rec.innerHTML='';
+    queue.slice(0,14).forEach(function(r){
+      var row=document.createElement('div'); row.className='dv-rec'; var synced=r.status==='synced';
+      var who=document.createElement('span'); who.className='who'; who.textContent=r.sailor||'(no name)';
+      var when=document.createElement('span'); when.className='when'; when.textContent=(r.date||'')+' '+(r.time||'');
+      var chip=document.createElement('span'); chip.className='chip '+(synced?'sy':'pe'); chip.textContent=synced?'synced':'pending';
+      row.appendChild(who); row.appendChild(when); row.appendChild(chip); rec.appendChild(row);
+    });
+  }
+  window.addEventListener('online', syncAll); window.addEventListener('offline', render);
+  render(); syncAll();
+})();
+</script>
+</body>
+</html>

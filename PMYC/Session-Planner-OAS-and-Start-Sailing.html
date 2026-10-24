@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!-- Aurora Sailing · Session-Planner-OAS-and-Start-Sailing.html · v0.1 -->
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-BJ4VH5CBXJ");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121318">
+<title>Session planner · OAS Boating + Start Sailing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%231F2430'/%3E%3Cpath d='M24 8l9 20H15zM13 32h22l-4 7H17z' fill='%2350E040'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1F0; --card:#FFFFFF; --ink:#19262C; --soft:#4F6069; --rule:#D3DAD8;
+    --oas:#1C4C7A; --oasw:#EAF0F6;
+    --as:#C2641A; --asw:#FBF0E5;
+    --accent:#2E9E46;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.4;}
+  .wrap{max-width:1320px;margin:0 auto;padding:22px 26px 40px;}
+  .sitehdr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 26px;background:#1F2430;border-bottom:3px solid var(--accent);}
+  .sitehdr .brand .a{font-weight:800;font-size:15px;letter-spacing:.02em;text-transform:uppercase;color:#fff;text-decoration:none;}
+  .sitehdr .links{display:flex;gap:16px;}
+  .sitehdr a.hublink{font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:#B9BECC;text-decoration:none;white-space:nowrap;}
+  .sitehdr a.hublink:hover{color:#fff;}
+  header{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:16px;}
+  .kicker{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:6px;}
+  h1{font-size:26px;font-weight:800;letter-spacing:-.015em;margin:0 0 6px;}
+  .note{font-size:12.5px;color:var(--soft);margin:0 0 8px;max-width:120ch;}
+  .note b{color:var(--ink);font-weight:600;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--soft);align-items:center;}
+  .legend .k{display:inline-flex;align-items:center;gap:6px;}
+  .tag{display:inline-block;font-weight:800;font-size:9.5px;letter-spacing:.02em;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:middle;}
+  .tag.oas{background:var(--oas);} .tag.as{background:var(--as);}
+
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--rule);border-radius:9px;overflow:hidden;}
+  thead th{background:var(--ink);color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:9px 12px;}
+  thead th.oash{background:var(--oas);} thead th.ash{background:var(--as);}
+  tbody th{width:15%;text-align:left;vertical-align:top;padding:10px 12px;font-size:13px;font-weight:800;color:var(--ink);background:#F4F6F5;border-top:1px solid var(--rule);}
+  tbody td{width:42.5%;vertical-align:top;padding:9px 12px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);}
+  tbody tr:nth-child(even) th{background:#EEF1F0;}
+  tbody tr:nth-child(even) td{background:#FAFBFB;}
+  .line{display:block;font-size:12px;line-height:1.3;margin:0 0 4px;padding-left:2px;}
+  .line:last-child{margin-bottom:0;}
+  .line .tag{margin-right:5px;}
+  .cue{color:var(--soft);}
+  footer{margin-top:14px;border-top:1px solid var(--rule);padding-top:10px;font-size:11px;color:var(--soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+  footer a{color:var(--accent);font-weight:700;text-decoration:none;}
+  .ver{font-size:10px;letter-spacing:.04em;color:var(--soft);margin-top:8px;}
+
+  @media (max-width:860px){
+    table,thead,tbody,th,td,tr{display:block;width:auto;}
+    thead{display:none;}
+    tbody th{width:auto;border-radius:6px 6px 0 0;}
+    tbody td{width:auto;border-left:none;}
+    tbody td::before{content:attr(data-fw);display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-bottom:4px;}
+  }
+  @media print{
+    @page{size:A4 landscape;margin:8mm;}
+    body{background:#fff;font-size:12px;}
+    .sitehdr{display:none;}
+    .wrap{max-width:none;padding:0;}
+    header{padding-bottom:8px;margin-bottom:10px;}
+    h1{font-size:20px;margin:0 0 4px;}
+    .note{font-size:10px;max-width:none;margin-bottom:5px;}
+    .legend{font-size:9.5px;gap:12px;}
+    thead th{font-size:9.5px;padding:6px 9px;}
+    tbody th{font-size:11px;padding:6px 9px;}
+    tbody td{padding:6px 9px;}
+    .line{font-size:9.6px;line-height:1.22;margin:0 0 3px;}
+    .tag{font-size:8.2px;padding:1px 4px;}
+    footer{font-size:9px;margin-top:9px;padding-top:7px;}
+    tr,td,th,.line{break-inside:avoid;}
+    .tag,thead th,footer a{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="sitehdr">
+  <span class="brand"><a class="a" href="https://aurorasailing.com.au">Aurora Sailing</a></span>
+  <div class="links">
+    <a class="hublink" href="https://wind.aurorasailing.com.au/1stVic/1stVic-OAS-Boating.html">OAS detail →</a>
+    <a class="hublink" href="./Start-Sailing-at-a-glance.html">Start Sailing detail →</a>
+  </div>
+</div>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Session planning · double sign-off</div>
+    <h1>One night, both pathways</h1>
+    <p class="note">Pick a theme for the session and see what it signs off in <b>both</b> frameworks at once. The two pathways don&rsquo;t line up stage-for-level, so this maps by <b>what you cover</b>, not by rank. Paraphrased — mark against the official OAS Boating sheets and the Australian Sailing Dinghy log.</p>
+    <div class="legend">
+      <span class="k"><span class="tag oas">S1</span><span class="tag oas">S2</span><span class="tag oas">S3</span> Scouts OAS Boating stages</span>
+      <span class="k"><span class="tag as">SS1</span><span class="tag as">SS2</span><span class="tag as">BS</span> Australian Sailing: Start Sailing 1, Start Sailing 2, Better Sailing</span>
+    </div>
+  </header>
+
+  <table>
+    <thead>
+      <tr><th>Theme</th><th class="oash">Scouts OAS Boating</th><th class="ash">Australian Sailing · Dinghy</th></tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <th>Gear &amp; getting ready</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>Dress for conditions · know the safety gear</span>
+          <span class="line"><span class="tag oas">S2</span>Choose &amp; fit a PFD · pre-launch checks · why gear matters</span>
+          <span class="line"><span class="tag oas">S3</span>Personal items to carry <span class="cue">by trip &amp; conditions</span></span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Clothing · use the safety gear · protect from the elements</span>
+          <span class="line"><span class="tag as">SS2</span>+ a basic pre-sailing warm-up</span>
+          <span class="line"><span class="tag as">BS</span>+ warm-up &amp; stretches</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Capsize &amp; rescue</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>Stay with your buddy &amp; the boat in a capsize</span>
+          <span class="line"><span class="tag oas">S2</span>Four actions if you capsize · signal for help</span>
+          <span class="line"><span class="tag oas">S3</span>Self-rescue aboard <span class="cue">(assisted)</span> · HELP &amp; huddle</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Capsize recovery in shallow water</span>
+          <span class="line"><span class="tag as">SS2</span>Capsize recovery in deep water · man-overboard recovery</span>
+          <span class="line"><span class="tag as">BS</span>Recover a fully inverted boat</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Rig, launch &amp; handle</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>Getting in &amp; out of the craft safely</span>
+          <span class="line"><span class="tag oas">S2</span>Rigging with help · where to sit &amp; your role aboard</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Rig &amp; launch with help · tack &amp; stop the boat</span>
+          <span class="line"><span class="tag as">SS2</span>Rig/launch unassisted · crew·helm·set sail all points · gybe · tiller extension · centreboard · heave to</span>
+          <span class="line"><span class="tag as">BS</span>Rig to conditions · any wind · roll tack/gybe · sail backwards · come alongside · hold at a mark</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Courses, trips &amp; time afloat</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>A short trip <span class="cue">≥ 1 hour</span></span>
+          <span class="line"><span class="tag oas">S2</span>Two trips <span class="cue">~1.5 hr each</span></span>
+          <span class="line"><span class="tag oas">S3</span>Five trips logged by end of stage</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Windward / broad-reach course · paddle round a mark</span>
+          <span class="line"><span class="tag as">SS2</span>Triangle &amp; windward / leeward course</span>
+          <span class="line"><span class="tag as">BS</span>Trapezoidal &amp; slalom course</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Rules &amp; theory</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S3</span>Tack vs gybe · six parts of a boat/oar · naturally-powered craft</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Port/starboard · windward/leeward · overtaking</span>
+          <span class="line"><span class="tag as">SS2</span>Apply the rules · collisions, commercial, power v sail · points of sail</span>
+          <span class="line"><span class="tag as">BS</span>Sail-shape controls · rules in a fleet · local buoyage</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Weather &amp; tides</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S3</span>Read the local forecast · weather-condition risks</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Identify wind direction · find a forecast</span>
+          <span class="line"><span class="tag as">SS2</span>Wind direction &amp; strength · gusts &amp; lulls · local tides</span>
+          <span class="line"><span class="tag as">BS</span>Wind shifts · tidal flow on the water</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Knots &amp; boat care</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>Reef knot</span>
+          <span class="line"><span class="tag oas">S3</span>Three more boating knots</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="tag as">SS1</span>Figure-eight knot</span>
+          <span class="line"><span class="tag as">SS2</span>Bowline, clove hitch, round turn &amp; two half hitches · boat/sail care</span>
+          <span class="line"><span class="tag as">BS</span>Boat/sail care · rig spinnaker &amp; trapeze</span>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Swim, first aid &amp; others</th>
+        <td data-fw="OAS Boating">
+          <span class="line"><span class="tag oas">S1</span>Swim 10 m in a PFD</span>
+          <span class="line"><span class="tag oas">S2</span>Swim 25 m in a PFD</span>
+          <span class="line"><span class="tag oas">S3</span>Swim 50 m · DRSABCD · environment &amp; water-safety rules · help a junior with a PFD · teach the buddy system to a Stage 1</span>
+        </td>
+        <td data-fw="Australian Sailing">
+          <span class="line"><span class="cue">No swim test — safety gear &amp; protection sit under &ldquo;Gear &amp; getting ready&rdquo;.</span></span>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <footer>
+    <span>A cross-map for planning, not a sign-off record — mark against the official OAS Boating sheets and the Australian Sailing Dinghy log.</span>
+    <span>Detail: <a href="https://wind.aurorasailing.com.au/1stVic/1stVic-OAS-Boating.html">OAS Boating 1–3</a> · <a href="./Start-Sailing-at-a-glance.html">Start Sailing 1–3</a></span>
+    <span>built with <a href="https://aurorasailing.com.au">Aurora Sailing</a></span>
+  </footer>
+  <div class="ver">Session-Planner-OAS-and-Start-Sailing.html · v0.1</div>
+
+</div>
+</body>
+</html>

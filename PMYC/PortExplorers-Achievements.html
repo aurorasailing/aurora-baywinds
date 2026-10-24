@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Port Explorers · Achievements</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23363187'/%3E%3Cpath d='M32 12l6 14h14l-11 9 4 15-13-9-13 9 4-15-11-9h14z' fill='%23F90D24'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BJ4VH5CBXJ');</script>
+<style>
+  :root{--red:#F90D24;--navy:#363187;--ink:#22214E;--green:#50E040;--paper:#FFFFFF;--wash:#F4F4FA;--line:#E2E2EF;--muted:#6E7180;--text:#1C1B33;}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:'DM Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:var(--wash);padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);-webkit-text-size-adjust:100%}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 16px 48px}
+  header.ph{display:flex;align-items:center;gap:12px;padding:6px 2px 14px}
+  header.ph .mark{width:40px;height:40px;border-radius:9px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  header.ph .mark svg{width:26px;height:26px}
+  header.ph h1{font-size:19px;line-height:1.1;margin:0;color:var(--navy);font-weight:700;letter-spacing:.2px}
+  header.ph .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  a.back{display:inline-block;font-size:13px;color:var(--navy);text-decoration:none;margin:2px 2px 10px;font-weight:500}
+  a.back:hover{text-decoration:underline}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(34,33,78,.04)}
+  .grp{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:500;margin-bottom:12px}
+  .grp .dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
+  label.fld{display:block;font-size:13px;color:var(--navy);font-weight:500;margin:14px 0 5px}
+  label.fld:first-of-type{margin-top:0}
+  input[type=text],input[type=date],select{width:100%;font:inherit;font-size:16px;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}
+  select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E7180' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:18px;padding-right:38px}
+  input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(54,49,135,.12)}
+  .two{display:flex;gap:10px}.two>div{flex:1}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px 0}
+  .addrow{display:flex;gap:8px;margin-top:8px}
+  .addrow input{flex:1 1 auto}
+  .addbtn{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--navy);background:#fff;color:var(--navy);border-radius:10px;padding:0 14px;cursor:pointer;white-space:nowrap}
+  .addbtn:hover{background:var(--navy);color:#fff}
+
+  .filter{position:relative;margin:0 0 12px}
+  .filter input{padding-left:38px}
+  .filter::before{content:"\1F50D";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.5}
+
+  .fw-label{display:flex;align-items:center;gap:9px;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--navy);font-weight:700;margin:18px 2px 9px}
+  .fw-label::after{content:"";flex:1 1 auto;height:1px;background:var(--line)}
+  .fw-label:first-child{margin-top:2px}
+  details.stage{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}
+  details.stage>summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px;font-weight:700;color:var(--navy);font-size:15px}
+  details.stage>summary::-webkit-details-marker{display:none}
+  details.stage>summary .tri{color:var(--muted);font-size:12px;transition:transform .15s}
+  details.stage[open]>summary .tri{transform:rotate(90deg)}
+  details.stage>summary .count{margin-left:auto;font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:999px;padding:2px 9px;min-width:22px;text-align:center;visibility:hidden}
+  details.stage>summary .count.show{visibility:visible}
+  .phase-h{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 14px 4px;background:var(--wash)}
+  .req{display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-top:1px solid var(--line);cursor:pointer}
+  .req:hover{background:#FAFAFE}
+  .req .box{width:22px;height:22px;border:2px solid var(--line);border-radius:6px;flex:0 0 auto;margin-top:1px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+  .req.on .box{background:var(--navy);border-color:var(--navy)}
+  .req.on .box::after{content:"\2713"}
+  .req .txt{font-size:14.5px;line-height:1.35;color:var(--text)}
+
+  button.go{width:100%;font:inherit;font-size:16px;font-weight:700;color:#fff;background:var(--red);border:none;border-radius:12px;padding:14px;margin-top:6px;cursor:pointer;letter-spacing:.2px}
+  button.go:active{transform:translateY(1px)}
+  .tally{text-align:center;font-size:13px;color:var(--navy);font-weight:600;margin:14px 2px 0;min-height:18px}
+  .dv-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;margin-bottom:10px}
+  .dv-status .d{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+  .dv-status.s-ok .d{background:#1EA84E}.dv-status.s-wait .d{background:#E39A00}.dv-status.s-off .d{background:var(--red)}
+  .dv-rec{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 2px;border-top:1px solid var(--line)}
+  .dv-rec .who{font-weight:600;color:var(--navy);flex:0 0 auto}
+  .dv-rec .what{color:var(--text);flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+  .dv-rec .chip{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;flex:0 0 auto}
+  .dv-rec .chip.sy{background:#E6F5EC;color:#1E7A3C}.dv-rec .chip.pe{background:#FDEAEC;color:#B00D1F}
+  .sec-title{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 2px 8px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px;border-top:3px solid var(--green);padding-top:14px}
+  footer a{color:var(--navy);text-decoration:none}footer a:hover{text-decoration:underline}
+  .ver{font-size:11px;color:#A9A9BD;margin-top:6px}
+  .para{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="./PortExplorers.html">&lsaquo; Port Explorers hub</a>
+
+  <header class="ph">
+    <span class="mark" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 10l7 16h16l-13 10 5 18-15-11-15 11 5-18-13-10h16z" fill="#fff"/></svg></span>
+    <div><h1>Achievements</h1><div class="sub">Port Explorers · PMYC</div></div>
+  </header>
+
+  <div class="dv-status" id="status"><span class="d"></span><span id="statusText">Loading&hellip;</span></div>
+
+  <div class="card">
+    <span class="grp"><span class="dot"></span>Port Explorers</span>
+    <label class="fld" for="f-sailor">Sailor</label>
+    <select id="f-sailor"><option value="">Choose a sailor&hellip;</option></select>
+    <div class="addrow">
+      <input type="text" id="addName" placeholder="Add someone not on the list" autocomplete="off">
+      <button class="addbtn" id="addBtn">Add</button>
+    </div>
+    <div class="two" style="margin-top:4px">
+      <div><label class="fld" for="f-date">Date</label><input type="date" id="f-date"></div>
+      <div><label class="fld" for="f-by">Signed off by</label><input type="text" id="f-by" placeholder="Your name" autocomplete="off"></div>
+    </div>
+    <div class="hint">Tick the specific requirements signed off today. Each tick is its own row on the sheet.</div>
+  </div>
+
+  <div class="filter"><input type="text" id="filter" placeholder="Filter requirements (e.g. capsize, knot, swim)" autocomplete="off"></div>
+
+  <div id="frameworks"></div>
+
+  <div class="card">
+    <label class="fld" for="f-note" style="margin-top:0">Note on these sign-offs <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+    <input type="text" id="f-note" placeholder="e.g. in deep water, unassisted" autocomplete="off">
+    <div class="tally" id="tally"></div>
+    <button class="go" id="go">Log sign-offs</button>
+  </div>
+
+  <div class="card">
+    <div class="sec-title">Logged on this device</div>
+    <div id="recent"></div>
+  </div>
+
+  <footer>
+    <span class="para">Working record. Requirement wording is condensed from the Scouts Australia OAS Boating stages and the Australian Sailing Dinghy syllabus &mdash; sign off against the official sheets for the exact statements.</span>
+    <div style="margin-top:10px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+    <div class="ver">PortExplorers-Achievements.html · v0.4</div>
+  </footer>
+</div>
+
+<script src="./PortExplorers-roster.js"></script>
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzbsxCSHBEZSgGH4CKAYzWmNgDVMBjJA3VzUfFM8029OtSW4mtA312JCTg6NVzN-gU/exec";
+  var GROUP = "Port Explorers";
+
+  var FRAMEWORKS = [
+    { name:'Scouts OAS Boating', short:'OAS Boating', stages:[
+      { name:'OAS Boating Stage 1', phases:[
+        {phase:'Plan', items:['Dressing for conditions','The buddy system \u2014 what it is','PFDs: what they are and why you wear one','Staying with your buddy and the boat in a capsize','Looking after your gear for the trip','Tying a reef knot']},
+        {phase:'Do', items:['Swim 10 m wearing a PFD','Risks of weather exposure','Getting in and out of the craft safely','A short boating trip (at least 1 hour)','Where bow and stern are']},
+        {phase:'Review', items:['Talk about what you enjoyed']}
+      ]},
+      { name:'OAS Boating Stage 2', phases:[
+        {phase:'Plan', items:['Choosing the right-size PFD','Fitting and adjusting a PFD','Pre-launch safety precautions (weather, tides, where & who with)','Why the right clothing and safety gear matter','Four actions to take if you capsize','How to signal for help','Labelling the essential boating equipment']},
+        {phase:'Do', items:['Swim 25 m wearing a PFD','Protecting yourself from sun and elements','Rigging with help; getting in and out safely','Two trips (about 1.5 hrs each)','Where to sit and your role aboard','Cleaning the boat down before storage']},
+        {phase:'Review', items:['Reflect on two trips (enjoyed / learnt / improved)',"What you'd do differently next time"]}
+      ]},
+      { name:'OAS Boating Stage 3', phases:[
+        {phase:'Plan', items:['DRSABCD first-aid steps','Weather-condition risks (people, gear, environment)','Your environmental impact when boating','Personal items to carry (by trip and conditions)','Finding and reading the local forecast','State / Branch water-safety rules','Six naturally-powered watercraft','Helping a junior fit their PFD','Three more boating knots','Six parts of a boat and/or oar','The difference between a tack and a gybe']},
+        {phase:'Do', items:['Five trips logged by end of Stage 3','Self-rescue back aboard with help','HELP and huddle positions in a PFD','Swim 50 m in a PFD (25 m, tread 2 min, 25 m)','Teaching the buddy system to a Stage 1']},
+        {phase:'Review', items:['Discuss boat-safety learnings from two trips with your Patrol']}
+      ]}
+    ]},
+    { name:'Australian Sailing \u00b7 Dinghy', short:'Australian Sailing', stages:[
+      { name:'Start Sailing 1', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','Why protection from the elements matters']},
+        {phase:'Boats & equipment', items:['Rig the boat with help','Name the commonly used parts of the boat']},
+        {phase:'Ropework', items:['Tie a figure-eight knot']},
+        {phase:'Safety & emergencies', items:['Capsize recovery in shallow water','Take part in single-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover the boat with help','Tack and stop the boat correctly','Sail a windward / broad-reach course','Paddle the boat around a marked course']},
+        {phase:'Sailing theory', items:['Port and starboard','Windward and leeward','Overtaking vessels']},
+        {phase:'Weather & tides', items:['Identify wind direction','Find a weather forecast']}
+      ]},
+      { name:'Start Sailing 2', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','A basic pre-sailing warm-up']},
+        {phase:'Boats & equipment', items:['Rig the boat unassisted','Name all parts of the boat','Tie a bowline, clove hitch, round turn and two half hitches','Care for the boat, gear and sails']},
+        {phase:'Safety & emergencies', items:['Capsize recovery in deep water','Take part in multiple-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover the boat unassisted','Crew, helm and set sails on all points of sail','Gybe correctly','Sail a triangle and a windward / leeward course','Man-overboard recovery','Use the tiller extension through all manoeuvres','Correct centreboard for each point of sail','Heave to']},
+        {phase:'Sailing theory', items:['Apply the basic sailing rules while sailing','Port/starboard, windward/leeward, overtaking, avoiding collisions, commercial vessels, power vs sail','Explain the points of sail']},
+        {phase:'Weather & environment', items:['Identify wind direction and strength','Respond to gusts and lulls','Find a weather forecast','Aware of local tidal conditions']}
+      ]},
+      { name:'Better Sailing', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','Warm-up and stretches before sailing']},
+        {phase:'Boats & equipment', items:['Rig the boat to suit the conditions','Name all parts of the boat and sails','Care for the boat, gear and sails','Rig a spinnaker and trapeze (where fitted)']},
+        {phase:'Safety & emergencies', items:['Recover from a fully inverted capsize','Take part in multiple-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover safely in any wind direction','Roll tack, roll gybe, sail backwards','Set the sails to advantage','Sail a trapezoidal and a slalom course','Come alongside a vessel or pontoon','Use the spinnaker well (optional)','Use the trapeze safely (optional)','Hold a position at a mark']},
+        {phase:'Sailing theory', items:['Name the controls that adjust sail shape','Adjust sail shape to suit the conditions','Apply the sailing rules in a fleet','Identify local buoyage']},
+        {phase:'Weather & environment', items:['Spot wind shifts','Respond to gusts and lulls','Find a weather forecast','Read current tidal conditions and flow on the water']}
+      ]}
+    ]}
+  ];
+
+  function uuid(){ try{ return crypto.randomUUID(); }catch(e){ return 'id-'+Date.now()+'-'+Math.random().toString(36).slice(2,9); } }
+  function load(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
+  var queue = load('pe_achieve_queue', []);
+  function saveQ(){ localStorage.setItem('pe_achieve_queue', JSON.stringify(queue)); }
+  var device = localStorage.getItem('pmyc_device');
+  if(!device){ device='Device-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device',device); }
+  var syncing=false, ticks={};
+
+  function melbDate(d){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;}); return p.year+'-'+p.month+'-'+p.day; }
+  function melbTime(d){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(function(x){t[x.type]=x.value;}); return t.hour+':'+t.minute; }
+  var $=function(id){return document.getElementById(id);};
+
+  $('f-date').value = melbDate(new Date());
+  $('f-by').value = localStorage.getItem('pe_logger') || '';
+
+  /* roster picker */
+  var added = load('pe_roster_added', []);
+  function roster(){
+    var all=(window.PE_ROSTER||[]).concat(added), seen={}, out=[];
+    all.forEach(function(n){ var k=n.toLowerCase(); if(n&&!seen[k]){ seen[k]=1; out.push(n); } });
+    out.sort(function(a,b){return a.localeCompare(b);}); return out;
+  }
+  function fillSelect(keep){
+    var sel=$('f-sailor'); var cur=keep||sel.value;
+    sel.innerHTML='<option value="">Choose a sailor&hellip;</option>';
+    roster().forEach(function(n){ var o=document.createElement('option'); o.value=n; o.textContent=n; sel.appendChild(o); });
+    if(cur) sel.value=cur;
+  }
+  fillSelect();
+  $('addBtn').onclick=function(){
+    var n=$('addName').value.trim(); if(!n) return;
+    if(!roster().some(function(x){return x.toLowerCase()===n.toLowerCase();})){
+      added.push(n); localStorage.setItem('pe_roster_added', JSON.stringify(added));
+    }
+    $('addName').value=''; fillSelect(n);
+  };
+  $('addName').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); $('addBtn').click(); }});
+
+  /* build frameworks */
+  (function build(){
+    var host=$('frameworks');
+    FRAMEWORKS.forEach(function(fw, fi){
+      var lab=document.createElement('div'); lab.className='fw-label'; lab.textContent=fw.name; host.appendChild(lab);
+      fw.stages.forEach(function(st, si){
+        var d=document.createElement('details'); d.className='stage';
+        var sum=document.createElement('summary');
+        sum.innerHTML='<span class="tri">\u25B6</span>'+st.name+'<span class="count" id="cnt-'+fi+'-'+si+'">0</span>';
+        d.appendChild(sum);
+        st.phases.forEach(function(ph, pi){
+          var hh=document.createElement('div'); hh.className='phase-h'; hh.textContent=ph.phase; d.appendChild(hh);
+          ph.items.forEach(function(txt, ii){
+            var key='f'+fi+'-s'+si+'-p'+pi+'-i'+ii;
+            var row=document.createElement('div'); row.className='req'; row.setAttribute('data-k',key);
+            row.innerHTML='<span class="box"></span><span class="txt"></span>';
+            row.querySelector('.txt').textContent=txt;
+            row.onclick=function(){
+              ticks[key]=ticks[key]?null:{framework:fw.short,stage:st.name,phase:ph.phase,requirement:txt};
+              if(!ticks[key]) delete ticks[key];
+              row.classList.toggle('on', !!ticks[key]); updateCounts();
+            };
+            d.appendChild(row);
+          });
+        });
+        host.appendChild(d);
+      });
+    });
+  })();
+
+  function updateCounts(){
+    var per={}, total=0;
+    Object.keys(ticks).forEach(function(k){ var m=/^f(\d+)-s(\d+)-/.exec(k); if(m){ var id=m[1]+'-'+m[2]; per[id]=(per[id]||0)+1; } total++; });
+    FRAMEWORKS.forEach(function(fw,fi){ fw.stages.forEach(function(_,si){
+      var c=$('cnt-'+fi+'-'+si); var n=per[fi+'-'+si]||0; c.textContent=n; c.className='count'+(n?' show':'');
+    });});
+    $('tally').textContent = total ? (total+' requirement'+(total>1?'s':'')+' ticked') : '';
+  }
+
+  /* filter: narrow the long list by keyword */
+  $('filter').addEventListener('input', function(){
+    var q=this.value.trim().toLowerCase();
+    var stages=document.querySelectorAll('details.stage');
+    Array.prototype.forEach.call(stages, function(d){
+      var any=false;
+      Array.prototype.forEach.call(d.querySelectorAll('.req'), function(r){
+        var match = !q || r.querySelector('.txt').textContent.toLowerCase().indexOf(q)>=0;
+        r.style.display = match ? '' : 'none'; if(match && q) any=true;
+      });
+      Array.prototype.forEach.call(d.querySelectorAll('.phase-h'), function(h){ h.style.display = q ? 'none' : ''; });
+      if(q){ d.style.display = any ? '' : 'none'; d.open = any; }
+      else { d.style.display=''; d.open=false; }
+    });
+  });
+
+  $('go').onclick=function(){
+    var name=$('f-sailor').value;
+    if(!name){ $('f-sailor').focus(); $('f-sailor').style.borderColor='var(--red)'; setTimeout(function(){$('f-sailor').style.borderColor='';},1200); return; }
+    var keys=Object.keys(ticks);
+    if(!keys.length){ $('tally').textContent='Tick at least one requirement first.'; return; }
+    var by=$('f-by').value.trim(), note=$('f-note').value.trim();
+    var date=$('f-date').value||melbDate(new Date()), time=melbTime(new Date());
+    var stamp=new Date().toLocaleString();
+    keys.forEach(function(k){ var t=ticks[k];
+      queue.unshift({ id:uuid(), type:'achievement', device:device, deviceTime:stamp,
+        date:date, time:time, group:GROUP, sailor:name, loggedBy:by,
+        framework:t.framework, stage:t.stage, phase:t.phase, requirement:t.requirement, note:note, status:'pending' });
+    });
+    saveQ();
+    if(by) localStorage.setItem('pe_logger', by);
+    ticks={}; Array.prototype.forEach.call(document.querySelectorAll('.req.on'), function(r){r.classList.remove('on');});
+    updateCounts();
+    $('f-sailor').value=''; $('f-note').value=''; $('filter').value='';
+    $('filter').dispatchEvent(new Event('input'));
+    render(); syncAll();
+  };
+
+  function syncOne(rec){
+    return fetch(WEBAPP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+      .then(function(r){return r.json();}).then(function(d){ if(d&&d.ok) return true; throw 0; })
+      .catch(function(){ return fetch(WEBAPP_URL+'?verify='+encodeURIComponent(rec.id)).then(function(r){return r.json();}).then(function(d){return !!(d&&d.exists);}).catch(function(){return false;}); });
+  }
+  function syncAll(){
+    if(!WEBAPP_URL || WEBAPP_URL.indexOf('PASTE_')===0 || !navigator.onLine || syncing){ render(); return; }
+    var pend = queue.filter(function(r){return r.status!=='synced';});
+    if(!pend.length){ render(); return; }
+    syncing=true; render();
+    (function next(i){ if(i>=pend.length){ syncing=false; render(); return; }
+      syncOne(pend[i]).then(function(ok){ if(ok){ pend[i].status='synced'; saveQ(); } render(); next(i+1); }); })(0);
+  }
+  function render(){
+    var pend = queue.filter(function(r){return r.status!=='synced';}).length;
+    var s=$('status'), t=$('statusText'); s.className='dv-status';
+    if(!navigator.onLine){ s.classList.add('s-off'); t.textContent = pend?('Offline \u2014 '+pend+' waiting, will sync when back online.'):'Offline \u2014 all saved.'; }
+    else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
+    else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' sign-off'+(pend>1?'s':'')+' waiting to sync.'; }
+    else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
+    else { t.textContent='Nothing logged yet on this device.'; }
+    var rec=$('recent'); if(!queue.length){ rec.innerHTML='<div style="color:var(--muted);font-size:13px;padding:4px 2px">\u2014</div>'; return; }
+    rec.innerHTML='';
+    queue.slice(0,12).forEach(function(r){
+      var row=document.createElement('div'); row.className='dv-rec'; var synced=r.status==='synced';
+      var who=document.createElement('span'); who.className='who'; who.textContent=r.sailor||'(no name)';
+      var what=document.createElement('span'); what.className='what'; what.textContent=r.requirement||'';
+      var chip=document.createElement('span'); chip.className='chip '+(synced?'sy':'pe'); chip.textContent=synced?'synced':'pending';
+      row.appendChild(who); row.appendChild(what); row.appendChild(chip); rec.appendChild(row);
+    });
+  }
+  window.addEventListener('online', syncAll); window.addEventListener('offline', render);
+  render(); syncAll();
+})();
+</script>
+</body>
+</html>
