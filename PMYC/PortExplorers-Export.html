@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!-- Port Explorers · PortExplorers-Export.html · v0.1 -->
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Export — Port Explorers</title>
+<meta name="description" content="Attendance across dates, an achievements summary for all, and a page per sailor — as PDF, Markdown or CSV.">
+<meta name="theme-color" content="#363187">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23363187'/%3E%3Cpath d='M32 12l6 14h14l-11 9 4 15-13-9-13 9 4-15-11-9h14z' fill='%23F90D24'/%3E%3C/svg%3E">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BJ4VH5CBXJ"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-BJ4VH5CBXJ");</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#F90D24;--navy:#363187;--ink:#22214E;--green:#50E040;--paper:#FFFFFF;--wash:#F4F4FA;--line:#E2E2EF;--muted:#6E7180;--text:#1C1B33;}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:'DM Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:var(--wash);-webkit-text-size-adjust:100%}
+  header.site{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;padding-top:calc(12px + env(safe-area-inset-top,0));background:#fff;border-bottom:1px solid var(--line)}
+  header.site .brand{font-weight:700;color:var(--navy);text-decoration:none;font-size:15px;letter-spacing:.2px}
+  header.site a.hub{font-size:13px;color:var(--navy);text-decoration:none;font-weight:500}
+  main{max-width:960px;margin:0 auto;padding:18px 18px 60px}
+  h1{font-size:23px;color:var(--navy);font-weight:700;margin:6px 2px 2px}
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:2px}
+  .gate{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0;max-width:420px}
+  .gate p{font-size:13.5px;color:var(--muted);margin:0 0 12px}
+  .gate label{display:block;font-size:13px;color:var(--navy);font-weight:500;margin-bottom:6px}
+  .gate input{width:100%;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none}
+  .gate input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(54,49,135,.12)}
+  .gate .err{color:var(--red);font-size:12.5px;min-height:16px;margin:8px 0 0}
+  .btn{font:inherit;font-size:15px;font-weight:700;border:none;border-radius:11px;padding:11px 16px;cursor:pointer}
+  .btn.primary{background:var(--red);color:#fff}
+  .btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--navy)}
+  .btn+.btn{margin-left:8px}
+  .status{font-size:13px;color:var(--muted);margin:12px 2px}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .pdf-note{font-size:12px;color:var(--muted);margin:2px}
+  details.md{margin:16px 0}
+  details.md summary{font-weight:700;font-size:13px;color:var(--navy);cursor:pointer}
+  textarea.md-text{width:100%;height:280px;margin-top:8px;padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;border:1px solid var(--line);border-radius:11px;white-space:pre}
+  footer{max-width:960px;margin:0 auto;padding:0 18px 40px;color:var(--muted);font-size:12px}
+  footer a{color:var(--navy);text-decoration:none}
+  .ver{font-size:11px;color:#A9A9BD;margin-top:8px}
+  @media print{ header.site,.gate,.actions,.status,.pdf-note,details.md,footer{display:none !important} }
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="./PortExplorers.html">Port Explorers</a>
+  <a class="hub" href="./PortExplorers.html">Hub ↑</a>
+</header>
+<main>
+  <div class="eyebrow">Port Melbourne Yacht Club</div>
+  <h1>Export</h1>
+
+  <div class="gate" id="gate" style="display:none">
+    <p>These reports include children&rsquo;s names, so they&rsquo;re access-controlled.</p>
+    <label for="key">Access key</label>
+    <input type="password" id="key" autocomplete="current-password" placeholder="shared leader key">
+    <div class="err" id="gateerr"></div>
+    <div style="margin-top:12px"><button type="button" class="btn primary" id="unlock">Unlock</button></div>
+  </div>
+
+  <div class="status" id="status">Loading&hellip;</div>
+
+  <div class="actions" id="actions" style="display:none">
+    <button type="button" class="btn primary" id="pdf">Save as PDF</button>
+    <button type="button" class="btn ghost" id="copy">Copy Markdown</button>
+    <button type="button" class="btn ghost" id="csvA">Attendance CSV</button>
+    <button type="button" class="btn ghost" id="csvB">Achievements CSV</button>
+  </div>
+  <p class="pdf-note" id="pdfnote" style="display:none">In the print dialog choose <b>Save as PDF</b>. For the wide attendance page, set the layout to <b>Landscape</b> if it clips.</p>
+
+  <div id="out"></div>
+
+  <details class="md" id="mdwrap" style="display:none">
+    <summary>Markdown (select &amp; copy)</summary>
+    <textarea class="md-text" id="md" readonly></textarea>
+  </details>
+</main>
+<footer>
+  Reads the Port Explorers sheet — needs a connection. The logging pages don&rsquo;t; this one does.
+  <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
+  <div class="ver">PortExplorers-Export.html · v0.1</div>
+</footer>
+
+<script>
+(function(){
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzbsxCSHBEZSgGH4CKAYzWmNgDVMBjJA3VzUfFM8029OtSW4mtA312JCTg6NVzN-gU/exec";
+
+  /* same requirement lists as the Achievements page — the denominators for "complete / in progress" */
+  var FRAMEWORKS = [
+    { name:'Scouts OAS Boating', short:'OAS Boating', stages:[
+      { name:'OAS Boating Stage 1', tag:'OAS S1', phases:[
+        {phase:'Plan', items:['Dressing for conditions','The buddy system \u2014 what it is','PFDs: what they are and why you wear one','Staying with your buddy and the boat in a capsize','Looking after your gear for the trip','Tying a reef knot']},
+        {phase:'Do', items:['Swim 10 m wearing a PFD','Risks of weather exposure','Getting in and out of the craft safely','A short boating trip (at least 1 hour)','Where bow and stern are']},
+        {phase:'Review', items:['Talk about what you enjoyed']} ]},
+      { name:'OAS Boating Stage 2', tag:'OAS S2', phases:[
+        {phase:'Plan', items:['Choosing the right-size PFD','Fitting and adjusting a PFD','Pre-launch safety precautions (weather, tides, where & who with)','Why the right clothing and safety gear matter','Four actions to take if you capsize','How to signal for help','Labelling the essential boating equipment']},
+        {phase:'Do', items:['Swim 25 m wearing a PFD','Protecting yourself from sun and elements','Rigging with help; getting in and out safely','Two trips (about 1.5 hrs each)','Where to sit and your role aboard','Cleaning the boat down before storage']},
+        {phase:'Review', items:['Reflect on two trips (enjoyed / learnt / improved)',"What you'd do differently next time"]} ]},
+      { name:'OAS Boating Stage 3', tag:'OAS S3', phases:[
+        {phase:'Plan', items:['DRSABCD first-aid steps','Weather-condition risks (people, gear, environment)','Your environmental impact when boating','Personal items to carry (by trip and conditions)','Finding and reading the local forecast','State / Branch water-safety rules','Six naturally-powered watercraft','Helping a junior fit their PFD','Three more boating knots','Six parts of a boat and/or oar','The difference between a tack and a gybe']},
+        {phase:'Do', items:['Five trips logged by end of Stage 3','Self-rescue back aboard with help','HELP and huddle positions in a PFD','Swim 50 m in a PFD (25 m, tread 2 min, 25 m)','Teaching the buddy system to a Stage 1']},
+        {phase:'Review', items:['Discuss boat-safety learnings from two trips with your Patrol']} ]}
+    ]},
+    { name:'Australian Sailing \u00b7 Dinghy', short:'Australian Sailing', stages:[
+      { name:'Start Sailing 1', tag:'SS1', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','Why protection from the elements matters']},
+        {phase:'Boats & equipment', items:['Rig the boat with help','Name the commonly used parts of the boat']},
+        {phase:'Ropework', items:['Tie a figure-eight knot']},
+        {phase:'Safety & emergencies', items:['Capsize recovery in shallow water','Take part in single-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover the boat with help','Tack and stop the boat correctly','Sail a windward / broad-reach course','Paddle the boat around a marked course']},
+        {phase:'Sailing theory', items:['Port and starboard','Windward and leeward','Overtaking vessels']},
+        {phase:'Weather & tides', items:['Identify wind direction','Find a weather forecast']} ]},
+      { name:'Start Sailing 2', tag:'SS2', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','A basic pre-sailing warm-up']},
+        {phase:'Boats & equipment', items:['Rig the boat unassisted','Name all parts of the boat','Tie a bowline, clove hitch, round turn and two half hitches','Care for the boat, gear and sails']},
+        {phase:'Safety & emergencies', items:['Capsize recovery in deep water','Take part in multiple-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover the boat unassisted','Crew, helm and set sails on all points of sail','Gybe correctly','Sail a triangle and a windward / leeward course','Man-overboard recovery','Use the tiller extension through all manoeuvres','Correct centreboard for each point of sail','Heave to']},
+        {phase:'Sailing theory', items:['Apply the basic sailing rules while sailing','Port/starboard, windward/leeward, overtaking, avoiding collisions, commercial vessels, power vs sail','Explain the points of sail']},
+        {phase:'Weather & environment', items:['Identify wind direction and strength','Respond to gusts and lulls','Find a weather forecast','Aware of local tidal conditions']} ]},
+      { name:'Better Sailing', tag:'BS', phases:[
+        {phase:'Preparation', items:['Right clothing for the conditions','Identify and use the safety gear','Warm-up and stretches before sailing']},
+        {phase:'Boats & equipment', items:['Rig the boat to suit the conditions','Name all parts of the boat and sails','Care for the boat, gear and sails','Rig a spinnaker and trapeze (where fitted)']},
+        {phase:'Safety & emergencies', items:['Recover from a fully inverted capsize','Take part in multiple-boat towing']},
+        {phase:'Skills & techniques', items:['Launch and recover safely in any wind direction','Roll tack, roll gybe, sail backwards','Set the sails to advantage','Sail a trapezoidal and a slalom course','Come alongside a vessel or pontoon','Use the spinnaker well (optional)','Use the trapeze safely (optional)','Hold a position at a mark']},
+        {phase:'Sailing theory', items:['Name the controls that adjust sail shape','Adjust sail shape to suit the conditions','Apply the sailing rules in a fleet','Identify local buoyage']},
+        {phase:'Weather & environment', items:['Spot wind shifts','Respond to gusts and lulls','Find a weather forecast','Read current tidal conditions and flow on the water']} ]}
+    ]}
+  ];
+  var STAGES=[]; FRAMEWORKS.forEach(function(fw){ fw.stages.forEach(function(st){
+    var total=0; st.phases.forEach(function(ph){ total+=ph.items.length; });
+    STAGES.push({name:st.name, tag:st.tag, total:total, fw:fw.short, st:st}); }); });
+
+  var $=function(id){return document.getElementById(id);};
+  function esc(s){ return String(s==null?'':s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  function v(o,k){ return (o&&o[k]!=null)?String(o[k]).trim():''; }
+  function prettyDate(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); if(!m) return iso||''; var d=new Date(+m[1],+m[2]-1,+m[3]); return d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}); }
+  function dayKey(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); return m?m[1]+'-'+m[2]+'-'+m[3]:(iso||''); }
+  function todayStr(){ return new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+
+  var REPORT_CSS =
+   ":root{--red:#F90D24;--navy:#363187;--ink:#22214E;--green:#50E040;--line:#D7D7E6;--muted:#6E7180;--text:#1C1B33}"+
+   ".rep{font-family:'DM Sans',system-ui,sans-serif;color:var(--text)}"+
+   ".rep .sec{margin:0 0 26px}"+
+   ".rep h2{font-size:19px;color:var(--navy);border-bottom:3px solid var(--red);padding-bottom:6px;margin:0 0 4px}"+
+   ".rep .sub{font-size:12px;color:var(--muted);margin:0 0 12px}"+
+   ".rep table{width:100%;border-collapse:collapse;font-size:12px}"+
+   ".rep th,.rep td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}"+
+   ".rep thead th{background:var(--navy);color:#fff;font-weight:700;font-size:11px;letter-spacing:.02em}"+
+   ".rep td.c,.rep th.c{text-align:center}"+
+   ".rep .yes{color:var(--navy);font-weight:800}"+
+   ".rep .part{color:#B06A00;font-weight:700;font-size:11px}"+
+   ".rep .no{color:#C9CBD6}"+
+   ".rep tbody tr:nth-child(even) td{background:#FAFAFE}"+
+   ".rep .nm{font-weight:700;color:var(--navy)}"+
+   ".rep .legend{font-size:11px;color:var(--muted);margin:8px 2px 0}"+
+   ".rep .sailor{margin:0 0 18px}"+
+   ".rep .sailor h3{font-size:17px;color:var(--navy);margin:0 0 2px}"+
+   ".rep .sailor .line{font-size:12px;color:var(--muted);margin:0 0 10px}"+
+   ".rep .stageblk{border:1px solid var(--line);border-radius:8px;margin:0 0 9px;overflow:hidden}"+
+   ".rep .stageblk .sh{background:#EFEFF7;padding:7px 10px;font-weight:700;color:var(--navy);font-size:13px;display:flex;justify-content:space-between;gap:8px}"+
+   ".rep .stageblk .sh .st{font-weight:600;font-size:11.5px}"+
+   ".rep .stageblk .sh .st.done{color:#1E7A3C}.rep .stageblk .sh .st.prog{color:#B06A00}.rep .stageblk .sh .st.none{color:var(--muted)}"+
+   ".rep .req{display:flex;gap:8px;padding:4px 10px;font-size:12px;border-top:1px solid #EDEDF4}"+
+   ".rep .req .bx{flex:0 0 auto;font-weight:800}"+
+   ".rep .req .bx.on{color:var(--navy)}.rep .req .bx.off{color:#C9CBD6}"+
+   ".rep .req .dt{margin-left:auto;color:var(--muted);font-size:11px;flex:0 0 auto}"+
+   ".rep .ph{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px 0;font-weight:700}"+
+   ".rep .powered{margin-top:14px;text-align:right;font-size:10.5px;color:var(--muted);font-style:italic}"+
+   "@media print{@page{size:A4 portrait;margin:11mm}body{background:#fff}"+
+   ".rep .sec.break{break-before:page;page-break-before:always}"+
+   ".rep .sailor.break{break-before:page;page-break-before:always}"+
+   ".rep table,.rep tr,.rep .stageblk,.rep .req{break-inside:avoid}"+
+   ".rep thead th,.rep .yes,.rep .stageblk .sh{-webkit-print-color-adjust:exact;print-color-adjust:exact}}";
+
+  (function injectCSS(){ var s=document.createElement('style'); s.textContent=REPORT_CSS; document.head.appendChild(s); })();
+
+  /* ---------- state ---------- */
+  var DATA=null, sailors=[], dates=[], presentMap={}, signMap={};
+
+  function compute(d){
+    var att=d.attendance||[], ach=d.achievements||[];
+    var names={}, dset={};
+    presentMap={}; signMap={};
+    att.forEach(function(r){ var s=v(r,'Sailor'); var dt=dayKey(v(r,'Date')); if(!s) return; names[s]=1; if(dt){ dset[dt]=1; (presentMap[s]=presentMap[s]||{})[dt]=true; } });
+    ach.forEach(function(r){ var s=v(r,'Sailor'); if(!s) return; names[s]=1;
+      var key=v(r,'Stage')+'||'+v(r,'Requirement');
+      (signMap[s]=signMap[s]||{})[key]=dayKey(v(r,'Date'))||'\u2713'; });
+    sailors=Object.keys(names).sort(function(a,b){return a.localeCompare(b);});
+    dates=Object.keys(dset).sort();
+  }
+
+  function stageStatus(sailor, stage){
+    var sg=signMap[sailor]||{}, done=0;
+    stage.st.phases.forEach(function(ph){ ph.items.forEach(function(it){ if(sg[stage.name+'||'+it]!=null) done++; }); });
+    return {done:done, total:stage.total, complete:done>=stage.total && stage.total>0, started:done>0};
+  }
+
+  /* ---------- render HTML ---------- */
+  function renderHTML(){
+    var h='<div class="rep">';
+
+    /* A — Attendance */
+    h+='<div class="sec"><h2>Attendance</h2><div class="sub">'+sailors.length+' sailors \u00b7 '+dates.length+' session'+(dates.length===1?'':'s')+' \u00b7 exported '+esc(todayStr())+'</div>';
+    if(!dates.length){ h+='<p class="sub">No attendance recorded yet.</p>'; }
+    else{
+      h+='<table><thead><tr><th>Sailor</th>';
+      dates.forEach(function(dt){ h+='<th class="c">'+esc(prettyDate(dt))+'</th>'; });
+      h+='<th class="c">Total</th></tr></thead><tbody>';
+      var colTot={};
+      sailors.forEach(function(s){ var tot=0; h+='<tr><td class="nm">'+esc(s)+'</td>';
+        dates.forEach(function(dt){ var p=(presentMap[s]||{})[dt]; if(p){tot++;colTot[dt]=(colTot[dt]||0)+1;} h+='<td class="c">'+(p?'<span class="yes">\u2713</span>':'<span class="no">\u00b7</span>')+'</td>'; });
+        h+='<td class="c"><b>'+tot+'</b></td></tr>'; });
+      h+='<tr><td class="nm">Present</td>';
+      dates.forEach(function(dt){ h+='<td class="c"><b>'+(colTot[dt]||0)+'</b></td>'; });
+      h+='<td class="c"></td></tr>';
+      h+='</tbody></table>';
+    }
+    h+='<div class="powered">Powered by Aurora Sailing</div></div>';
+
+    /* B — Achievements summary */
+    h+='<div class="sec break"><h2>Achievements &mdash; summary</h2><div class="sub">Level completed, or part done, for every sailor</div>';
+    h+='<table><thead><tr><th>Sailor</th>';
+    STAGES.forEach(function(sg){ h+='<th class="c">'+esc(sg.tag)+'</th>'; });
+    h+='</tr></thead><tbody>';
+    sailors.forEach(function(s){ h+='<tr><td class="nm">'+esc(s)+'</td>';
+      STAGES.forEach(function(sg){ var st=stageStatus(s,sg);
+        var cell = st.complete ? '<span class="yes">\u2713</span>' : (st.started ? '<span class="part">'+st.done+'/'+st.total+'</span>' : '<span class="no">\u00b7</span>');
+        h+='<td class="c">'+cell+'</td>'; });
+      h+='</tr>'; });
+    h+='</tbody></table>';
+    h+='<div class="legend">\u2713 complete \u00b7 n/N requirements signed off \u00b7 \u00b7 not started. Tags: OAS S1\u2013S3 = Scouts OAS Boating; SS1, SS2, BS = Start Sailing 1, Start Sailing 2, Better Sailing.</div>';
+    h+='<div class="powered">Powered by Aurora Sailing</div></div>';
+
+    /* C — per sailor */
+    h+='<div class="sec break">';
+    sailors.forEach(function(s, si){
+      var sg=signMap[s]||{};
+      var comp=[], prog=[];
+      STAGES.forEach(function(stg){ var st=stageStatus(s,stg); if(st.complete) comp.push(stg.tag); else if(st.started) prog.push(stg.tag+' '+st.done+'/'+st.total); });
+      h+='<div class="sailor'+(si>0?' break':'')+'"><h3>'+esc(s)+'</h3>';
+      h+='<div class="line">'+(comp.length?('Complete: '+comp.join(', ')):'Nothing complete yet')+(prog.length?('  \u00b7  In progress: '+prog.join(', ')):'')+'</div>';
+      FRAMEWORKS.forEach(function(fw){ fw.stages.forEach(function(st){
+        var stg={name:st.name,tag:st.tag,total:0,st:st}; st.phases.forEach(function(ph){stg.total+=ph.items.length;});
+        var stt=stageStatus(s,stg);
+        var cls = stt.complete?'done':(stt.started?'prog':'none');
+        var lbl = stt.complete?'complete':(stt.started?(stt.done+' of '+stt.total):'not started');
+        h+='<div class="stageblk"><div class="sh"><span>'+esc(st.name)+'</span><span class="st '+cls+'">'+lbl+'</span></div>';
+        st.phases.forEach(function(ph){ h+='<div class="ph">'+esc(ph.phase)+'</div>';
+          ph.items.forEach(function(it){ var when=sg[st.name+'||'+it];
+            h+='<div class="req"><span class="bx '+(when!=null?'on':'off')+'">'+(when!=null?'\u2713':'\u25CB')+'</span><span>'+esc(it)+'</span>'+(when!=null && when!=='\u2713'?('<span class="dt">'+esc(prettyDate(when))+'</span>'):'')+'</div>'; });
+        });
+        h+='</div>';
+      }); });
+      h+='</div>';
+    });
+    h+='<div class="powered">Powered by Aurora Sailing</div></div>';
+
+    h+='</div>';
+    return h;
+  }
+
+  /* ---------- markdown ---------- */
+  function renderMD(){
+    var m='# Port Explorers \u2014 Attendance & Achievements\n_Exported '+todayStr()+'_\n';
+    m+='\n## Attendance\n\n';
+    if(!dates.length){ m+='_No attendance recorded yet._\n'; }
+    else{
+      m+='| Sailor | '+dates.map(prettyDate).join(' | ')+' | Total |\n';
+      m+='|'+Array(dates.length+2).join('---|')+'---|\n';
+      sailors.forEach(function(s){ var tot=0; var cells=dates.map(function(dt){ var p=(presentMap[s]||{})[dt]; if(p)tot++; return p?'\u2713':''; }); m+='| '+s+' | '+cells.join(' | ')+' | '+tot+' |\n'; });
+    }
+    m+='\n---\n_Powered by Aurora Sailing._\n';
+
+    m+='\n## Achievements \u2014 summary\n\n';
+    m+='| Sailor | '+STAGES.map(function(s){return s.tag;}).join(' | ')+' |\n';
+    m+='|'+Array(STAGES.length+1).join('---|')+'---|\n';
+    sailors.forEach(function(s){ var cells=STAGES.map(function(sg){ var st=stageStatus(s,sg); return st.complete?'\u2713':(st.started?(st.done+'/'+st.total):''); }); m+='| '+s+' | '+cells.join(' | ')+' |\n'; });
+    m+='\n---\n_Powered by Aurora Sailing._\n';
+
+    m+='\n## Achievements \u2014 by sailor\n';
+    sailors.forEach(function(s){ var sg=signMap[s]||{};
+      m+='\n### '+s+'\n';
+      FRAMEWORKS.forEach(function(fw){ fw.stages.forEach(function(st){
+        var total=0; st.phases.forEach(function(ph){total+=ph.items.length;});
+        var done=0; st.phases.forEach(function(ph){ ph.items.forEach(function(it){ if(sg[st.name+'||'+it]!=null)done++; }); });
+        var lbl = (done>=total&&total>0)?'complete':(done>0?(done+' of '+total):'not started');
+        m+='\n**'+st.name+'** \u2014 '+lbl+'\n';
+        st.phases.forEach(function(ph){ ph.items.forEach(function(it){ var when=sg[st.name+'||'+it];
+          m+='- ['+(when!=null?'x':' ')+'] '+it+(when!=null&&when!=='\u2713'?(' ('+prettyDate(when)+')'):'')+'\n'; }); });
+      }); });
+    });
+    m+='\n---\n_Powered by Aurora Sailing._\n';
+    return m.replace(/\n{3,}/g,'\n\n').trim()+'\n';
+  }
+
+  /* ---------- CSV ---------- */
+  function csvEsc(s){ s=String(s==null?'':s); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; }
+  function download(name, text, mime){
+    var blob=new Blob([text],{type:(mime||'text/plain')+';charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+  }
+  function attendanceCSV(){
+    var rows=[['Sailor'].concat(dates).concat(['Total'])];
+    sailors.forEach(function(s){ var tot=0; var cells=dates.map(function(dt){ var p=(presentMap[s]||{})[dt]; if(p)tot++; return p?'1':''; }); rows.push([s].concat(cells).concat([tot])); });
+    return rows.map(function(r){ return r.map(csvEsc).join(','); }).join('\r\n')+'\r\n';
+  }
+  function achievementsCSV(){
+    var rows=[['Sailor','Framework','Stage','Phase','Requirement','Date']];
+    sailors.forEach(function(s){ var sg=signMap[s]||{};
+      FRAMEWORKS.forEach(function(fw){ fw.stages.forEach(function(st){ st.phases.forEach(function(ph){ ph.items.forEach(function(it){
+        var when=sg[st.name+'||'+it]; if(when!=null) rows.push([s,fw.short,st.name,ph.phase,it,(when==='\u2713'?'':when)]);
+      }); }); }); });
+    });
+    return rows.map(function(r){ return r.map(csvEsc).join(','); }).join('\r\n')+'\r\n';
+  }
+
+  /* ---------- print ---------- */
+  function printReport(){
+    var html='<!doctype html><html><head><meta charset="utf-8"><title>Port Explorers export</title>'
+      +'<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">'
+      +'<style>'+REPORT_CSS+'</style></head><body>'+$('out').innerHTML+'</body></html>';
+    var ifr=document.createElement('iframe'); ifr.setAttribute('aria-hidden','true');
+    ifr.style.cssText='position:fixed;left:-9999px;top:0;width:900px;height:1200px;border:0';
+    document.body.appendChild(ifr);
+    var doc=ifr.contentWindow.document; doc.open(); doc.write(html); doc.close();
+    setTimeout(function(){ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); }catch(e){ try{window.print();}catch(_){} }
+      setTimeout(function(){ try{ifr.parentNode.removeChild(ifr);}catch(e){} },1500); }, 600);
+  }
+
+  /* ---------- load ---------- */
+  var currentMD='';
+  function load(){
+    $('status').textContent='Loading the Port Explorers data\u2026';
+    fetch(WEBAPP_URL+'?export=1&key='+encodeURIComponent(KEY)+'&_='+Date.now()).then(function(r){return r.json();}).then(function(d){
+      if(d && d.error==='auth'){ authFail(); return; }
+      if(!d || !d.ok){ $('status').textContent='Couldn\u2019t load the data.'; return; }
+      DATA=d; compute(d);
+      if(!sailors.length){ $('status').textContent='Nothing logged yet.'; $('out').innerHTML=''; $('actions').style.display='none'; return; }
+      $('out').innerHTML=renderHTML();
+      currentMD=renderMD(); $('md').value=currentMD;
+      $('status').textContent=sailors.length+' sailors \u00b7 '+dates.length+' session'+(dates.length===1?'':'s')+' assembled.';
+      $('actions').style.display='flex'; $('mdwrap').style.display='block'; $('pdfnote').style.display='block';
+    }).catch(function(){ $('status').textContent='Couldn\u2019t reach the sheet \u2014 check your connection and try again.'; });
+  }
+
+  /* ---------- wiring ---------- */
+  $('pdf').addEventListener('click', printReport);
+  $('copy').addEventListener('click', function(){ var btn=this;
+    function done(ok){ btn.textContent=ok?'Copied \u2713':'Select below'; setTimeout(function(){btn.textContent='Copy Markdown';},1800); if(!ok){$('mdwrap').open=true;$('md').focus();$('md').select();} }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(currentMD).then(function(){done(true);}).catch(function(){done(false);}); }
+    else { $('mdwrap').open=true; $('md').focus(); $('md').select(); try{done(document.execCommand('copy'));}catch(e){done(false);} } });
+  $('csvA').addEventListener('click', function(){ download('Port Explorers attendance.csv', attendanceCSV(), 'text/csv'); });
+  $('csvB').addEventListener('click', function(){ download('Port Explorers achievements.csv', achievementsCSV(), 'text/csv'); });
+
+  /* ---------- access gate ---------- */
+  var KEY=(function(){ try{ return localStorage.getItem('pe_read_key')||''; }catch(e){ return ''; } })();
+  function showGate(msg){ $('gate').style.display='block'; $('status').style.display='none'; $('actions').style.display='none'; $('out').innerHTML=''; $('mdwrap').style.display='none'; $('gateerr').textContent=msg||''; var k=$('key'); k.value=''; k.focus(); }
+  function hideGate(){ $('gate').style.display='none'; $('status').style.display=''; }
+  function authFail(){ try{ localStorage.removeItem('pe_read_key'); }catch(e){} KEY=''; showGate('That key wasn\u2019t recognised \u2014 try again.'); }
+  $('unlock').addEventListener('click', function(){ var val=($('key').value||'').trim(); if(!val){ $('gateerr').textContent='Enter the access key.'; return; } KEY=val; try{ localStorage.setItem('pe_read_key', KEY); }catch(e){} hideGate(); load(); });
+  $('key').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); $('unlock').click(); } });
+  if(KEY){ load(); } else { showGate(); }
+})();
+</script>
+</body>
+</html>
