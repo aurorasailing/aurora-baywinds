@@ -37,13 +37,21 @@
   .listhead .q{margin-left:auto;display:flex;gap:6px}
   .qbtn{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;padding:5px 10px;cursor:pointer}
   .qbtn:hover{border-color:var(--navy)}
-  .prow{display:flex;align-items:center;gap:11px;padding:11px 2px;border-top:1px solid var(--line);cursor:pointer}
-  .prow:first-of-type{border-top:none}
+  .prowwrap{border-top:1px solid var(--line)}
+  .prowwrap:first-of-type{border-top:none}
+  .prow{display:flex;align-items:center;gap:10px;padding:11px 2px}
+  .prow .who{display:flex;align-items:center;gap:11px;flex:1 1 auto;min-width:0;cursor:pointer}
   .prow .box{width:23px;height:23px;border:2px solid var(--line);border-radius:6px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
   .prow.on .box{background:var(--navy);border-color:var(--navy)}
   .prow.on .box::after{content:"\2713"}
-  .prow .nm{font-size:15.5px;color:var(--text)}
-  .prow .tag{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--red);border:1px solid #F7C9CE;background:#FDEAEC;border-radius:999px;padding:1px 7px}
+  .prow .nm{font-size:15.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prow .tag{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--red);border:1px solid #F7C9CE;background:#FDEAEC;border-radius:999px;padding:1px 7px;flex:0 0 auto}
+  .prow .boat{display:none;flex:0 0 auto;max-width:48%;font:inherit;font-size:13.5px;color:var(--navy);background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 28px 7px 10px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E7180' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:16px}
+  .prow.on .boat{display:block}
+  .prow .boat:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(54,49,135,.12);outline:none}
+  .boatother{display:none;width:100%;font:inherit;font-size:15px;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:0 0 9px;outline:none}
+  .boatother.show{display:block}
+  .boatother:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(54,49,135,.12)}
 
   .addrow{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
   .addrow input{flex:1 1 auto}
@@ -132,7 +140,9 @@
   function saveQ(){ localStorage.setItem('pe_attend_queue', JSON.stringify(queue)); }
   var device = localStorage.getItem('pmyc_device');
   if(!device){ device='Device-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem('pmyc_device',device); }
-  var syncing=false, present={};
+  var syncing=false, present={}, boatSel={}, boatOther={};
+  var BOATS=['RS Quest (Aurora)','RS Quest 2','X3 - #1','X3 - #2','X3 - #3','X3 - #4','Laser #1','Laser #2','Power Boat','Other'];
+  function boatValue(name){ var b=boatSel[name]||''; return b==='Other' ? (boatOther[name]||'').trim() : b; }
 
   function melbDate(d){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;}); return p.year+'-'+p.month+'-'+p.day; }
   function melbTime(d){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(function(x){t[x.type]=x.value;}); return t.hour+':'+t.minute; }
@@ -155,13 +165,35 @@
   function renderRoster(){
     var host=$('roster'); host.innerHTML='';
     roster().forEach(function(name){
+      var wrap=document.createElement('div'); wrap.className='prowwrap';
       var row=document.createElement('div'); row.className='prow'+(present[name]?' on':'');
+
+      var who=document.createElement('div'); who.className='who';
       var box=document.createElement('span'); box.className='box';
       var nm=document.createElement('span'); nm.className='nm'; nm.textContent=name;
-      row.appendChild(box); row.appendChild(nm);
-      if(isAdded(name)){ var tg=document.createElement('span'); tg.className='tag'; tg.textContent='new'; row.appendChild(tg); }
-      row.onclick=function(){ present[name]=!present[name]; row.classList.toggle('on', !!present[name]); countSel(); };
-      host.appendChild(row);
+      who.appendChild(box); who.appendChild(nm);
+      if(isAdded(name)){ var tg=document.createElement('span'); tg.className='tag'; tg.textContent='new'; who.appendChild(tg); }
+      row.appendChild(who);
+
+      var sel=document.createElement('select'); sel.className='boat';
+      var o0=document.createElement('option'); o0.value=''; o0.textContent='Boat\u2026'; sel.appendChild(o0);
+      BOATS.forEach(function(b){ var o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
+      sel.value=boatSel[name]||'';
+      row.appendChild(sel);
+
+      var other=document.createElement('input'); other.type='text'; other.className='boatother';
+      other.placeholder='Which boat?'; other.autocomplete='off'; other.value=boatOther[name]||'';
+
+      function syncOther(){ other.classList.toggle('show', !!present[name] && boatSel[name]==='Other'); }
+
+      who.onclick=function(){ present[name]=!present[name]; row.classList.toggle('on', !!present[name]); syncOther(); countSel(); };
+      sel.onclick=function(e){ e.stopPropagation(); };
+      sel.onchange=function(){ boatSel[name]=sel.value; syncOther(); };
+      other.oninput=function(){ boatOther[name]=other.value; };
+      syncOther();
+
+      wrap.appendChild(row); wrap.appendChild(other);
+      host.appendChild(wrap);
     });
     countSel();
   }
@@ -193,11 +225,11 @@
     var stamp=new Date().toLocaleString();
     names.forEach(function(name){
       queue.unshift({ id:uuid(), type:'attendance', device:device, deviceTime:stamp,
-        date:date, time:time, group:GROUP, sailor:name, loggedBy:by, note:note, status:'pending' });
+        date:date, time:time, group:GROUP, sailor:name, boat:boatValue(name), loggedBy:by, note:note, status:'pending' });
     });
     saveQ();
     if(by) localStorage.setItem('pe_logger', by);
-    present={}; $('f-note').value='';
+    present={}; boatSel={}; boatOther={}; $('f-note').value='';
     renderRoster(); render(); syncAll();
   };
 
