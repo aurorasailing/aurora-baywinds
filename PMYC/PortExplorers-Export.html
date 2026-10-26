@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Port Explorers · PortExplorers-Export.html · v0.2 -->
+<!-- Port Explorers · PortExplorers-Export.html · v0.3 -->
 <html lang="en-AU">
 <head>
 <meta charset="utf-8">
@@ -68,6 +68,7 @@
     <button type="button" class="btn ghost" id="copy">Copy Markdown</button>
     <button type="button" class="btn ghost" id="csvA">Attendance CSV</button>
     <button type="button" class="btn ghost" id="csvB">Achievements CSV</button>
+    <button type="button" class="btn ghost" id="csvC">Boat roster CSV</button>
   </div>
   <p class="pdf-note" id="pdfnote" style="display:none">In the print dialog choose <b>Save as PDF</b>. For the wide attendance page, set the layout to <b>Landscape</b> if it clips.</p>
 
@@ -81,7 +82,7 @@
 <footer>
   Reads the Port Explorers sheet — needs a connection. The logging pages don&rsquo;t; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PortExplorers-Export.html · v0.2</div>
+  <div class="ver">PortExplorers-Export.html · v0.3</div>
 </footer>
 
 <script>
@@ -177,6 +178,13 @@
    ".rep .req .dt{margin-left:auto;color:var(--muted);font-size:11px;flex:0 0 auto}"+
    ".rep .ph{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px 0;font-weight:700}"+
    ".rep .powered{margin-top:14px;text-align:right;font-size:10.5px;color:var(--muted);font-style:italic}"+
+   ".rep .bday{break-inside:avoid;margin:0 0 13px}"+
+   ".rep .bdate{font-size:13px;font-weight:800;color:var(--navy);border-bottom:1px solid var(--line);padding:0 0 3px;margin:0 0 5px}"+
+   ".rep .brow{display:flex;gap:10px;align-items:baseline;padding:3px 2px;font-size:12px}"+
+   ".rep .brow .bname{flex:0 0 32%;font-weight:700;color:var(--navy)}"+
+   ".rep .brow .bname.none{color:var(--muted);font-weight:600}"+
+   ".rep .brow .bcrew{flex:1 1 auto;color:var(--text)}"+
+   ".rep .brow .bn{flex:0 0 auto;color:var(--muted);font-size:11px}"+
    "@media print{@page{size:A4 portrait;margin:11mm}body{background:#fff}"+
    ".rep .sec.break{break-before:page;page-break-before:always}"+
    ".rep .sailor.break{break-before:page;page-break-before:always}"+
@@ -186,13 +194,25 @@
   (function injectCSS(){ var s=document.createElement('style'); s.textContent=REPORT_CSS; document.head.appendChild(s); })();
 
   /* ---------- state ---------- */
-  var DATA=null, sailors=[], dates=[], presentMap={}, signMap={};
+  var DATA=null, sailors=[], dates=[], presentMap={}, signMap={}, boatRoster={};
+  var NOBOAT='\u2014 no boat \u2014';
+  var BOAT_ORDER=['RS Quest (Aurora)','RS Quest 2','X3 - #1','X3 - #2','X3 - #3','X3 - #4','Laser #1','Laser #2','Power Boat'];
+  function orderBoats(obj){
+    return Object.keys(obj).sort(function(a,b){
+      if((a===NOBOAT)!==(b===NOBOAT)) return a===NOBOAT?1:-1;
+      var ia=BOAT_ORDER.indexOf(a), ib=BOAT_ORDER.indexOf(b);
+      if(ia<0&&ib<0) return a.localeCompare(b);
+      if(ia<0) return 1; if(ib<0) return -1; return ia-ib;
+    });
+  }
 
   function compute(d){
     var att=d.attendance||[], ach=d.achievements||[];
     var names={}, dset={};
-    presentMap={}; signMap={};
-    att.forEach(function(r){ var s=v(r,'Sailor'); var dt=dayKey(v(r,'Date')); if(!s) return; names[s]=1; if(dt){ dset[dt]=1; (presentMap[s]=presentMap[s]||{})[dt]=true; } });
+    presentMap={}; signMap={}; boatRoster={};
+    att.forEach(function(r){ var s=v(r,'Sailor'); var dt=dayKey(v(r,'Date')); if(!s) return; names[s]=1;
+      if(dt){ dset[dt]=1; (presentMap[s]=presentMap[s]||{})[dt]=true;
+        var boat=v(r,'Boat')||NOBOAT; (boatRoster[dt]=boatRoster[dt]||{}); (boatRoster[dt][boat]=boatRoster[dt][boat]||[]); if(boatRoster[dt][boat].indexOf(s)<0) boatRoster[dt][boat].push(s); } });
     ach.forEach(function(r){ var s=v(r,'Sailor'); if(!s) return; names[s]=1;
       var key=v(r,'Stage')+'||'+v(r,'Requirement');
       (signMap[s]=signMap[s]||{})[key]=dayKey(v(r,'Date'))||'\u2713'; });
@@ -225,6 +245,23 @@
       dates.forEach(function(dt){ h+='<td class="c"><b>'+(colTot[dt]||0)+'</b></td>'; });
       h+='<td class="c"></td></tr>';
       h+='</tbody></table>';
+    }
+    h+='<div class="powered">Powered by Aurora Sailing</div></div>';
+
+    /* A2 — Boat roster */
+    h+='<div class="sec break"><h2>Boat roster</h2><div class="sub">Who was aboard each boat, by session</div>';
+    if(!dates.length){ h+='<p class="sub">No attendance recorded yet.</p>'; }
+    else{
+      dates.forEach(function(dt){
+        var boats=boatRoster[dt]||{}; var order=orderBoats(boats);
+        h+='<div class="bday"><div class="bdate">'+esc(prettyDate(dt))+'</div>';
+        if(!order.length){ h+='<div class="brow"><span class="bcrew" style="color:var(--muted)">\u2014</span></div>'; }
+        order.forEach(function(bt){
+          var crew=boats[bt].slice().sort(function(a,b){return a.localeCompare(b);});
+          h+='<div class="brow"><span class="bname'+(bt===NOBOAT?' none':'')+'">'+esc(bt)+'</span><span class="bcrew">'+esc(crew.join(', '))+'</span><span class="bn">'+crew.length+'</span></div>';
+        });
+        h+='</div>';
+      });
     }
     h+='<div class="powered">Powered by Aurora Sailing</div></div>';
 
@@ -282,6 +319,16 @@
     }
     m+='\n---\n_Powered by Aurora Sailing._\n';
 
+    m+='\n## Boat roster\n';
+    if(!dates.length){ m+='\n_No attendance recorded yet._\n'; }
+    else{ dates.forEach(function(dt){ var boats=boatRoster[dt]||{}; var order=orderBoats(boats);
+      m+='\n### '+prettyDate(dt)+'\n';
+      if(!order.length){ m+='- _no boats recorded_\n'; }
+      order.forEach(function(bt){ var crew=boats[bt].slice().sort(function(a,b){return a.localeCompare(b);});
+        m+='- **'+(bt===NOBOAT?'(no boat)':bt)+':** '+crew.join(', ')+'\n'; });
+    }); }
+    m+='\n---\n_Powered by Aurora Sailing._\n';
+
     m+='\n## Achievements \u2014 summary\n\n';
     m+='| Sailor | '+STAGES.map(function(s){return s.tag;}).join(' | ')+' |\n';
     m+='|'+Array(STAGES.length+1).join('---|')+'---|\n';
@@ -314,6 +361,13 @@
   function attendanceCSV(){
     var rows=[['Sailor'].concat(dates).concat(['Total'])];
     sailors.forEach(function(s){ var tot=0; var cells=dates.map(function(dt){ var p=(presentMap[s]||{})[dt]; if(p)tot++; return p?'1':''; }); rows.push([s].concat(cells).concat([tot])); });
+    return rows.map(function(r){ return r.map(csvEsc).join(','); }).join('\r\n')+'\r\n';
+  }
+  function boatRosterCSV(){
+    var rows=[['Date','Boat','Sailor']];
+    dates.forEach(function(dt){ var boats=boatRoster[dt]||{}; orderBoats(boats).forEach(function(bt){
+      boats[bt].slice().sort(function(a,b){return a.localeCompare(b);}).forEach(function(s){ rows.push([dt,(bt===NOBOAT?'':bt),s]); });
+    }); });
     return rows.map(function(r){ return r.map(csvEsc).join(','); }).join('\r\n')+'\r\n';
   }
   function achievementsCSV(){
@@ -363,6 +417,7 @@
     else { $('mdwrap').open=true; $('md').focus(); $('md').select(); try{done(document.execCommand('copy'));}catch(e){done(false);} } });
   $('csvA').addEventListener('click', function(){ download('Port Explorers attendance.csv', attendanceCSV(), 'text/csv'); });
   $('csvB').addEventListener('click', function(){ download('Port Explorers achievements.csv', achievementsCSV(), 'text/csv'); });
+  $('csvC').addEventListener('click', function(){ download('Port Explorers boat roster.csv', boatRosterCSV(), 'text/csv'); });
 
   /* ---------- access gate ---------- */
   var KEY=(function(){ try{ return localStorage.getItem('pe_read_key')||''; }catch(e){ return ''; } })();
