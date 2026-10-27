@@ -61,6 +61,16 @@
   .req.on .box{background:var(--navy);border-color:var(--navy)}
   .req.on .box::after{content:"\2713"}
   .req .txt{font-size:14.5px;line-height:1.35;color:var(--text)}
+  .req.done{opacity:.6;cursor:default;background:#F6FAF7}
+  .req.done:hover{background:#F6FAF7}
+  .req.done .box{background:#E3F3E9;border-color:#BFE3CC}
+  .req.done .box::after{content:"\2713";color:#1E7A3C}
+  .req.done .txt{color:var(--muted)}
+  .req .onfile{display:none}
+  .req.done .onfile{display:inline-block;margin-left:auto;align-self:center;font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:#1E7A3C;background:#E3F3E9;border-radius:999px;padding:2px 8px;white-space:nowrap}
+  .progress{font-size:12px;color:var(--muted);margin:10px 2px 0;min-height:16px}
+  .progress a{color:var(--navy);font-weight:600;text-decoration:none;cursor:pointer}
+  .progress a:hover{text-decoration:underline}
 
   button.go{width:100%;font:inherit;font-size:16px;font-weight:700;color:#fff;background:var(--red);border:none;border-radius:12px;padding:14px;margin-top:6px;cursor:pointer;letter-spacing:.2px}
   button.go:active{transform:translateY(1px)}
@@ -100,6 +110,7 @@
       <input type="text" id="addName" placeholder="Add someone not on the list" autocomplete="off">
       <button class="addbtn" id="addBtn">Add</button>
     </div>
+    <div class="progress" id="progress"></div>
     <div class="two" style="margin-top:4px">
       <div><label class="fld" for="f-date">Date</label><input type="date" id="f-date"></div>
       <div><label class="fld" for="f-by">Signed off by</label><input type="text" id="f-by" placeholder="Your name" autocomplete="off"></div>
@@ -126,7 +137,7 @@
   <footer>
     <span class="para">Working record. Requirement wording is condensed from the Scouts Australia OAS Boating stages and the Australian Sailing Dinghy syllabus &mdash; sign off against the official sheets for the exact statements.</span>
     <div style="margin-top:10px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-    <div class="ver">PortExplorers-Achievements.html · v0.5</div>
+    <div class="ver">PortExplorers-Achievements.html · v0.6</div>
   </footer>
 </div>
 
@@ -149,7 +160,7 @@
         {phase:'Review', items:['Reflect on two trips (enjoyed / learnt / improved)',"What you'd do differently next time"]}
       ]},
       { name:'OAS Boating Stage 3', phases:[
-        {phase:'Plan', items:['DRSABCD first-aid steps','Weather-condition risks (people, gear, environment)','Your environmental impact when boating','Personal items to carry (by trip and conditions)','Finding and reading the local forecast','State / Branch water-safety rules','Six naturally-powered watercraft','Helping a junior fit their PFD','Three more boating knots','Six parts of a boat and/or oar','The difference between a tack and a gybe']},
+        {phase:'Plan', items:['DRSABCD first-aid steps','Weather-condition risks (people, gear, environment)','Your environmental impact when boating','Personal items to carry (by trip and conditions)','Finding and reading the local forecast','State / Branch water-safety rules','Six naturally-powered watercraft','Helping a lower-stage Scout fit their PFD','Three more boating knots','Six parts of a boat and/or oar','The difference between a tack and a gybe']},
         {phase:'Do', items:['Five trips logged by end of Stage 3','Self-rescue back aboard with help','HELP and huddle positions in a PFD','Swim 50 m in a PFD (25 m, tread 2 min, 25 m)','Teaching the buddy system to a Stage 1']},
         {phase:'Review', items:['Discuss boat-safety learnings from two trips with your Patrol']}
       ]},
@@ -227,7 +238,7 @@
     if(!roster().some(function(x){return x.toLowerCase()===n.toLowerCase();})){
       added.push(n); localStorage.setItem('pe_roster_added', JSON.stringify(added));
     }
-    $('addName').value=''; fillSelect(n);
+    $('addName').value=''; fillSelect(n); applyDone();
   };
   $('addName').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); $('addBtn').click(); }});
 
@@ -258,9 +269,9 @@
             var row=document.createElement('div'); row.className='req'; row.setAttribute('data-k',key);
             row.setAttribute('data-st','f'+fi+'-s'+si); row.setAttribute('data-ph',phk);
             row.__desc={framework:fw.short,stage:st.name,phase:ph.phase,requirement:txt};
-            row.innerHTML='<span class="box"></span><span class="txt"></span>';
+            row.innerHTML='<span class="box"></span><span class="txt"></span><span class="onfile">on file</span>';
             row.querySelector('.txt').textContent=txt;
-            row.onclick=function(){ setRow(row, !ticks[key]); updateCounts(); };
+            row.onclick=function(){ if(row.classList.contains('done')) return; setRow(row, !ticks[key]); updateCounts(); };
             d.appendChild(row);
           });
         });
@@ -273,9 +284,9 @@
       if(!b) return;
       e.preventDefault(); e.stopPropagation();
       var sel = b.hasAttribute('data-ph') ? '.req[data-ph="'+b.getAttribute('data-ph')+'"]' : '.req[data-st="'+b.getAttribute('data-st')+'"]';
-      var rows=document.querySelectorAll(sel);
-      var allOn=true; Array.prototype.forEach.call(rows,function(r){ if(!ticks[r.getAttribute('data-k')]) allOn=false; });
-      Array.prototype.forEach.call(rows,function(r){ setRow(r, !allOn); });
+      var rows=Array.prototype.filter.call(document.querySelectorAll(sel),function(r){return !r.classList.contains('done');});
+      var allOn=true; rows.forEach(function(r){ if(!ticks[r.getAttribute('data-k')]) allOn=false; });
+      rows.forEach(function(r){ setRow(r, !allOn); });
       updateCounts();
     });
   })();
@@ -324,6 +335,7 @@
     updateCounts();
     $('f-sailor').value=''; $('f-note').value=''; $('filter').value='';
     $('filter').dispatchEvent(new Event('input'));
+    applyDone();
     render(); syncAll();
   };
 
@@ -358,8 +370,60 @@
       row.appendChild(who); row.appendChild(what); row.appendChild(chip); rec.appendChild(row);
     });
   }
-  window.addEventListener('online', syncAll); window.addEventListener('offline', render);
-  render(); syncAll();
+  /* ---------- progress grey-out (needs the leader key; degrades to off) ---------- */
+  function pv(o,k){ return (o&&o[k]!=null)?String(o[k]).trim():''; }
+  var READKEY=(function(){ try{ return localStorage.getItem('pe_read_key')||''; }catch(e){ return ''; } })();
+  var doneMap={}, progressState='off';   /* off | loading | on | paused | offline | err */
+
+  function loadProgress(){
+    if(!READKEY){ progressState='off'; renderProgressBar(); return; }
+    if(!navigator.onLine){ progressState='offline'; renderProgressBar(); return; }
+    progressState='loading'; renderProgressBar();
+    fetch(WEBAPP_URL+'?export=1&key='+encodeURIComponent(READKEY)+'&_='+Date.now())
+      .then(function(r){return r.json();}).then(function(d){
+        if(d && d.error==='auth'){ try{localStorage.removeItem('pe_read_key');}catch(e){} READKEY=''; progressState='off'; renderProgressBar(); return; }
+        if(!d || !d.ok){ progressState='err'; renderProgressBar(); return; }
+        doneMap={};
+        (d.achievements||[]).forEach(function(r){ var s=pv(r,'Sailor'); if(!s) return; (doneMap[s]=doneMap[s]||{})[pv(r,'Stage')+'||'+pv(r,'Requirement')]=true; });
+        progressState='on'; renderProgressBar(); applyDone();
+      }).catch(function(){ progressState='err'; renderProgressBar(); });
+  }
+
+  function applyDone(){
+    var name=$('f-sailor').value;
+    var done=(progressState==='on' && name) ? (doneMap[name]||{}) : {};
+    Array.prototype.forEach.call(document.querySelectorAll('.req'), function(row){
+      var dsc=row.__desc; var isDone=!!done[dsc.stage+'||'+dsc.requirement];
+      row.classList.toggle('done', isDone);
+      if(isDone){ var key=row.getAttribute('data-k'); if(ticks[key]){ delete ticks[key]; row.classList.remove('on'); } }
+    });
+  }
+
+  function enableProgress(){
+    var k=window.prompt('Leader key — to show each sailor\u2019s progress:'); if(k==null) return; k=k.trim(); if(!k) return;
+    READKEY=k; try{ localStorage.setItem('pe_read_key', k); }catch(e){}
+    loadProgress();
+  }
+
+  function renderProgressBar(){
+    var p=$('progress'); if(!p) return; p.innerHTML='';
+    function link(txt, fn){ var a=document.createElement('a'); a.href='javascript:void(0)'; a.textContent=txt; a.onclick=fn; return a; }
+    if(progressState==='on'){ p.appendChild(document.createTextNode('Progress on \u2014 signed-off items are dimmed. ')); p.appendChild(link('refresh', loadProgress)); p.appendChild(document.createTextNode(' \u00b7 ')); p.appendChild(link('off', function(){ progressState='paused'; applyDone(); renderProgressBar(); })); }
+    else if(progressState==='loading'){ p.textContent='Loading progress\u2026'; }
+    else if(progressState==='offline'){ p.appendChild(document.createTextNode('Progress needs a connection. ')); p.appendChild(link('retry', loadProgress)); }
+    else if(progressState==='err'){ p.appendChild(document.createTextNode('Couldn\u2019t load progress. ')); p.appendChild(link('retry', loadProgress)); }
+    else if(progressState==='paused'){ p.appendChild(link('Show each sailor\u2019s progress', function(){ progressState='on'; renderProgressBar(); applyDone(); })); }
+    else { p.appendChild(link('Show each sailor\u2019s progress', enableProgress)); }
+  }
+
+  $('f-sailor').addEventListener('change', function(){
+    ticks={}; Array.prototype.forEach.call(document.querySelectorAll('.req.on'),function(r){r.classList.remove('on');});
+    applyDone(); updateCounts();
+  });
+
+  window.addEventListener('online', function(){ syncAll(); if(READKEY && (progressState==='offline'||progressState==='err')) loadProgress(); });
+  window.addEventListener('offline', function(){ render(); if(progressState==='on'||progressState==='loading'){ progressState='offline'; renderProgressBar(); } });
+  render(); syncAll(); loadProgress();
 })();
 </script>
 </body>
