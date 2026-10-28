@@ -1,4 +1,4 @@
-<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-GPX-Import.html · v1.0 · 2026-10-22 · transferred from the PMYC GPX import -->
+<!-- 1st Victorian Sea Scouts · 1stVic/1stVic-GPX-Import.html · v1.1 · 2026-10-28 · Velocitek .VTK decode + import (max heel), alongside GPX -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -89,16 +89,16 @@
 </header>
 <main>
   <span class="eyebrow">1st Victorian Sea Scouts</span>
-  <h1>GPX import</h1>
-  <div class="principle">Upload a GPS track from <b>Waterspeed, Garmin, Strava or Google Earth</b>. It reads distance, time, speed and course, and files itself to the session by the track's own timestamps — upload whenever suits.</div>
+  <h1>Track import</h1>
+  <div class="principle">Upload a GPS track — a <b>.gpx</b> from Waterspeed, Garmin, Strava or Google Earth, or a <b>Velocitek ProStart .vtk</b>. It reads distance, time, speed and course (and heel, from a Velocitek), and files itself to the session by the track's own timestamps — upload whenever suits.</div>
 
   <div class="dv-status" id="g-status"><span class="dot"></span><span id="g-statusText">Starting…</span></div>
 
   <div class="drop" id="g-drop">
-    <p><b>Drop a .gpx file here</b></p>
+    <p><b>Drop a .gpx or .vtk file here</b></p>
     <p>or</p>
-    <button type="button" class="pick-btn" id="g-pick">Choose a GPX file</button>
-    <input type="file" id="g-file" accept=".gpx,application/gpx+xml,text/xml,application/xml">
+    <button type="button" class="pick-btn" id="g-pick">Choose a track file</button>
+    <input type="file" id="g-file" accept=".gpx,.vtk,application/gpx+xml,text/xml,application/xml,application/octet-stream">
   </div>
   <div class="dv-warn hidden" id="g-warn"></div>
 
@@ -121,7 +121,7 @@
 <footer>
   The original file isn't kept — only the summary and a thinned track. Saved on this device and synced when there's signal.
   <div style="margin-top:8px">1st Victorian Sea Scouts · Albert Park Lake · built with <a href="https://aurorasailing.com.au">Aurora Sailing</a></div>
-  <div class="ver">1stVic-GPX-Import.html · v1.0</div>
+  <div class="ver">1stVic-GPX-Import.html · v1.1</div>
 </footer>
 <script>
 (function(){
@@ -140,6 +140,41 @@
   function melbDate(d){ var p={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){ p[x.type]=x.value; }); return p.year+'-'+p.month+'-'+p.day; }
   function melbTime(d){ var t={}; new Intl.DateTimeFormat('en-GB',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(function(x){ t[x.type]=x.value; }); return t.hour+':'+t.minute; }
   function pretty(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||''); if(!m) return iso||''; return new Date(+m[1],+m[2]-1,+m[3]).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+
+  /* ---------- Velocitek ProStart .VTK decode (ported from the verified handover) ---------- */
+  function readVarint(b,i){ var s=0,r=0,x; for(;;){ x=b[i++]; r += (x&0x7f)*Math.pow(2,s); if(!(x&0x80)) break; s+=7; } return [r,i]; }
+  function vzig(v){ return (v%2) ? -(v+1)/2 : v/2; }
+  function vFields(b){ var out={}, i=0; while(i<b.length){ var t=readVarint(b,i), tag=t[0], f=Math.floor(tag/8), wt=tag&7; i=t[1];
+      if(wt===0){ var r=readVarint(b,i); out[f]=r[0]; i=r[1]; }
+      else if(wt===2){ var r=readVarint(b,i), ln=r[0]; i=r[1]; out[f]=b.subarray(i,i+ln); i+=ln; }
+      else return null; } return out; }
+  function quatToHPR(q){ var n=q[0]*q[0]+q[1]*q[1]+q[2]*q[2]+q[3]*q[3]; if(n<1e-12) return [0,0,0];
+    var s=Math.sqrt(2/n), qs=[s*q[0],s*q[1],s*q[2],s*q[3]]; function op(i,j){ return qs[i]*qs[j]; }
+    var m0=1-op(2,2)-op(3,3), m1=op(1,2)+op(3,0), m2=op(1,3)-op(2,0),
+        m4=(1-op(1,1))-op(3,3), m5=op(2,3)+op(1,0), m7=op(2,3)-op(1,0), m8=(1-op(1,1))-op(2,2);
+    var cy=Math.hypot(m0,m1), D=180/Math.PI, roll,pitch,yaw;
+    if(cy>1e-6){ roll=Math.atan2(m5,m8); pitch=Math.atan2(-m2,cy); yaw=Math.atan2(m1,m0); }
+    else { roll=Math.atan2(-m7,m4); pitch=Math.atan2(-m2,cy); yaw=0; }
+    return [ Math.round((((-yaw*D)%360)+360)%360), Math.round(roll*D), Math.round(-pitch*D) ];
+  }
+  function decodeVTK(buf){
+    var b=new Uint8Array(buf), i=0, pts=[], sog=[], heel=[];
+    while(i+2<=b.length){ var n=b[i]|(b[i+1]<<8); i+=2; if(n===0||i+n>b.length) break;
+      var rec=vFields(b.subarray(i,i+n)); i+=n;
+      if(!rec || !(1 in rec)) continue;
+      var tp=vFields(rec[1]); if(!tp) continue;
+      var lat=vzig(tp[3]||0)/1e7, lon=vzig(tp[4]||0)/1e7;
+      if(!isFinite(lat)||!isFinite(lon)||(lat===0&&lon===0)) continue;
+      var t=(tp[1]||0)+(tp[2]||0)/100;
+      var hpr=quatToHPR([vzig(tp[7]||0)/1000, vzig(tp[8]||0)/1000, vzig(tp[9]||0)/1000, vzig(tp[10]||0)/1000]);
+      pts.push([lat,lon,new Date(t*1000)]); sog.push((tp[5]||0)/10); heel.push(hpr[1]);
+    }
+    if(pts.length<2) throw new Error('No track points in that Velocitek file.');
+    var a=0, z=pts.length-1;
+    while(a<z && sog[a]<=0.3) a++;  while(z>a && sog[z]<=0.3) z--;
+    if(z-a<1){ a=0; z=pts.length-1; }
+    return { points:pts.slice(a,z+1), sog:sog.slice(a,z+1), heel:heel.slice(a,z+1), source:'Velocitek ProStart' };
+  }
 
   /* ---------- GPX parse + stats + thin + render ---------- */
   function parseGPX(text){
@@ -168,20 +203,28 @@
       if(dmax>eps && idx>-1){ keep[idx]=true; stack.push([a,idx]); stack.push([idx,b]); } }
     var out=[]; for(var i=0;i<pts.length;i++) if(keep[i]) out.push(pts[i]); return out;
   }
-  function computeStats(gpx){
-    var P=gpx.points, start=P[0][2], end=P[P.length-1][2], dist=0, seg=[];
-    for(var i=1;i<P.length;i++){ var d=hav(P[i-1],P[i]), dt=(P[i][2]-P[i-1][2])/1000; dist+=d; if(dt>0 && dt<120) seg.push(d/dt); }
-    var sm=[]; for(var i=0;i<seg.length;i++){ var w=seg.slice(i,i+3), s=0; for(var j=0;j<w.length;j++) s+=w[j]; sm.push(s/w.length); }
-    var mov=seg.filter(function(s){ return s>0.26; });
+  function computeStats(trk){
+    var P=trk.points, start=P[0][2], end=P[P.length-1][2], dist=0, avgKt=0, maxKt=0, i, j;
+    if(trk.sog){                                                   // Velocitek: native SOG — distance integrated, not inflated by 5 Hz jitter
+      for(i=1;i<P.length;i++){ var dt=(P[i][2]-P[i-1][2])/1000; if(dt>0 && dt<10){ dist += ((trk.sog[i-1]+trk.sog[i])/2)*0.514444*dt; } }
+      var sm=[]; for(i=0;i<trk.sog.length;i++){ var w=trk.sog.slice(Math.max(0,i-2),i+3), s=0; for(j=0;j<w.length;j++) s+=w[j]; sm.push(s/w.length); }
+      var mov=trk.sog.filter(function(s){ return s>0.3; });
+      avgKt = mov.length? mov.reduce(function(a,b){return a+b;},0)/mov.length : 0;
+      maxKt = sm.length? Math.max.apply(null,sm) : 0;
+    } else {                                                       // GPX: haversine between fixes
+      var seg=[]; for(i=1;i<P.length;i++){ var d=hav(P[i-1],P[i]), dt2=(P[i][2]-P[i-1][2])/1000; dist+=d; if(dt2>0 && dt2<120) seg.push(d/dt2); }
+      var sm2=[]; for(i=0;i<seg.length;i++){ var w2=seg.slice(i,i+3), s2=0; for(j=0;j<w2.length;j++) s2+=w2[j]; sm2.push(s2/w2.length); }
+      var mov2=seg.filter(function(s){ return s>0.26; });
+      avgKt = mov2.length?(mov2.reduce(function(a,b){return a+b;},0)/mov2.length)*MS2KT:0;
+      maxKt = sm2.length?Math.max.apply(null,sm2)*MS2KT:0;
+    }
     var latlon=P.map(function(p){ return [p[0],p[1]]; });
     var thin=dp(latlon, 0.00004);
-    var lats=latlon.map(function(p){return p[0];}), lons=latlon.map(function(p){return p[1];});
-    return { date:melbDate(start), time:melbTime(start),
-      durationMin:Math.round((end-start)/60000),
-      distanceNm:dist/1852,
-      avgKt: mov.length?(mov.reduce(function(a,b){return a+b;},0)/mov.length)*MS2KT:0,
-      maxKt: sm.length?Math.max.apply(null,sm)*MS2KT:0,
-      thin:thin, source:gpx.source||'GPX', nPoints:P.length };
+    var out={ date:melbDate(start), time:melbTime(start),
+      durationMin:Math.round((end-start)/60000), distanceNm:dist/1852, avgKt:avgKt, maxKt:maxKt,
+      thin:thin, source:trk.source||'GPX', nPoints:P.length };
+    if(trk.heel && trk.heel.length){ var mh=0; for(i=0;i<trk.heel.length;i++){ if(Math.abs(trk.heel[i])>Math.abs(mh)) mh=trk.heel[i]; } out.maxHeel=mh; }
+    return out;
   }
   function trackSVG(thin,w,h){
     var lats=thin.map(function(p){return p[0];}), lons=thin.map(function(p){return p[1];});
@@ -206,24 +249,26 @@
   function handleFile(file){
     clearWarn();
     if(!file){ return; }
+    var isVTK=/\.vtk$/i.test(file.name||'');
     var r=new FileReader();
     r.onload=function(){
       try{
-        var gpx=parseGPX(String(r.result)); S=computeStats(gpx);
+        var trk = isVTK ? decodeVTK(r.result) : parseGPX(String(r.result)); S=computeStats(trk);
         document.getElementById('g-meta').textContent = file.name+' · '+pretty(S.date)+' '+S.time+' · '+S.source;
         document.getElementById('g-track').innerHTML = trackSVG(S.thin, 680, 300);
-        document.getElementById('g-stats').innerHTML =
-          stat('Distance', S.distanceNm.toFixed(2), 'NM')
-         +stat('Duration', String(S.durationMin), 'min')
-         +stat('Avg moving', S.avgKt.toFixed(1), 'kt')
-         +stat('Max', S.maxKt.toFixed(1), 'kt');
+        var sh = stat('Distance', S.distanceNm.toFixed(2), 'NM')
+               + stat('Duration', String(S.durationMin), 'min')
+               + stat('Avg moving', S.avgKt.toFixed(1), 'kt')
+               + stat('Max', S.maxKt.toFixed(1), 'kt');
+        if(S.maxHeel!=null) sh += stat('Max heel', (S.maxHeel>0?'+':'')+S.maxHeel, '°');
+        document.getElementById('g-stats').innerHTML = sh;
         document.getElementById('g-preview').classList.add('show');
         document.getElementById('g-log').disabled = (mode==='');
         window.scrollTo({top:document.getElementById('g-preview').offsetTop-60,behavior:'smooth'});
       }catch(err){ S=null; document.getElementById('g-preview').classList.remove('show'); warn(err.message||'Could not read that file.'); }
     };
     r.onerror=function(){ warn('Could not read that file.'); };
-    r.readAsText(file);
+    if(isVTK) r.readAsArrayBuffer(file); else r.readAsText(file);
   }
   function stat(l,n,u){ return '<div class="stat"><div class="l">'+l+'</div><div class="n">'+n+' <span class="u">'+u+'</span></div></div>'; }
 
@@ -245,7 +290,7 @@
   document.getElementById('g-log').addEventListener('click', submit);
 
   function submit(){
-    if(!S){ warn('Choose a GPX file first.'); return; }
+    if(!S){ warn('Choose a track file first.'); return; }
     if(!mode){ warn('Pick Sailing or Powerboat.'); return; }
     clearWarn();
     var rec={ id:uuid(), type:'gpx', device:device, deviceTime:new Date().toLocaleString(),
@@ -254,6 +299,7 @@
       avgKt:S.avgKt.toFixed(1), maxKt:S.maxKt.toFixed(1),
       points:S.thin.map(function(p){ return p[0].toFixed(5)+','+p[1].toFixed(5); }).join(';'),
       source:S.source, status:'pending' };
+    if(S.maxHeel!=null) rec.maxHeel=String(S.maxHeel);
     queue.unshift(rec); save();
     // reset for the next file
     S=null; mode=''; document.getElementById('g-preview').classList.remove('show');
@@ -282,7 +328,7 @@
     else if(syncing){ s.classList.add('s-wait'); t.textContent='Syncing\u2026'; }
     else if(pend){ s.classList.add('s-wait'); t.textContent=pend+' track'+(pend>1?'s':'')+' waiting to sync.'; }
     else if(queue.length){ s.classList.add('s-ok'); t.textContent='All synced.'; }
-    else { t.textContent='Ready — drop in a GPX file.'; }
+    else { t.textContent='Ready — drop in a .gpx or .vtk track.'; }
     var rec=document.getElementById('g-recent'); if(!queue.length){ rec.innerHTML=''; return; } rec.innerHTML='';
     queue.slice(0,8).forEach(function(r){ var row=document.createElement('div'); row.className='dv-rec'; var synced=r.status==='synced';
       row.innerHTML='<span class="who"></span><span class="when"></span><span class="chip '+(synced?'sy':'pe')+'">'+(synced?'\u2713 Synced':'\u29D6 Pending')+'</span>';
