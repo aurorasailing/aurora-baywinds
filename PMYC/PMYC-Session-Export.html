@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.15 · 2026-10-23 · robustness: session-window end = review time; stale-weather refetch; load retry + guard; tolerant of missing data -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.16 · 2026-10-23 · robustness: session-window end = review time; stale-weather refetch; load retry + guard; tolerant of missing data -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.15</div>
+  <div class="ver">PMYC-Session-Export.html · v1.16</div>
 </footer>
 <script>
 (function(){
@@ -275,6 +275,29 @@
       +'<circle cx="'+sx+'" cy="'+sy+'" r="5" fill="#39D455"/><circle cx="'+ex+'" cy="'+ey+'" r="5" fill="#F0792E"/></svg>';
   }
   function trackFromString(str){ if(!str) return ''; var thin=str.split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); }); if(thin.length<2) return ''; return trackSVG(thin,680,300); }
+  function parsePts(str){ return (str||'').split(';').map(function(s){ var a=s.split(','); return [parseFloat(a[0]),parseFloat(a[1])]; }).filter(function(p){ return isFinite(p[0])&&isFinite(p[1]); }); }
+  var TRKCOLORS=['#1F6FEB','#F0792E','#2EA043','#D2308A','#17B3C4','#C9A227','#8957E5','#D14D41'];
+  function overlaySVG(tracks,w,hh){
+    var all=[]; tracks.forEach(function(t){ for(var i=0;i<t.pts.length;i++) all.push(t.pts[i]); });
+    if(all.length<2) return '';
+    var lats=all.map(function(p){return p[0];}), lons=all.map(function(p){return p[1];});
+    var minLo=Math.min.apply(null,lons), maxLo=Math.max.apply(null,lons), minLa=Math.min.apply(null,lats), maxLa=Math.max.apply(null,lats);
+    var lat0=(minLa+maxLa)/2, k=Math.cos(lat0*Math.PI/180);
+    var ww=(maxLo-minLo)*k||1e-6, hgt=(maxLa-minLa)||1e-6, pad=16;
+    var sc=Math.min((w-2*pad)/ww,(hh-2*pad)/hgt), ox=(w-ww*sc)/2, oy=(hh-hgt*sc)/2;
+    function X(p){ return ((p[1]-minLo)*k*sc+ox).toFixed(1); }
+    function Y(p){ return ((maxLa-p[0])*sc+oy).toFixed(1); }
+    var body='';
+    tracks.forEach(function(t,i){ if(t.pts.length<2) return; var col=TRKCOLORS[i%TRKCOLORS.length];
+      body+='<path d="M'+t.pts.map(function(p){return X(p)+','+Y(p);}).join(' L')+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>';
+      body+='<circle cx="'+X(t.pts[0])+'" cy="'+Y(t.pts[0])+'" r="4" fill="'+col+'"/>'; });
+    var rows=tracks.length, maxLen=Math.max.apply(null,tracks.map(function(t){ return (t.boat||'Track X').length; }));
+    var boxW=Math.min(w-16, 48+7.3*maxLen), legbg='<rect x="8" y="8" width="'+boxW.toFixed(0)+'" height="'+(rows*21+6)+'" rx="9" fill="#FFFFFF" opacity="0.85" stroke="#E1E6E0"/>';
+    var ly=24, leg='';
+    tracks.forEach(function(t,i){ var col=TRKCOLORS[i%TRKCOLORS.length];
+      leg+='<rect x="15" y="'+(ly-10)+'" width="13" height="13" rx="3" fill="'+col+'"/><text x="34" y="'+(ly+1)+'" font-size="12.5" fill="#1C2B3A" font-family="sans-serif">'+esc(t.boat||('Track '+(i+1)))+'</text>'; ly+=21; });
+    return '<svg viewBox="0 0 '+w+' '+hh+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block"><rect width="'+w+'" height="'+hh+'" fill="#EEF1EC"/>'+body+legbg+leg+'</svg>';
+  }
 
   /* ---------- real-map track image ----------
      The track is drawn on Mapbox tiles, but the Mapbox token is NOT in this file — it lives in the
@@ -587,8 +610,13 @@
     var gps=d.gpx||[];
     if(gps.length){
       h+='<div class="block"><h3>Track'+(gps.length>1?'s':'')+'</h3>';
+      if(gps.length>1){
+        var otracks=gps.map(function(g){ return { pts:parsePts(v(g,'Track')), boat:(v(g,'Boat')||v(g,'Mode')||'Track') }; }).filter(function(t){ return t.pts.length>=2; });
+        if(otracks.length>=2){ var ov=overlaySVG(otracks,680,440);
+          if(ov) h+='<div class="item"><p class="it-h">All tracks <span class="t">overlay</span></p><div class="mapfit" style="margin-top:4px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+ov+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Overlay \u00b7 not for navigation</div></div></div>'; }
+      }
       gps.forEach(function(g){
-        h+='<div class="item"><p class="it-h">'+esc(v(g,'Mode')||'Track')+' <span class="t">'+esc([v(g,'Time'),v(g,'Source')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
+        h+='<div class="item"><p class="it-h">'+esc(v(g,'Boat')||v(g,'Mode')||'Track')+' <span class="t">'+esc([v(g,'Mode'),v(g,'Time'),v(g,'Source')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
         h+=kv([['Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':''], ['Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':''], ['Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':''], ['Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'']]);
         if(g.__mapimg){ h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden"><img src="'+g.__mapimg+'" alt="Session track on a map" style="width:100%;display:block"><div style="font-size:11px;color:var(--muted);padding:4px 10px;background:#fff">\u00a9 Mapbox \u00a9 OpenStreetMap \u00b7 not for navigation</div></div>'; }
         else { var svg=trackFromString(v(g,'Track')); if(svg) h+='<div class="mapfit" style="margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden">'+svg+'<div style="font-size:11.5px;color:var(--muted);padding:5px 10px;background:#fff">Not for navigation</div></div>'; }
@@ -686,14 +714,16 @@
     if(gps.length){
       m+='\n## Track'+(gps.length>1?'s':'')+'\n';
       gps.forEach(function(g){
-        m+='\n### '+(v(g,'Mode')||'Track')+(v(g,'Time')?(' ('+v(g,'Time')+')'):'')+'\n';
+        m+='\n### '+(v(g,'Boat')||v(g,'Mode')||'Track')+(v(g,'Time')?(' ('+v(g,'Time')+')'):'')+'\n';
+        m+=mdLine('Boat', v(g,'Boat'));
+        m+=mdLine('Mode', v(g,'Mode'));
         m+=mdLine('Distance', has(g,'Distance (NM)')?v(g,'Distance (NM)')+' NM':'');
         m+=mdLine('Duration', has(g,'Duration (min)')?v(g,'Duration (min)')+' min':'');
         m+=mdLine('Avg moving', has(g,'Avg moving (kt)')?v(g,'Avg moving (kt)')+' kt':'');
         m+=mdLine('Max', has(g,'Max (kt)')?v(g,'Max (kt)')+' kt':'');
         m+=mdLine('Source', v(g,'Source'));
       });
-      m+='\n_Track map in the PDF export._\n';
+      m+=(gps.length>1?'\n_Separate track maps and a combined overlay in the PDF export._\n':'\n_Track map in the PDF export._\n');
     }
     return m.replace(/\n{3,}/g,'\n\n').trim()+'\n';
   }
