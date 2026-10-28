@@ -1,4 +1,4 @@
-<!-- Aurora Explorer · PMYC-Session-Export.html · v1.14 · 2026-10-23 · robustness: session-window end = review time; stale-weather refetch; load retry + guard; tolerant of missing data -->
+<!-- Aurora Explorer · PMYC-Session-Export.html · v1.15 · 2026-10-23 · robustness: session-window end = review time; stale-weather refetch; load retry + guard; tolerant of missing data -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,7 +136,7 @@
 <footer>
   Reads the shared sheet — needs a connection. The on-water pages don't; this one does.
   <div style="margin-top:8px"><a href="https://aurorasailing.com.au">Aurora Sailing</a> · Melbourne</div>
-  <div class="ver">PMYC-Session-Export.html · v1.14</div>
+  <div class="ver">PMYC-Session-Export.html · v1.15</div>
 </footer>
 <script>
 (function(){
@@ -160,7 +160,7 @@
       sel.innerHTML='';
       d.dates.forEach(function(s){
         var bits=[]; if(s.briefings) bits.push(s.briefings+' briefing'+(s.briefings>1?'s':''));
-        if(s.checkins) bits.push(s.checkins+' check'+(s.checkins>1?'s':'')); if(s.reviews) bits.push(s.reviews+' review'+(s.reviews>1?'s':'')); if(s.gpx) bits.push(s.gpx+' track'+(s.gpx>1?'s':''));
+        if(s.checkins) bits.push(s.checkins+' check'+(s.checkins>1?'s':'')); if(s.boatchecks) bits.push(s.boatchecks+' boat check'+(s.boatchecks>1?'s':'')); if(s.reviews) bits.push(s.reviews+' review'+(s.reviews>1?'s':'')); if(s.gpx) bits.push(s.gpx+' track'+(s.gpx>1?'s':''));
         var o=document.createElement('option'); o.value=s.date; o.textContent=prettyDate(s.date)+'  —  '+bits.join(' · '); sel.appendChild(o);
       });
       statusEl.textContent='Pick a session, then Load.';
@@ -188,7 +188,7 @@
     go(1).then(function(d){
       if(myseq!==loadSeq) return;
       if(!d || !d.ok){ if(d && d.error==='auth'){ authFail(); return; } statusEl.textContent='Couldn\u2019t load that session.'; return; }
-      var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
+      var total=(d.briefings||[]).length+(d.checkins||[]).length+(d.boatchecks||[]).length+(d.reviews||[]).length+(d.gpx||[]).length;
       if(!total){ statusEl.textContent='No records for '+prettyDate(date)+'.'; return; }
       d.wx = weatherFromRows(d.weather||[]);               // saved trace if any — report never waits on the network
       var win=sessionWindow(d);
@@ -549,6 +549,19 @@
       h+='</div>';
     }
 
+    // Boat checks (dinghy pre-launch, e.g. RS Quest)
+    var bcs=d.boatchecks||[];
+    if(bcs.length){
+      h+='<div class="block"><h3>Boat check'+(bcs.length>1?'s':'')+'</h3>';
+      bcs.forEach(function(c){
+        h+='<div class="item"><p class="it-h">'+esc([v(c,'Boat type'),v(c,'Boat')].filter(Boolean).join(' \u00b7 ')||'Boat')+' <span class="t">'+esc([v(c,'Checked by'),v(c,'Time')].filter(Boolean).join(' \u00b7 '))+'</span></p>';
+        h+=kv([['Group', v(c,'Group')], ['All checked', v(c,'All checked')], ['Not checked', v(c,'Not checked')], ['Declaration', v(c,'Declaration')]]);
+        h+=para('Faults / notes', v(c,'Faults / notes'));
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+
     // Reviews
     var rvs=d.reviews||[];
     if(rvs.length){
@@ -639,6 +652,18 @@
       });
     }
 
+    var bcs=d.boatchecks||[];
+    if(bcs.length){
+      m+='\n## Boat check'+(bcs.length>1?'s':'')+'\n';
+      bcs.forEach(function(c){
+        m+='\n### '+([v(c,'Boat type'),v(c,'Boat')].filter(Boolean).join(' \u00b7 ')||'Boat')+ (v(c,'Checked by')?(' \u2014 '+v(c,'Checked by')):'') + (v(c,'Time')?(' ('+v(c,'Time')+')'):'') +'\n';
+        m+=mdLine('Group', v(c,'Group'));
+        m+=mdLine('All checked', v(c,'All checked'));
+        m+=mdLine('Not checked', v(c,'Not checked'));
+        m+=mdLine('Declaration', v(c,'Declaration'));
+        m+=mdLine('Faults / notes', v(c,'Faults / notes'));
+      });
+    }
     var rvs=d.reviews||[];
     if(rvs.length){
       m+='\n## Review'+(rvs.length>1?'s':'')+'\n';
